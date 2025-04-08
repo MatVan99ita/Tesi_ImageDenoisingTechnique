@@ -1,0 +1,12 @@
+
+##### CODICE #####
+• Modificare il rumore sulle immagini a qualcosa di più umano -> 0.3 massimo
+• Calcolare il PSNR(Peak Signal to Noise Reduction) per ogni immagine poi lavorata ripetto all'originale
+• Fare un grafico della loss function di train e validation(con il validation fermarsi appena torna a crescere)
+• Ridurre le immagini della metà almeno e dare più epoche per il training
+
+##### RELAZIONE #####
+• Descrizione delle reti
+• Traduzione, riassunto e approfondimento articoli
+
+• Nella bibliogrfia citare gli articoli a cui fa riferimento l'articolo di partenza(oltre a quest'ultimo a sto punto)
