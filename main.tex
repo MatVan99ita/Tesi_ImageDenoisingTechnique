@@ -7,7 +7,6 @@
 \usepackage{amssymb}
 \usepackage{bm}
 \usepackage{colortbl}
-
 \usepackage{graphicx}
 \usepackage{geometry}
 \usepackage{hyperref}
@@ -62,11 +61,10 @@ extendedchars=true
     Corso di Laurea triennale in Ingegneria e Scienze Informatiche\\
  
     \Huge
-    \vspace{4cm}
+    \vspace{4.5cm}
     \Large
-     Relazione corso di crittografia\\
     \textbf{
-        Post-Quantum Cryptography
+        Image Denoising Technique with Neural Network
    }
  
     \large
@@ -75,19 +73,29 @@ extendedchars=true
     \vspace{5.5cm}
     \begin{minipage}[t]{0.64\textwidth}
       \begin{flushleft}
-        \textit{Ottobre 2023}
+        \textit{Relatore:}\\
+        \textbf{Prof. Lazzaro Damiana}
+        \\
+        \vspace{0.4cm}
+        \textit{Co/Contro Relatore}\\
+        \textbf{Dott. Ezio Greggio}
       \end{flushleft}
     \end{minipage}
     \begin{minipage}[t]{0.34\textwidth}
+      
       \begin{flushright}
+        \textit{Candidato:}\\
         \textbf{Matteo Vanni}
 \\
         \textit{Matricola: 0000935584}
       \end{flushright}
+
     \end{minipage}\\
  
     \vfill
     \noindent\hrulefill
+
+    \textit{MMMCAINA 20256}
     \vspace{0.3cm}
     \Large
  
@@ -96,7 +104,33 @@ extendedchars=true
  
 \titleformat{\chapter}{\normalfont\huge \bfseries}{\Huge \thechapter}{20pt}{\Huge}
 \tableofcontents
- 
+
+\chapter{Articolanzio}
+\section{Panoramica sul problema}
+L'image denoising è il processo di rimozione di rumore da un'immagine.\\
+Il rumore, che è causato da svariate fonti, quali foto fatte in condizioni di scarsa illuminazione o problemi che corrompono i file, causa perdita d'informazione sull'immagine.
+\paragraph{Cos è il rumore?} 
+Un aggiunta casuale di pixel che non appartengono all'immagine originale e ce ne sono di varie tipologie:\\
+Impulse Noise(IN) dove i pixel sono completamente diversi da quelli attorno. Esistono due categorie di IN: Salt and Pepper Noise(SPN) e Random Valued Impulse Noise(RVIN).\\
+Additive White Gaussian Noise(AWGN) cambia ogni pixel dall'originale di una piccola quantità.\\
+
+\section{Utilizzo di modelli di Deep Learning}
+\'E essenziale rimuovere il rumore e ristabilire l'immagine originale dove 
+riottenere l'immagine originale è importante per prestazioni robuste o ricostruire le informazioni mancanti è molto utile, come immagini astronomiche di oggetti molto lontani.\\
+Le reti neurali convoluzionali lavorano bene con le immagini e ne utilizzeremo N, menzionate in alcuni paper di ricerca e compareremo i risultati di ogni modello.\\
+\section{Dataset utilizzati}
+
+\chapter{Decsrizione delle reti}
+\section{Autoencoder} 
+\section{RIDNet}
+
+\chapter{Analisi ed ottimizzazione}
+\section{Prestazioni}
+\section{Quantizzazione dei modelli}
+\section{Analisi dei modelli}
+
+
+
 \chapter{Bibliografia}
 \begin{itemize}
     \item \href{<sito>}{<nome>}
