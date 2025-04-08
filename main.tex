@@ -1,0 +1,107 @@
+\documentclass[12pt,a4paper,openright,oneside]{book}
+\usepackage[utf8]{inputenc}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{bm}
+\usepackage{colortbl}
+\usepackage{graphicx}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{ifthen}
+\usepackage{latexsym}
+\usepackage{listings}
+\usepackage{makeidx}
+\usepackage{tikz}
+\usepackage{titlesec}
+\usepackage{wrapfig}
+\usepackage{xcolor}
+\definecolor{mygreen}{rgb}{0,0.6,0}
+\definecolor{mygray}{rgb}{0.5,0.5,0.5}
+\definecolor{mymauve}{rgb}{0.58,0,0.82}
+\lstset{
+basicstyle=\ttfamily,
+language=Python,
+commentstyle=\color{mygreen},
+keywordstyle=\color{blue},
+numberstyle=\tiny\color{mygray},
+stringstyle=\color{mymauve},
+numbers=left,
+showstringspaces=false
+extendedchars=true
+}
+\newcommand{\qvec}[1]{	extbf{	extit{#1}}}
+\newcommand{\mathbi}[1]{	extbf{\em #1}}
+\newcommand{\TODOComment}[1]{}
+\newcommand{\underlinebrace}[2]{%
+\tikz[remember picture,baseline=(a.base)]{%
+\node[inner sep=0pt] (a) {#1}; 
+\draw[decorate,decoration={brace,mirror,amplitude=4pt}] (a.south west) -- (a.south east);
+\node[below=4pt] at (a.south) {#2};
+}%
+}
+\begin{document}
+\title{Post-Quantum Cryptography}
+\author{Matteo Vanni}
+\date{\today}
+ 
+\newgeometry{margin=0.8in}
+\begin{titlepage}
+\begin{center}
+ 
+    \large
+    \textbf{ALMA MATER STUDIORUM -- UNIVERSITÀ DI BOLOGNA\\CAMPUS DI CESENA}
+\\
+    \noindent\hrulefill
+    \vspace{0.4cm}
+ 
+    \Large
+    Corso di Laurea triennale in Ingegneria e Scienze Informatiche\\
+ 
+    \Huge
+    \vspace{4cm}
+    \Large
+     Relazione corso di crittografia\\
+    \textbf{
+        Post-Quantum Cryptography
+   }
+ 
+    \large
+    \vspace{1cm}
+ 
+    \vspace{5.5cm}
+    \begin{minipage}[t]{0.64\textwidth}
+      \begin{flushleft}
+        \textit{Ottobre 2023}
+      \end{flushleft}
+    \end{minipage}
+    \begin{minipage}[t]{0.34\textwidth}
+      \begin{flushright}
+        \textbf{Matteo Vanni}
+\\
+        \textit{Matricola: 0000935584}
+      \end{flushright}
+    \end{minipage}\\
+ 
+    \vfill
+    \noindent\hrulefill
+    \vspace{0.3cm}
+    \Large
+ 
+  \end{center}
+\end{titlepage}
+ 
+\titleformat{\chapter}{\normalfont\huge \bfseries}{\Huge \thechapter}{20pt}{\Huge}
+\tableofcontents
+ 
+\chapter{Bibliografia}
+\begin{itemize}
+    \item \href{<sito>}{<nome>}
+\end{itemize}
+\end{document}
+
+
+
+
