@@ -118,16 +118,41 @@ Additive White Gaussian Noise(AWGN) cambia ogni pixel dall'originale di una picc
 \'E essenziale rimuovere il rumore e ristabilire l'immagine originale dove 
 riottenere l'immagine originale è importante per prestazioni robuste o ricostruire le informazioni mancanti è molto utile, come immagini astronomiche di oggetti molto lontani.\\
 Le reti neurali convoluzionali lavorano bene con le immagini e ne utilizzeremo N, menzionate in alcuni paper di ricerca e compareremo i risultati di ogni modello.\\
+
 \section{Dataset utilizzati}
+gli animali di arvard, le colonscopie \TODOComment{Approfondire aggiungendo link ai dataset e approfondire cose che non ci sono}
 
 \chapter{Decsrizione delle reti}
-\section{Autoencoder} 
+\section{Rumore}
+E FAI RUMORE \textbf{QUIIIIIIIIIIIIIIIIIIIIIIIIIIIII}
+Prima funzione di rumore -> Random noise con fattore 0.3 massimo
+\TODOComment{questi 2 più avanti}
+Rumore gaussiano 
+Rumore a più layer
+
+
+\section{Autoencoder}
+Il primo approccio è stato quello di usare l'autencoder dell'articolo da cui sto copiando paro paro tutto.\\
+Spiegazione del numero di layer usati e del tipo di mse loss fun, dam e learning rate di 1e-3
+
+\TODOComment{Modificare il dataset per i cosi successivi}
+
 \section{RIDNet}
+stessa cosa dell'autencoder (vedere se aggiungere tutto il codice gigante del setup)
+
 
 \chapter{Analisi ed ottimizzazione}
 \section{Prestazioni}
+PSNR è il metodo più comune per misurare la qualità delle immagini.\\
+Il PSNR è definito come il rapporto tra il massimo valore possibile di un segnale e il valore del rumore che disturba la qualità della sua rappresentazione.\\ Normalmente misurato in una scala logaritmica in decibel(dB).\\
+Data l'immagine originale(\textit{g}) e l'immagine rumorosa(\textit{f}), il PSNR è definito come: \[PSNR=20log_{10}(\frac{MAX_f}{\sqrt{MSE}})\] dove $MAX_f$ è il valore massimo del pixel dell'immagine e si calcola come \[MSE=\frac{1}{mn}\sum_{0}^{m-1}\sum_{0}^{n-1}||f(i,j)-g(i,j)||^2  \] mentre $MSE$(\textit{Mean Square Error}) è l'errore quadratico medio tra l'immagine originale e quella rumorosa.\\
+\TODOComment{Aggiungere codice del pnrr}
+
+
+
 \section{Quantizzazione dei modelli}
 \section{Analisi dei modelli}
+\subsection{Performance su dataset sconosciuti}
 
 
 
