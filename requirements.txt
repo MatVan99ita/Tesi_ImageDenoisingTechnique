@@ -1,0 +1,5 @@
+#comando per lanciarlo da terminale altrimenti c'è la versione desktop per farlo
+docker run --rm -v /path/to/your/latex/files:/miktex/input fisherman/miktex pdflatex /miktex/input/document.tex
+
+bibtex /data/document #<- compilare per generare bibliografia
+pdflatex /data/document.tex #<- compila e crea il file pdf
