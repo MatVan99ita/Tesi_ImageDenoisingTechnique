@@ -1,15 +1,18 @@
 {
-  "name": "LaTeX Dev",
   "build": {
     "dockerfile": "Dockerfile"
   },
-  "settings": {
-    "terminal.integrated.shell.linux": "/bin/bash"
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "terminal.integrated.shell.linux": "/bin/bash"
+      },
+      "extensions": [
+        "james-yu.latex-workshop",
+        "ms-python.python"
+      ]
+    }
   },
-  "extensions": [
-    "james-yu.latex-workshop",
-    "ms-python.python"
-  ],
   "postCreateCommand": "pip3 install Pygments",
   "remoteUser": "root"
 }
