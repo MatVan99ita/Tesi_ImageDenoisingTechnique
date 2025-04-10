@@ -20,20 +20,17 @@ RUN apt-get update && apt-get upgrade -y && \
     lsb-release \
     && apt-get clean
 
-# Installa MiKTeX (versione base senza l'immagine miktex/miktex:ubuntu)
-RUN wget -qO- https://miktex.org/download/ubuntu | bash && \
-    miktexsetup --admin --update-fndb && \
-    miktexsetup --admin --install
-
-# Imposta MikTeX per il completamento automatico dei pacchetti
-RUN initexmf --admin --set-config-value [MPM]AutoInstall=1 && \
-    initexmf --admin --update-fndb
-
 # Installa Pygments per il supporto a minted
 RUN pip3 install Pygments
+
+# Impostazione della variabile d'ambiente per Strawberry Perl
+ENV PATH="/strawberry-perl/bin:${PATH}"
+
+# Impostazione della variabile d'ambiente per MiKTeX
+ENV PATH="/miktex/bin/x64:${PATH}"
 
 # Aggiungi i file di lavoro nel container
 WORKDIR /workspace
 
-# Lancia il container con bash
+# Comando di avvio
 CMD ["bash"]
