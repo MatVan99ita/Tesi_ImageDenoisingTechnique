@@ -1,7 +1,9 @@
 
 ##### CODICE #####
 • Modificare il rumore sulle immagini a qualcosa di più umano -> 0.3 massimo
+
 • Calcolare il PSNR(Peak Signal to Noise Reduction) per ogni immagine poi lavorata ripetto all'originale
+    ~per il PSNR devo prima raggruppare i livelli di rumore e poi fare il confronto per vedere come va invece di metterlo a caso e capire se più è alto più è peggio o no(forse si)
 • Fare un grafico della loss function di train e validation(con il validation fermarsi appena torna a crescere)
 • Ridurre le immagini della metà almeno e dare più epoche per il training
 
