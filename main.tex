@@ -426,6 +426,12 @@ Il PSNR è definito come il rapporto tra il massimo valore possibile di un segna
 Data l'immagine originale(\textit{g}) e l'immagine rumorosa(\textit{f}), il PSNR è definito come: \[PSNR=20log_{10}(\frac{MAX_f}{\sqrt{MSE}})\] dove $MAX_f$ è il valore massimo del pixel dell'immagine e si calcola come \[MSE=\frac{1}{mn}\sum_{0}^{m-1}\sum_{0}^{n-1}||f(i,j)-g(i,j)||^2  \] mentre $MSE$(\textit{Mean Square Error}) è l'errore quadratico medio tra l'immagine originale e quella rumorosa.\\
 \section{Prima run}
 Il primo allenamento è stato sottoposto a entrambi i modelli con immagini RGB con risoluzione 112x112 pixel, un noise\_factor di 0.4 e 50 epoche di training.\\
+\section{Seconda run}
+batch\_size di 64 sempre a 50 epoche
+\section{Terza run}
+<QUI SAREBBE DA DOVER CAMBIARE LEARNING RATE E LOSS LEVEL>
+\section{Quarta run}
+<CAMBIO DELLE ARCHITETTURE DELLE DUE RETI PER MIGLIORARLA A LIVELLO DI PRESTAZIONI>
 Per l'autoenconcoder è stata usata una batch\_size di 16 mentre per la RIDNet una di 20.\\
 \subsection{Autoencoder}
 Model: "functional"\\
