@@ -7,6 +7,7 @@
 \usepackage{amssymb}
 \usepackage{bm}
 \usepackage{colortbl}
+\usepackage{float}
 \usepackage{graphicx}
 \usepackage{geometry}
 \usepackage{hyperref}
@@ -114,6 +115,7 @@
 \end{titlepage}
  
 \titleformat{\chapter}{\normalfont\huge \bfseries}{\Huge \thechapter}{20pt}{\Huge}
+
 \tableofcontents
 
 \chapter{Articolanzio}
@@ -427,9 +429,11 @@ Data l'immagine originale(\textit{g}) e l'immagine rumorosa(\textit{f}), il PSNR
 \section{Prima run}
 Il primo allenamento è stato sottoposto a entrambi i modelli con immagini RGB con risoluzione 112x112 pixel, un noise\_factor di 0.4 e 50 epoche di training ed entrambe con una batch_size di 64.\\
 \subsection{Autoencoder}
-Model: "functional"\\
+\begin{table}[htbp]
+  \centering
+  \multicolumn{4}{|c|}{\rowcolor{greyo} \textbf{Model: "functional"}} \\
 \begin{tabular}{|| c | c | c ||}
-  \hline
+  \hline\rowcolor{blue!10}
   Layer (type) & Output Shape & Param \# \\
   \hline
   input\_layer & (None, 112, 112, 3) & 0 \\
@@ -454,16 +458,20 @@ Model: "functional"\\
   \hline  
 \end{tabular}
 
+\caption{Autoencoder}
+\label{tab:autoencoder}
+\end{table}
+
  Total params: 114,307 (446.51 KB)\\
  Trainable params: 114,307 (446.51 KB)\\
  Non-trainable params: 0 (0.00 B)\\
-\begin{figure}
+\begin{figure}[H]
   \centering
   \includegraphics[width=0.75\textwidth]{autoencoder_train_2}
   \caption{First training of the autoencoder}
   \includegraphics[width=0.75\textwidth]{autoencoder_psnr_2}
   \caption{First psnr of the autoencoder}
-  \label{fig:auto_train_1}
+  \label{fig: Autoencoder: Media PSNR sul test set: 5.43 dB}
 \end{figure}
 Media PSNR sul test set: 5.43 dB.\\
 
@@ -499,14 +507,15 @@ Model: "functional\_5"\\
  Trainable params: 376,427 (1.44 MB)\\
  Non-trainable params: 0 (0.00 B)\\
 
- \begin{figure}
+ \begin{figure}[H]
   \centering
-  \includegraphics[width=0.75\textwidth]{ridnet_train_2}
+  \includegraphics[width=10cm]{ridnet_train_2}
   \caption{First training of the autoencoder}
-  \includegraphics[width=0.75\textwidth]{ridnet_psnr_2}
+  \includegraphics[width=10cm]{ridnet_psnr_2}
   \caption{First psnr of the autoencoder}
-  \label{fig:ridnet_train_1}
+  \label{fig: RIDNET: Media PSNR sul test set: 5.37 dB.}
 \end{figure}
+
 Media PSNR sul test set: 5.37 dB.\\
 
 \section{Seconda run}
