@@ -1,13 +1,14 @@
-\documentclass[12pt,a4paper,openright,twoside]{book}
+\documentclass[12pt,a4paper,openright,oneside]{book}
 \usepackage[utf8]{inputenc}
+
 \usepackage{algorithm}
 \usepackage{algpseudocode}
 \usepackage{amsmath}
 \usepackage{amsthm}
 \usepackage{amssymb}
 \usepackage{bm}
+\usepackage{booktabs}
 \usepackage{colortbl}
-\usepackage{float}
 \usepackage{graphicx}
 \usepackage{geometry}
 \usepackage{hyperref}
@@ -16,16 +17,22 @@
 \usepackage{listings}
 \usepackage{makeidx}
 \usepackage{minted}
+\usepackage{nicematrix}
 \usepackage{tikz}
 \usepackage{titlesec}
 \usepackage{wrapfig}
 \usepackage{xcolor}
+
+
 \definecolor{mygreen}{rgb}{0,0.6,0}
 \definecolor{mygray}{rgb}{0.5,0.5,0.5}
 \definecolor{mymauve}{rgb}{0.58,0,0.82}
-\definecolor{mygreen}{rgb}{0,0.6,0}
-\definecolor{mygray}{rgb}{0.5,0.5,0.5}
-\definecolor{mymauve}{rgb}{0.58,0,0.82}
+\definecolor{greyo}{RGB}{211, 211, 211}
+
+\newcommand{\qvec}[1]{\textbf{\textit{#1}}}
+\newcommand{\mathbi}[1]{\textbf{\em #1}}
+\newcommand{\TODOComment}[1]{}
+
 
 \lstset{
   basicstyle=\ttfamily,
@@ -44,9 +51,6 @@
 }
 \graphicspath{ {./img/} }
 
-\newcommand{\qvec}[1]{	extbf{	extit{#1}}}
-\newcommand{\mathbi}[1]{	extbf{\em #1}}
-\newcommand{\TODOComment}[1]{}
 \newcommand{\underlinebrace}[2]{%
 \tikz[remember picture,baseline=(a.base)]{%
 \node[inner sep=0pt] (a) {#1}; 
@@ -54,6 +58,9 @@
 \node[below=4pt] at (a.south) {#2};
 }%
 }
+
+
+\newgeometry{margin=0.8in}
 \begin{document}
 \title{Post-Quantum Cryptography}
 \author{Matteo Vanni}
@@ -133,7 +140,7 @@ riottenere l'immagine originale è importante per prestazioni robuste o ricostru
 Le reti neurali convoluzionali lavorano bene con le immagini e ne utilizzeremo N, menzionate in alcuni paper di ricerca e compareremo i risultati di ogni modello.\\
 
 \section{Dataset utilizzati}
-Il primo dataset usato per addrestrare i modelli sarà Oxford-IIIT Pet da Tensorflow, in modo poi da testare i modelli con immagini che non conoscono da altri dataset(colonscopie)\\
+Il primo dataset usato per addrestrare i modelli sarà Oxford-IIIT Pet da Tensorflow, in modo poi da testare i modelli con immagini che non conoscono da altri dataset(colonscopie).\\
 \begin{lstlisting}{python}
 def load_dataset(split='train', img_size=(256,256), batch_size=16):
     #Carica il dataset Oxford-IIIT Pet da tfds e applica il #preprocessamento.
@@ -147,8 +154,7 @@ def load_dataset(split='train', img_size=(256,256), batch_size=16):
     # Ottimizza il caricamento
     dataset = dataset.shuffle(1024).batch(batch_size).prefetch(tf.data.AUTOTUNE)  
     return dataset
-\end{lstlisting}\\
-
+\end{lstlisting}
 \begin{minted}{python}
   import numpy as np
       
@@ -172,13 +178,7 @@ def load_dataset(split='train', img_size=(256,256), batch_size=16):
                   VT[(j)*n + c[k]] = 1;
                   
                   if M is None:
-                      M = np.copy(VT)
-                  else:
-                      M = np.concatenate((M, VT), 1)
-                  
-                  VT = np.zeros((n*m,1), int)
-      
-      return M
+M = np.copy (VT) else: M = np.concatenate ((M, VT), 1) VT = np.zeros ((n * m,1), int
 \end{minted}
 
 Kvasir-seg: 1000(MILLEH) immagini di polipi, 
@@ -261,9 +261,9 @@ class MeanShift(Layer):
         self.sign = sign
 
     def call(self, x):
-        # x è atteso in formato (batch, altezza, larghezza, 3)
-        # Sfruttiamo Lambda per eseguire l'operazione per ogni elemento
-        # Nota: non stiamo scalando per std in questo esempio
+        """
+        x è atteso in formato (batch, altezza, larghezza, 3)
+        """
         return x + self.sign * self.rgb_mean
 
 # BasicBlock: Conv2D seguita da attivazione ReLU
@@ -278,7 +278,7 @@ class BasicBlock(Layer):
     def call(self, x):
         return self.relu(self.conv(x))
 
-# ResidualBlock: due convoluzioni con skip connection(come lavora cuda con 2 thread -> 2 filtri applicati e poi si uniscono i risultati)
+# ResidualBlock: due convoluzioni con skip connection
 @register_keras_serializable("ResidualBlock")
 class ResidualBlock(Layer):
     def __init__(self, out_channels, **kwargs):
@@ -313,7 +313,7 @@ class EResidualBlock(Layer):
         out = Add()([x, residual])
         return ReLU()(out)
 
-# Merge_Run_dual: due rami convoluzionali con dilatazioni diverse, poi fusione e skip connection
+# Merge_Run_dual: due rami convoluzionali con dilatazioni diverse, poi merge e skip connection
 @register_keras_serializable("MergeRunDual")
 class MergeRunDual(Layer):
     def __init__(self, out_channels, **kwargs):
@@ -378,7 +378,7 @@ class Block(Layer):
         out = self.ca(r3)
         return out
 
-# RIDNET: il modello final
+# Creazione del modello
 @register_keras_serializable("RIDNET")
 def RIDNET(n_feats=64, rgb_range=1.0):
     """
@@ -426,111 +426,142 @@ model.summary()
 PSNR è il metodo più comune per misurare la qualità delle immagini.\\
 Il PSNR è definito come il rapporto tra il massimo valore possibile di un segnale e il valore del rumore che disturba la qualità della sua rappresentazione.\\ Normalmente misurato in una scala logaritmica in decibel(dB).\\
 Data l'immagine originale(\textit{g}) e l'immagine rumorosa(\textit{f}), il PSNR è definito come: \[PSNR=20log_{10}(\frac{MAX_f}{\sqrt{MSE}})\] dove $MAX_f$ è il valore massimo del pixel dell'immagine e si calcola come \[MSE=\frac{1}{mn}\sum_{0}^{m-1}\sum_{0}^{n-1}||f(i,j)-g(i,j)||^2  \] mentre $MSE$(\textit{Mean Square Error}) è l'errore quadratico medio tra l'immagine originale e quella rumorosa.\\
-\section{Prima run}
-Il primo allenamento è stato sottoposto a entrambi i modelli con immagini RGB con risoluzione 112x112 pixel, un noise\_factor di 0.4 e 50 epoche di training ed entrambe con una batch_size di 64.\\
+\newpage
+
+\section{Analisi dei modelli}
 \subsection{Autoencoder}
-\begin{table}[htbp]
-  \centering
-  \multicolumn{4}{|c|}{\rowcolor{greyo} \textbf{Model: "functional"}} \\
-\begin{tabular}{|| c | c | c ||}
-  \hline\rowcolor{blue!10}
-  Layer (type) & Output Shape & Param \# \\
-  \hline
-  input\_layer & (None, 112, 112, 3) & 0 \\
-  \hline
-  conv2d & (None, 112, 112, 64) & 1,792 \\
-  \hline
-  max\_pooling2d & (None, 56, 56, 64) & 0 \\
-  \hline
-  conv2d\_1 & (None, 56, 56, 64) & 36,928 \\
-  \hline
-  max\_pooling2d\_1 & (None, 28, 28, 64) & 0 \\
-  \hline
-  conv2d\_2 & (None, 28, 28, 64) & 36,928 \\
-  \hline
-  up\_sampling2d & (N one, 56, 56, 64) & 0 \\
-  \hline
-  conv2d\_3 & (None, 56, 56, 64) & 36,928 \\
-  \hline
-  up\_sampling2d\_1 & (None, 112, 112, 64) & 0 \\
-  \hline
-  conv2d\_4 & (None, 112, 112, 3) & 1,731 \\
-  \hline  
-\end{tabular}
+La rete neurale è un autoencoder convoluzionale simmetrico progettato per la compressione e successiva ricostruzione di immagini RGB.\\
 
-\caption{Autoencoder}
-\label{tab:autoencoder}
-\end{table}
+Nella fase di encoding, l'immagine in input viene inizialmente processata da un primo strato convoluzionale (Conv2D) con 64 filtri, ciascuno di dimensione 3×3, seguito da un'operazione di sottocampionamento (MaxPooling2D) che riduce la risoluzione spaziale da 112×112 a 56×56 mantenendo invariato il numero di canali. Un secondo strato convoluzionale, anch'esso composto da 64 filtri, approfondisce l'estrazione delle caratteristiche locali, cui segue un ulteriore livello di pooling che porta la risoluzione a 28×28 pixel. A questo punto, l'informazione visiva è compressa in una rappresentazione latente di dimensione (28, 28, 64), che mantiene un buon bilanciamento tra capacità rappresentativa e riduzione della dimensionalità.
 
- Total params: 114,307 (446.51 KB)\\
- Trainable params: 114,307 (446.51 KB)\\
- Non-trainable params: 0 (0.00 B)\\
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=0.75\textwidth]{autoencoder_train_2}
-  \caption{First training of the autoencoder}
-  \includegraphics[width=0.75\textwidth]{autoencoder_psnr_2}
-  \caption{First psnr of the autoencoder}
-  \label{fig: Autoencoder: Media PSNR sul test set: 5.43 dB}
-\end{figure}
-Media PSNR sul test set: 5.43 dB.\\
+La fase di decoding ha l'obiettivo di ricostruire l'immagine originale a partire dalla rappresentazione compressa. In essa, un ulteriore strato convoluzionale affina la mappa delle caratteristiche, seguito da un'operazione di upsampling (UpSampling2D) che ripristina la dimensione spaziale a 56×56.\\
+
+Successivamente, un altro strato convoluzionale migliora la qualità della ricostruzione a tale scala. Un secondo upsampling riporta l'immagine alla dimensione originale di 112×112 pixel. Infine, un ultimo strato convoluzionale con 3 filtri produce l'output finale, riconvertendo il volume delle feature maps in un'immagine RGB.\\
+L'architettura è completamente simmetrica rispetto alla fase di encoding e decoding e non prevede strati densi (fully connected), risultando pertanto particolarmente adatta alla gestione di immagini di dimensione variabile. Inoltre, la scelta di mantenere una rappresentazione latente relativamente "larga" (28×28×64) rispetto ad autoencoder più tradizionali consente una migliore preservazione dei dettagli visivi, rendendo questo modello particolarmente adatto a compiti di denoising o ricostruzione di immagini degradate.\\\\
+\begin{NiceTabular}
+{p{0.3\textwidth}p{0.4\textwidth}p{0.2\textwidth}}[color-inside]
+\toprule
+\rowcolor{lightgray} & \Block{1-1}{Architettura dell'autoencoder. Model: functional} \\
+  \rowcolor{lightgray} \\
+\rowcolor{lightgray} Layer & Output Shape & Params \# \\
+\midrule
+Input layer             & (None, 112, 112, 3)      & 0      \\
+Conv2D                  & (None, 112, 112, 64)     & 1,792  \\
+MaxPooling2D            & (None, 56, 56, 64)       & 0      \\
+Conv2D 1                & (None, 56, 56, 64)       & 36,928 \\
+MaxPooling2D 1          & (None, 28, 28, 64)       & 0      \\
+Conv2D 2                & (None, 28, 28, 64)       & 36,928 \\
+UpSampling2D            & (None, 56, 56, 64)       & 0      \\
+Conv2D 3                & (None, 56, 56, 64)       & 36,928 \\
+UpSampling2D 1          & (None, 112, 112, 64)     & 0      \\
+Conv2D 4                & (None, 112, 112, 3)      & 1,731  \\ 
+\midrule
+\midrule
+\rowcolor{lightgray} & \Block{1-1}{Params} \\
+Total params:         & 114,307 & 446.51 KB\\
+Trainable params:     & 114,307 & 446.51 KB\\
+Non-trainable params: & 0       & 0.00 B   \\
+\bottomrule
+\tabularnote{Model: functional}
+\end{NiceTabular}
+
+
+
 
 \subsection{RIDNet}
-Model: "functional\_5"\\
-\begin{tabular}{|| c | c | c | c ||}
-  \hline
-  Layer (type) & Output Shape & Param \# & Connected to \\
-  \hline
+La rete RIDNet è composta da vari strati che interagiscono in modo complesso, e come si vede dalla tabella ogni passaggio è concatenato in modo sequenziale, dove l'output di un blocco è l'input del successivo \ref{tab:RIDNet_architecture}.\\\\
+Il flusso di dati inizia con l'Input Layer 5, il quale riceve un'immagine di dimensioni sconosciute (None, None, None, 3). Questo strato non ha parametri addizionali, essendo semplicemente un livello di ingresso.\\\\
+Subito dopo, il Mean Shift 10 applica una trasformazione ai dati, mantenendo invariata la dimensione dell'immagine. Questo strato ha il compito di centralizzare l'intensità dei pixel.\\\\
+Il primo blocco convoluzionale della rete è rappresentato dal Conv2D 250, che riduce progressivamente la dimensione spaziale dell'immagine mentre aumenta il numero di filtri da 3 a 32. 
+
+Successivamente, il flusso prosegue attraverso una serie di Block che non solo applicano operazioni convoluzionali ma anche attivazioni non lineari, garantendo una maggiore capacità di rappresentazione della rete. Ogni blocco (da Block 20 a Block 23) mantiene una struttura simile e continua ad applicare operazioni convoluzionali mantenendo gli stessi parametri.\\
+
+L'output dell'ultimo blocco convoluzionale, il Conv2D 299, produce un'immagine di output della stessa dimensione dell'immagine di ingresso, con qualche parametro in meno e nuovamente 3 canali, questa è una prima previsione dell'immagine finale.\\\\
+Infine, un ulteriore strato di Mean Shift 11 viene applicato per eseguire un altro aggiustamento del valore medio dei pixel nell'immagine di output. Anche in questo caso, non vengono introdotti nuovi parametri.\\\\
+L'output finale della rete è generato dallo strato Add 413, che esegue una somma tra l'output di Mean Shift 11 e il risultato precedente. Questo step finale non introduce parametri addizionali, ma è cruciale per combinare le informazioni passate attraverso la rete, migliorando la qualità del risultato finale.\\\\
+
+In sintesi, la RIDNet si basa su una sequenza di operazioni convoluzionali seguite da trasformazioni di "mean shift" e operazioni di somma, ottimizzando la qualità dell'immagine di output attraverso una struttura profonda e iterativa. La rete è progettata per ridurre progressivamente l'immagine, applicare convoluzioni e migliorare la qualità attraverso un processo di addizione che incorpora informazioni provenienti da differenti livelli della rete.\\\\
+\begin{NiceTabular}
+{p{0.3\textwidth}p{0.3\textwidth}p{0.1\textwidth}p{0.2\textwidth}}[color-inside]
+\toprule
+\rowcolor{lightgray} & \Block{1-1}{Architettura della RIDNet.\\Model: functional\_5} \\
+  \rowcolor{lightgray} \\
+  \rowcolor{lightgray} Layer (type) & Output Shape & Param \# & Connected to \\
+  \midrule
   input\_layer\_5 & (None, None, None, 3) & 0 & - \\
-  \hline
   mean\_shift\_10 & (None, None, None, 3) & 0 & input\_layer\_5[0][0] \\
-  \hline
   conv2d\_250 (Conv2D) & (None, None, None, 32) & 896 & mean\_shift\_10[0][0] \\
-  \hline
   block\_20 (Block) & (None, None, None, 32) & 93,666 & conv2d\_250[0][0] \\
-  \hline
   block\_21 (Block) & (None, None, None, 32) & 93,666 & block\_20[0][0] \\
-  \hline
   block\_22 (Block) & (None, None, None, 32) & 93,666 & block\_21[0][0] \\
-  \hline
   block\_23 (Block) & (None, None, None, 32) & 93,666 & block\_22[0][0] \\
-  \hline
   conv2d\_299 (Conv2D) & (None, None, None, 3) & 867 & block\_23[0][0] \\
-  \hline
   mean\_shift\_11 & (None, None, None, 3) & 0 & conv2d\_299[0][0] \\
-  \hline
   add\_413 (Add) & (None, None, None, 3) & 0 & mean\_shift\_11[0][0] \\
-  \hline
-\end{tabular}
 
- Total params: 376,427 (1.44 MB)\\
- Trainable params: 376,427 (1.44 MB)\\
- Non-trainable params: 0 (0.00 B)\\
+\midrule
+\midrule
+\rowcolor{lightgray} & \Block{1-1}{Params} \\
+Total params:         & 376,427 & 1.44 MB & \\
+Trainable params:     & 376,427 & 1.44 MB & \\
+Non-trainable params: & 0       & 0.00 B  & \\
+\bottomrule
+\end{NiceTabular}
 
+
+
+\section{Prima run}
+Il primo allenamento è stato sottoposto a entrambi i modelli con immagini RGB dal dataset tensorflow "oxford\_iiit\_pet" con risoluzione 112x112 pixel, un noise\_factor di 0.4 e 50 epoche di training ed entrambe con una batch\_size di 64.\\
+Il dataset non presenta unasuddivisione tra train, validation e test ma solo tra train e test, allora è stato suddiviso il training in 80\% training e 20\% validation.\\
+
+\subsection{Autoencoder}
+Una volta allenato il modello il risultato del training presenta un leggero overfitting sul validation set, mentre sempre nel validation sono presenti un paio di picchi nel loss (come da grafico \ref{fig: autoen_train_loss}
+\begin{figure}[H]
+\centering
+\caption{First training of the autoencoder}
+  \includegraphics[width=0.75\textwidth]{autoencoder_train_2}
+  \label{fig: autoen_train_loss}
+\end{figure}
+
+Poi è stato eseguita una predict e confronto del loss level tra immagini ricreata e reale con diversi livelli di rumore e vedere come va
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\linewidth]{autoencoder_psnr_2}
+    \caption{NON SO SE VA BENE COS\'I}
+    \label{fig:autoen_psnr}
+\end{figure}
+
+la media PSNR sul test set è di 5.43 dB. Come si può notare dal grafico\ref{fig:autoen_psnr}
+
+\subsection{RIDNet}
  \begin{figure}[H]
   \centering
   \includegraphics[width=10cm]{ridnet_train_2}
   \caption{First training of the autoencoder}
+  \label{fig: ridnet_train}
+\end{figure}
+\subsection{RIDNet}
+
+ \begin{figure}[H]
+  \centering
   \includegraphics[width=10cm]{ridnet_psnr_2}
   \caption{First psnr of the autoencoder}
-  \label{fig: RIDNET: Media PSNR sul test set: 5.37 dB.}
+  \label{fig: ridnet_psnr}
 \end{figure}
-
-Media PSNR sul test set: 5.37 dB.\\
+la media PSNR sul test set è di 5.37 dB. Come si può notare dal grafico
 
 \section{Seconda run}
-batch\_size di 64 sempre a 50 epoche
+batch\_size più piccola(?) o diverse dimensioni tra split del dataset e train; 50(?) epoche
 \section{Terza run}
-<QUI SAREBBE DA DOVER CAMBIARE LEARNING RATE E LOSS LEVEL>
+$<$QUI SAREBBE DA DOVER CAMBIARE LEARNING RATE E LOSS LEVEL$>$
 \section{Quarta run}
-<CAMBIO DELLE ARCHITETTURE DELLE DUE RETI PER MIGLIORARLA A LIVELLO DI PRESTAZIONI>
+$<$CAMBIO DELLE ARCHITETTURE DELLE DUE RETI PER MIGLIORARLA A LIVELLO DI PRESTAZIONI$>$
 
 \TODOComment{Aggiungere codice del pnrr}
 
 
 
 \section{Quantizzazione dei modelli}
-\section{Analisi dei modelli}
 \subsection{Performance su dataset sconosciuti}
 
 
