@@ -4,5 +4,8 @@ docker run --rm -it -v ${PWD}:/data mfisherman/miktex /bin/sh # <- windows
 
 
 
-bibtex /data/document #<- compilare per generare bibliografia
+biber /data/document #<- compilare per generare bibliografia
 pdflatex /data/document.tex #<- compila e crea il file pdf
+
+
+

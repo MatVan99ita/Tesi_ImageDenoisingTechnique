@@ -1,0 +1,94 @@
+
+
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{bm}
+\usepackage{booktabs}
+
+\usepackage{colortbl}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{adjustbox}
+\usepackage{geometry}
+\usepackage{ifthen}
+\usepackage{latexsym}
+\usepackage{listings}
+\usepackage{makeidx}
+\usepackage{minted}
+\usepackage{nicematrix}
+\usepackage{tikz}
+\usepackage{titlesec}
+\usepackage{wrapfig}
+\usepackage{xcolor}
+
+\usepackage{hyperref}
+\usepackage{cleveref}
+
+%\usepackage[round]{natbib}
+%\bibliographystyle{plainnat}
+%\bibliographystyle{unsrtnat}  % bibliografia numerata
+\usepackage[
+  backend=biber,
+  citestyle=authoryear,
+  bibstyle=numeric,     % numerazione in bibliografia: [1], [2], ...
+  sorting=none          % ordine di citazione
+]{biblatex}
+\addbibresource{bibliography.bib} % <-- il tuo .bib
+
+
+\definecolor{mygreen}{rgb}{0,0.6,0}
+\definecolor{mygray}{rgb}{0.5,0.5,0.5}
+\definecolor{mymauve}{rgb}{0.58,0,0.82}
+\definecolor{greyo}{RGB}{211, 211, 211}
+
+\newcommand{\qvec}[1]{\textbf{\textit{#1}}}
+\newcommand{\mathbi}[1]{\textbf{\em #1}}
+\newcommand{\TODOComment}[1]{}
+
+
+\crefname{lstlisting}{listato}{listati}
+\Crefname{lstlisting}{Listato}{Listati}
+
+\newenvironment{abstract}{\chapter*{\centering\abstractname}\addcontentsline{toc}{chapter}{\abstractname}}{} 
+
+\newenvironment{acknowledgements}{\chapter*{\acknowledgementsname}}{} 
+
+\newenvironment{dedication}{\chapter*{}\begin{flushright}\itshape}{\normalfont\end{flushright}}
+
+\newcommand{\chapterWithoutNumber}[1]{\chapter*{#1}\addcontentsline{toc}{chapter}{#1}}
+
+\lstset{
+  basicstyle=\ttfamily,
+  language=Python,
+  commentstyle=\color{mygreen},
+  keywordstyle=\color{blue},
+  numberstyle=\tiny\color{mygray},
+  stringstyle=\color{mymauve},
+  numbers=left,
+  numbersep=10pt,
+  tabsize=2,
+  showstringspaces=false,
+  extendedchars=true,
+  breaklines=true,% A capo automatico per righe lunghe
+  breakatwhitespace=false,% Non limitare l'a capo agli spazi
+  breakautoindent=true,% Mantieni indentazione dopo l'a capo
+  postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space}, % Indicatore visivo dell'a capo
+  extendedchars=true,
+  frame=trBL,
+  frameround=fttt,
+  captionpos=t,
+}
+
+
+\graphicspath{ {./img/} }
+
+\newcommand{\underlinebrace}[2]{%
+\tikz[remember picture,baseline=(a.base)]{%
+\node[inner sep=0pt] (a) {#1}; 
+\draw[decorate,decoration={brace,mirror,amplitude=4pt}] (a.south west) -- (a.south east);
+\node[below=4pt] at (a.south) {#2};
+}%
+}
