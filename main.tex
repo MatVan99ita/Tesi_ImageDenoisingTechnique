@@ -333,7 +333,8 @@ Funziona così:
     \item Moltiplica questi pesi ai canali originali: accendendo i canali più utili e spegnendo quelli meno importanti(\texttt{Multiply()([x, y])}).
 \end{enumerate}
 \subsubsection{Blocco completo}
-Alla fine i layer \texttt{Merge\_Run\_Dual}\ref{lst:merge_run_dual}, \texttt{ResidualBlock}\ref{lst:residualblock}, \texttt{EResidualBlock}\ref{lst:eresidualblock} e \texttt{CALayer}\ref{lst:calayer} sono riuniti a formare l'unità base della rete
+Alla fine i layer \texttt{Merge\_Run\_Dual}(\ref{lst:merge_run_dual}), \texttt{ResidualBlock}(\ref{lst:residualblock}), \texttt{EResidualBlock}(\ref{lst:eresidualblock}) e \texttt{CALayer}(\ref{lst:calayer}) sono riuniti a formare l'unità base della rete
+
 \begin{lstlisting}[language=Python, caption={Blocco completo che unisce moduli multiscala, residui e attenzione}, label={lst:block}]
 @register_keras_serializable("Block")
 def Block(x, in_channels, out_channels):
@@ -345,45 +346,23 @@ def Block(x, in_channels, out_channels):
 \end{lstlisting}
 \newpage
 \subsubsection{Architettura RIDNet}
-
-\begin{figure}[H]
-    \centering
-    % Mostra solo la parte iniziale e finale
-    \includegraphics[trim=0 500 0 0, clip]{Ridnet_arch.png} 
-    % trim = {left bottom right top} in punti, clip taglia l'immagine
-    \caption{Architettura della rete: parte iniziale e finale. I blocchi intermedi sono omessi per semplicità.}
-\end{figure}
-
-\begin{center}
-    $\vdots$ \\
-    \textit{... blocchi intermedi omessi ...}
-\end{center}
-
-
-    \caption{Suddivisione verticale dell'immagine Ridnet\_arch.png in tre segmenti per una visualizzazione più gestibile.}
-    \label{fig:ridnet_segments}
-\end{figure}
-
-    \caption{Esempio di aggiunta di rumore gaussiano su un'immagine grande. Le immagini sono ritagliate per la visualizzazione.}
-    \label{fig:noise_examples}
-\end{figure}
-
+Qui di seguito viene mostrata la costruzione completa della rete \textbf{RIDNet}, che combina tutti i blocchi e layer precedentemente definiti.
 \begin{lstlisting}[language=Python, caption={Costruzione dell'architettura completa RIDNet}, label={lst:build_ridnet}]
 @register_keras_serializable("build_RIDNET")
 def build_RIDNET(input_shape, n_feats, reduction, rgb_range=1.0):
     rgb_mean = (0.4488, 0.4371, 0.4040)
     rgb_std = (1.0, 1.0, 1.0)
-
     inputs = Input(shape=input_shape)
     x = MeanShift(rgb_range, rgb_mean, rgb_std, sign=-1)(inputs)
 \end{lstlisting}
+
 In questa prima parte viene definita la funzione \texttt{build\_RIDNET}, che costruisce il modello.
 \begin{itemize}
     \item[-] L’input è un’immagine con una forma specificata da \texttt{input\_shape}.
     \item[-] Prima di elaborarla, viene applicato un \texttt{MeanShift}, che normalizza i valori dei pixel in base alla media e alla deviazione standard dei canali RGB.
 \end{itemize}
 Questo passaggio serve a semplificare l’apprendimento della rete.
-\paragraph{build\_RIDNET}
+
 \begin{lstlisting}[language=Python, caption={Corpo della ridnet}, label={lst:ridnet_block}]
     x = BasicBlock(x, n_feats)
     b1 = Block(x, n_feats, n_feats)
@@ -393,18 +372,16 @@ Questo passaggio serve a semplificare l’apprendimento della rete.
 \end{lstlisting}
 Nella parte centrale:
 \begin{itemize}
-    \item[-] Viene applicato un primo \texttt{BasicBlock}, che funziona come livello iniziale di estrazione delle caratteristiche.
-    \item[-] Successivamente, l’immagine passa attraverso una serie di \texttt{Block}, ognuno composto da più sottostrutture (convoluzioni multiscala, blocchi residui e meccanismi di attenzione sui canali).
+    \item[-] Viene applicato un primo \texttt{BasicBlock}\ref{lst:basicblock}, che funziona come livello iniziale di estrazione delle caratteristiche.
+    \item[-] Successivamente, l’immagine passa attraverso una serie di \texttt{Block}\ref{lst:block}, ognuno composto da più sottostrutture (convoluzioni multiscala, blocchi residui e meccanismi di attenzione sui canali).
     \item[-] I blocchi sono concatenati (\texttt{b1}, \texttt{b2}, \texttt{b3}, \texttt{b4}), così che la rete possa catturare informazioni via via più complesse e dettagliate.
 La struttura dell'eperimento citato \parencite{9010324} usa solo quattro blocchi
 \end{itemize}
-\paragraph{build\_RIDNET}
 \begin{lstlisting}[language=Python, caption={Ultimo blocco della rete}, label={lst:last_ridnet}]
     res = Conv2D(3, 3, padding='same')(b4)
 \end{lstlisting}
 Dopo l’ultimo blocco, si applica una convoluzione finale con \texttt{3} filtri, corrispondenti ai tre canali RGB.\\
 Il risultato è un’immagine “ricostruita” che rappresenta una prima versione denoised dell’input.
-\paragraph{build\_RIDNET}
 \begin{lstlisting}[language=Python, caption={Pezzo finale della rete}, label={lst:}]
     out = MeanShift(rgb_range, rgb_mean, rgb_std, sign=1)(res)
     out = Add()([out, inputs])
@@ -433,8 +410,7 @@ Viene compilata con:
     \item[-] Come funzione di errore la scelta è Mean Squared Error (MSE), cioè l’errore quadratico medio, tipico nei problemi di denoising e ricostruzione di immagini.
     \item[-] infine viene aggiunta l'accuratezza del modello nelle metriche di valutazione per poter monitorare l'andamento del modello e poterne fare grafici
 \end{itemize}
-
-
+\newpage
 \section{DnCNN}
 La \textbf{Denoising Convolutional Neural Network} (DnCNN) è una rete convoluzionale profonda introdotta per la prima volta come architettura dedicata al denoising.  
 La sua importanza è legata all’idea innovativa di formulare il problema non come una mappatura diretta tra immagine rumorosa e immagine pulita, ma come la stima del \textbf{residuo} (ossia il rumore stesso).  
@@ -1023,6 +999,7 @@ Ad ogni file viene controllata l'estensione, in caso non sia un'immagine il prog
 \end{lstlisting}
 Viene fatto un unione di percorso e nome immagine per compatibilità di sistema e convertita in un oggetto manipolabile da OpenCV.\\
 Controlla che  l'immagine non sia corrotta o illeggibile, applica il padding e crea il file nella cartella di output. Alla fine stampa il numero di file processati
+\newpage
 \section{Patching}
 Il \textbf{patching} è una tecnica comunemente utilizzata nell’ambito dell’elaborazione di immagini e dell’addestramento di reti neurali convoluzionali, che consiste nel suddividere un’immagine di grandi dimensioni in più sotto-immagini quadrate o rettangolari, dette \textit{patch}. Questo approccio presenta diversi vantaggi: riduce il consumo di memoria e il tempo di addestramento, permette di aumentare la quantità di dati disponibili (poiché da una singola immagine possono essere ricavati numerosi patch), e consente al modello di concentrarsi su porzioni locali dell’immagine, migliorando la capacità di apprendere dettagli fini e strutture locali.\\Durante la fase di ricostruzione o inferenza, i patch possono essere riuniti per ricomporre l’immagine originale, spesso con tecniche di sovrapposizione e fusione per evitare artefatti lungo i bordi. In sintesi, il patching rappresenta una strategia essenziale per la gestione efficiente di dataset ad alta risoluzione e per l’ottimizzazione delle prestazioni nei modelli di visione artificiale.
 \newpage
@@ -1135,17 +1112,16 @@ def add_noise_2(x, noise_factor):
 \end{lstlisting}
 
 \chapter{Analisi ed ottimizzazione}
-\section{Prestazioni}
+\section{allenamento}
+\section{valutazioni}
+ridnet autoencoder dncnn bm3d(<-da implementare)
+
+\section{fine tuning}
+\section{study}
+
 PSNR è il metodo più comune per misurare la qualità delle immagini.\\
 Il PSNR è definito come il rapporto tra il massimo valore possibile di un segnale e il valore del rumore che disturba la qualità della sua rappresentazione.\\ Normalmente misurato in una scala logaritmica in decibel(dB).\\
 Data l'immagine originale(\textit{g}) e l'immagine rumorosa(\textit{f}), il PSNR è definito come: \[PSNR=20log_{10}(\frac{MAX_f}{\sqrt{MSE}})\] dove $MAX_f$ è il valore massimo del pixel dell'immagine e si calcola come \[MSE=\frac{1}{mn}\sum_{0}^{m-1}\sum_{0}^{n-1}||f(i,j)-g(i,j)||^2  \] mentre $MSE$(\textit{Mean Square Error}) è l'errore quadratico medio tra l'immagine originale e quella rumorosa.\\
-\section{Prima run}
-\section{Quantizzazione dei modelli}
-\subsection{Performance su dataset sconosciuti}
-
-\chapter{Fine Tuning}
-
-\chapter{Study}
 
 \printbibliography
 %\bibliography{bibliography}

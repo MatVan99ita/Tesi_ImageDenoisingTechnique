@@ -1,4 +1,5 @@
-pdflatex main.tex
+pdflatex -interaction=nonstopmode main.tex
 biber main
-pdflatex main.tex
-pdflatex main.tex
+pdflatex -interaction=nonstopmode main.tex
+pdflatex -interaction=nonstopmode main.tex
+start "" main.pdf
