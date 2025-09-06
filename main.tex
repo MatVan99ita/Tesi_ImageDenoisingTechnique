@@ -1,3 +1,4 @@
+%!TEX program = biber
 \documentclass[12pt,a4paper,openright,twoside]{book}
 \usepackage[utf8]{inputenc}
 \usepackage{thesis-style}
@@ -7,42 +8,78 @@
 \input{front.tex}
 
 \tableofcontents
-
-\listoffigures     % (optional) comment if empty
-\lstlistoflistings % (optional) comment if empty
+\listoffigures    
+\lstlistoflistings
 
 \frontmatter
 \chapter{Introduzione}
-\TODOComment{Aggiungere l'obiettivo della tesi}
-In questa tesi progettuale si vuole analizzare in dettaglio
-le architetture di varie reti neurali, confrontandone prestazioni, e applicazioni.
-Si andrà a spiegare cosa significa Rumore in immagini e cosa comporta e come compare, 
+
+La presente tesi si propone di esplorare l'uso delle reti neurali per il miglioramento della qualità delle immagini digitali, con particolare attenzione alla rimozione del rumore. Il lavoro si inserisce nel contesto dell'elaborazione delle immagini, un campo in continua evoluzione che trova applicazioni in ambiti diversi, dalle immagini naturali a quelle mediche.
+
+Il Capitolo 1 fornisce una panoramica generale sul problema del rumore nelle immagini digitali. Vengono introdotte le tipologie e le cause principali del rumore, le origini dei disturbi e le metriche comunemente utilizzate per valutarne l'impatto. Successivamente, si presentano i metodi tradizionali di denoising, come i filtri spaziali e le tecniche nel dominio della frequenza, per poi discutere le innovazioni più recenti basate sulle reti neurali e altri approcci avanzati.
+
+Il Capitolo 2 analizza le principali architetture di reti neurali utilizzate per il denoising. Vengono discussi i principi generali di funzionamento, i vantaggi e le limitazioni di ciascun approccio, fornendo una base teorica per comprendere le scelte sperimentali dei capitoli successivi.
+
+Il Capitolo 3 descrive i dataset utilizzati per l'allenamento e la valutazione dei modelli, comprendendo sia immagini naturali sia immagini mediche. Ogni dataset viene presentato con le sue caratteristiche principali e le motivazioni per la sua scelta nell'ambito del denoising.
+
+Il Capitolo 4 illustra le fasi di elaborazione dei dataset, dalla conversione dei file RAW alla preparazione delle immagini, comprese operazioni di padding, patching e aggiunta controllata del rumore. Questa fase è fondamentale per garantire la qualità e la coerenza dei dati utilizzati durante l'allenamento.
+
+Il Capitolo 5 riguarda la sperimentazione e l'analisi dei modelli. Qui vengono descritti l'allenamento dei diversi modelli, lo studio degli iperparametri, le valutazioni quantitative e qualitative, e la fase di \emph{fine-tuning} sui dataset medici per adattare i modelli a contesti specifici.
+
+In sintesi, questa tesi combina teoria, pratica di allenamento e analisi sperimentale, offrendo una panoramica completa sull'applicazione delle reti neurali al denoising delle immagini. L'obiettivo è fornire al lettore sia una comprensione concettuale sia esempi pratici di come i modelli possano essere implementati e adattati a diversi tipi di immagini.
 
 
-Qui si rimuove rumore alle immagini con studio di modelli allenati con cose diverse da immagini mediche e poi messi a lavorare su immagini mediche, poi boh gli si fa du merende
-\chapter{METTI LE IMMAGINI}
-\TODOComment{LE IMMAGINI}
+
+
+
+
 \mainmatter
 \chapter{Indice}
 \section{Generale}
-Il denoising delle immagini rappresenta una problematica centrale nell'ambito dell'elaborazione digitale delle immagini. 
-Si tratta di un processo volto a rimuovere il rumore che si introduce durante la cattura, la trasmissione o la memorizzazione di un'immagine digitale, con l'obiettivo di recuperare una rappresentazione più fedele e pulita del contenuto visivo originale. 
+Il denoising delle immagini rappresenta una problematica centrale nell'ambito dell'elaborazione digitale delle immagini. Si tratta di un processo volto a rimuovere il rumore che si introduce durante la cattura, la trasmissione o la memorizzazione di un'immagine digitale, con l'obiettivo di recuperare una rappresentazione più fedele e pulita del contenuto visivo originale. 
 
 La presenza di rumore può compromettere significativamente la qualità visiva e l'accuratezza di analisi successive, come il riconoscimento di oggetti o la segmentazione. Formalmente, il problema può essere modellato come:
 \[
 y = x + n
 \]
-dove $y$ è l’immagine osservata contenente rumore, $x$ è l’immagine pulita da recuperare e $n$ rappresenta il rumore additivo.
+dove $y$ è l'immagine osservata contenente rumore, $x$ è l'immagine pulita da recuperare e $n$ rappresenta il rumore additivo.
 
 \subsection{Tipologie e Cause di Rumore nelle Immagini Digitali}
 Il rumore presente nelle immagini può assumere diverse forme, a seconda della sorgente e delle condizioni di acquisizione. I principali modelli e le relative cause sono:
 
 \begin{itemize}
     \item \textbf{Rumore gaussiano additivo (AWGN):} spesso usato come modello ideale per rumori sommatoria di più sorgenti e per molte analisi teoriche. Nelle immagini acquisite, una componente a distribuzione approssimativamente gaussiana deriva da disturbi elettronici del circuito di acquisizione (read noise, thermal noise). Per il rumore reale dei sensori si usa frequentemente il modello Poisson–Gaussiano (shot noise + rumore elettronico) e metodi specifici per la sua stima. \parencite{janesick2007, foi2008}
+    \begin{figure}[h!]
+        \centering
+        \includegraphics[width=0.3\textwidth]{img/awgn.jpg}
+        \caption{Esempio di rumore gaussiano additivo (AWGN) in un'immagine.}
+    \end{figure}
+\clearpage
     \item \textbf{Rumore di tipo Poisson (shot noise):} dovuto alla natura discreta dei fotoni rilevati dal sensore; la varianza è proporzionale al segnale stesso. Tecniche come la trasformazione di Anscombe e i suoi sviluppi (e.g.\ inversioni ottimali) sono largamente usate per stabilizzare la varianza prima del denoising. \parencite{makitalo2013, foi2008}
-    \item \textbf{Rumore impulsivo (``salt-and-pepper''):} si manifesta come singoli pixel con valori estremi (0 o massimo) e tipicamente è causato da errori di trasmissione, cellule pixel difettose o errori A/D; esistono filtri switch, mediani adattivi e approcci più recenti (SVM, reti profonde) dedicati alla sua rimozione. \parencite{gomez2014}
+    \begin{figure}[h!]
+        \centering
+        \includegraphics[width=0.3\textwidth]{img/puason.jpg}
+        \caption{Esempio di rumore di tipo Poisson (shot noise) in un'immagine.}
+    \end{figure}
+    \item \textbf{Rumore impulsivo (''salt-and-pepper''):} si manifesta come singoli pixel con valori estremi (0 o massimo) e tipicamente è causato da errori di trasmissione, cellule pixel difettose o errori A/D; esistono filtri switch, mediani adattivi e approcci più recenti (SVM, reti profonde) dedicati alla sua rimozione. \parencite{gomez2014}
+    \begin{figure}[h!]
+        \centering
+        \includegraphics[width=0.3\textwidth]{img/s&p.jpg}
+        \caption{Esempio di rumore impulsivo (salt-and-pepper) in un'immagine.}
+    \end{figure}
+    \clearpage
     \item \textbf{Rumore speckle (multiplicativo):} caratteristico dei sistemi coerenti (SAR, ultrasuoni, laser), ha natura moltiplicativa e statistiche particolari; richiede metodi di despeckling specifici che tengano conto della natura non additiva del disturbo. \parencite{goodman1976, despeckle_survey}
-    \item \textbf{Artefatti di compressione (lossy):} la compressione con perdita (e.g. JPEG) introduce blocchi, ringing e perdita di dettaglio ad alta frequenza; questi disturbi non sono “rumore” stocastico puro ma effetti deterministici dell’analisi quantizzazione/trasformata che richiedono correzione mirata. \parencite{wallace1991, eschbach1997}
+    \begin{figure}[h!]
+        \centering
+        \includegraphics[width=0.3\textwidth]{img/speck ultrasuoni.jpg}
+        \caption{Esempio di rumore speckle in un'immagine ad ultrasuoni.}
+    \end{figure}
+    \item \textbf{Artefatti di compressione (lossy):} la compressione con perdita (e.g. JPEG) introduce blocchi, ringing e perdita di dettaglio ad alta frequenza; questi disturbi non sono “rumore” stocastico puro ma effetti deterministici dell'analisi quantizzazione/trasformata che richiedono correzione mirata. \parencite{wallace1991, eschbach1997}
+    \begin{figure}[h!]
+        \centering
+        \includegraphics[width=0.5\textwidth]{img/frog.jpg}
+        \caption{Esempio di artefatti di compressione in un'immagine JPEG.}
+    \end{figure}
 \end{itemize}
 
 \subsection{Origini del rumore}
@@ -59,9 +96,10 @@ Le principali origini fisiche e operative del rumore nelle immagini sono:
 \subsubsection{Metodi classici}
 I primi approcci si basavano su filtri spaziali:
 \begin{itemize}
-    \item Filtri lineari come il filtro medio e il filtro gaussiano, che agiscono mediando i valori dei pixel in un intorno locale. Sebbene semplici, tendono a sfocare i dettagli fini dell'immagine.
+    \item Filtri lineari come il filtro medio e il filtro gaussiano, che agiscono mediando i valori dei pixel in un intorno locale. Sebbene semplici, tendono a sfocare i dettagli fini dell'immagine\parencite{gonzalez2018digital}. Il filtro gaussiano, in particolare, utilizza un kernel a forma di campana per pesare i pixel vicini, preservando meglio i bordi rispetto al filtro medio. 
+    \end{figure}
     \item Filtri non lineari come il filtro mediano, efficace nel rimuovere rumore impulsivo (
-          è dimostrato che mantiene i bordi meglio dei filtri lineari per rumore moderato \parencite{arias-castro2009, median_filter_overview}
+          è dimostrato che mantiene i bordi meglio dei filtri lineari per rumore moderato \parencite{median_filter_overview}
           ), e il filtro bilaterale, che preserva i bordi mediante un'azione locale-spaziale e di intensità \parencite{tomasi1998, paris2008}.
 \end{itemize}
 Miglioramenti ulteriori si sono ottenuti con la trasformata wavelet: Donoho e Johnstone hanno introdotto il denoising via soglia nei coefficienti wavelet ("wavelet shrinkage") \parencite{donoho1995}, che costituisce una pietra miliare. Ulteriori lavori ne hanno studiato variazioni e parametri di soglia ottimali \parencite{springer2003, eurasip2020}.
@@ -70,20 +108,20 @@ Miglioramenti ulteriori si sono ottenuti con la trasformata wavelet: Donoho e Jo
 \subsubsection{Modelli Statistici e Filtri Non Locali}
 Un progresso significativo è stato portato dai modelli statistici e dai filtri basati sulla similarità delle patch:
 \begin{itemize}
-    \item \textbf{Markov Random Fields (MRF):} modelli probabilistici che catturano la dipendenza tra pixel vicini.
-    \item \textbf{Non-Local Means (NLM)} \parencite{buades2005nonlocal}: sfrutta la ridondanza strutturale delle immagini, mediando patch simili non necessariamente vicine.
-    \item \textbf{BM3D (Block Matching 3D)} \parencite{dabov2007bm3d}: raggruppa patch simili in domini tridimensionali ed applica trasformate collaborative, con risultati allo stato dell’arte per lungo tempo.
+    \item \textbf{Markov Random Fields (MRF):} modelli probabilistici che catturano la dipendenza tra pixel vicini, permettendo di formulare il denoising come un problema di inferenza bayesiana \parencite{geman1984stochastic}.
+    \item \textbf{Non-Local Means (NLM)} \parencite{buades2005nonlocal}: sfrutta la ridondanza strutturale delle immagini, mediando patch simili non necessariamente vicine nello spazio. Questo approccio ha dimostrato di preservare meglio i dettagli rispetto ai filtri locali \parencite{buades2005nlmeans}.
+    \item \textbf{BM3D (Block Matching 3D)} \parencite{dabov2007bm3d}: raggruppa patch simili in domini tridimensionali ed applica trasformate collaborative, con risultati allo stato dell'arte per lungo tempo \parencite{wang2020_review}.
 \end{itemize}
 
-\subsubsection{Sparse Coding e Dictionary Learning}
-La rappresentazione sparsa ha introdotto un paradigma potente:
-\begin{itemize}
-    \item \textbf{Sparse Coding:} consente di discriminare il segnale dal rumore ricercando rappresentazioni con pochi coefficienti non nulli.
-    \item \textbf{K-SVD:} algoritmo iterativo per apprendere un dizionario ottimale dalle patch di immagine, migliorando la capacità di ricostruzione.
-\end{itemize}
+% \subsubsection{Sparse Coding e Dictionary Learning}
+% La rappresentazione sparsa ha introdotto un paradigma potente:
+% \begin{itemize}
+%     \item \textbf{Sparse Coding:} consente di discriminare il segnale dal rumore ricercando rappresentazioni con pochi coefficienti non nulli, migliorando la qualità del denoising \parencite{FanLinwei2019Broi, wang2020_review}.
+%     \item \textbf{K-SVD:} algoritmo iterativo per apprendere un dizionario ottimale dalle patch di immagine, migliorando la capacità di ricostruzione \parencite{lebrun2012_ksvd, wikipedia_ksvd}.
+% \end{itemize}
 
 \subsubsection{Sparse Coding e Dictionary Learning}
-La rappresentazione sparsa ha introdotto un paradigma potente per il denoising delle immagini, fondato sull’assunzione che le patch possano essere rappresentate come combinazioni lineari di pochi atomi selezionati da un dizionario (over-complete). Il modello standard si esprime attraverso:
+La rappresentazione sparsa ha introdotto un paradigma potente per il denoising delle immagini, fondato sull'assunzione che le patch possano essere rappresentate come combinazioni lineari di pochi atomi selezionati da un dizionario (over-complete). Il modello standard si esprime attraverso:
 
 \[
 \hat{\alpha} = \arg\min_{\alpha} \| y - D\alpha \|_2^2 + \lambda \|\alpha\|_1
@@ -94,14 +132,15 @@ dove $D$ è il dizionario e $\alpha$ il vettore dei coefficienti sparsi \parenci
 \begin{itemize}
     \item \textbf{K-SVD:} algoritmo iterativo che alterna sparse coding e aggiornamento di atomi attraverso SVD, apprendendo un dizionario ottimale per il denoising \parencite{lebrun2012_ksvd, wikipedia_ksvd}.
     \item \textbf{Migliorie recenti:} versioni avanzate come il \emph{K-SVD\_P}, che applica algoritmi primal-dual per migliorare efficacia e velocità con rumore elevato \parencite{xiaok_svdp}.
-    \item \textbf{Approcci basati su rete neurale:} reti come SRNet integrano il framework di sparse coding in reti CNN multiscala, accelerando l’ottimizzazione e migliorando la qualità, soprattutto nei dettagli testurizzati \parencite{sheng2022srnet}.
-    \item \textbf{Sparse coding convoluzionale:} estende il modello a dizionari convoluzionali adatti a strutture locali ripetute; ad oggi è all’origine di architetture on-line più efficienti \parencite{garcia2018convdict, 2022_accv_cscnet}.
-    \item \textbf{Denoising cooperativo distribuito:} proposte come \emph{Cloud K-SVD} permettono l’apprendimento di dizionari condivisi tra nodi, preservando qualità e generalizzazione \parencite{lillelund2022cloudksvd}.
+    \item \textbf{Approcci basati su rete neurale:} reti come SRNet integrano il framework di sparse coding in reti CNN multiscala, accelerando l'ottimizzazione e migliorando la qualità, soprattutto nei dettagli testurizzati \parencite{sheng2022srnet}.
+    \item \textbf{Sparse coding convoluzionale:} estende il modello a dizionari convoluzionali adatti a strutture locali ripetute; ad oggi è all'origine di architetture on-line più efficienti \parencite{garcia2018convdict, 2022_accv_cscnet}.
+    \item \textbf{Denoising cooperativo distribuito:} proposte come \emph{Cloud K-SVD} permettono \\
+    l'apprendimento di dizionari condivisi tra nodi, preservando qualità e generalizzazione \parencite{cloud_ksvd2023}.
 \end{itemize}
 
 
 \subsubsection{Metodi Basati su Apprendimento Automatico}
-L’avvento del machine learning ha rivoluzionato il denoising:
+L'avvento del machine learning ha rivoluzionato il denoising delle immagini:
 \begin{itemize}
     \item \textbf{Reti neurali convoluzionali (CNN):} modelli come DnCNN \parencite{zhang2017dncnn} e FFDNet \parencite{zhang2018ffdnet} hanno mostrato notevoli miglioramenti nella rimozione del rumore.
     \item \textbf{Metodi auto-supervisionati:} Noise2Noise \parencite{lehtinen2018noise2noise} permette di addestrare modelli senza immagini pulite di riferimento.
@@ -112,7 +151,10 @@ Più recentemente, modelli basati su \emph{transformer} hanno ampliato la capaci
 La valutazione dei metodi di denoising si basa su:
 \begin{itemize}
     \item \textbf{PSNR (Peak Signal-to-Noise Ratio)}: misura il rapporto tra segnale massimo ed errore quadratico medio \parencite{hore2010psnr}.
+    Definito come: \[PSNR=20log_{10}(\frac{MAX_f}{\sqrt{MSE}})\] dove $MAX_f$ è il valore massimo del pixel dell'immagine e si calcola come \[MSE=\frac{1}{mn}\sum_{0}^{m-1}\sum_{0}^{n-1}||f(i,j)-g(i,j)||^2  \] mentre $MSE$(\textit{Mean Square Error}) è l'errore quadratico medio tra l'immagine originale e quella rumorosa.
+    
     \item \textbf{SSIM (Structural Similarity Index)}: valuta la similarità strutturale percepita, considerando luminanza, contrasto e struttura \parencite{wang2004ssim}.
+    Calcolato come \[SSIM(x,y) = \frac{(2\mu_x\mu_y + C_1)(2\sigma_{xy} + C_2)}{(\mu_x^2 + \mu_y^2 + C_1)(\sigma_x^2 + \sigma_y^2 + C_2)}\], dove $\mu$ e $\sigma$ sono media e deviazione standard, e $C_1$, $C_2$ sono costanti di stabilizzazione.
 \end{itemize}
 La valutazione qualitativa visiva rimane cruciale in contesti come quello medico o artistico \parencite{buades2005nonlocal, dabov2007bm3d}.
 
@@ -122,9 +164,33 @@ I metodi tradizionali si basano principalmente su filtri spaziali e trasformate 
 
 \subsection{Filtri Spaziali}
 \begin{itemize}
-  \item \textbf{Filtro medio}: sostituisce ogni pixel con la media dei pixel circostanti, semplice ma tende a sfocare i bordi \parencite{gonzalez2018digital}.
-  \item \textbf{Filtro gaussiano}: convoluzione con kernel gaussiano pesato, preserva meglio i bordi \parencite{gonzalez2018digital}.
+    \item \textbf{Filtro medio}: sostituisce ogni pixel con la media dei pixel circostanti, semplice ma tende a sfocare i bordi \parencite{gonzalez2018digital}.
+    \[
+\begin{bmatrix}
+1 & 2 & 3 \\
+4 & \colorbox{yellow}{8} & 6 \\ 
+7 & 5 & 9
+\end{bmatrix} \rightarrow 1+2+3+4+6+7+5+9=37 \rightarrow \frac{37}{8} = 4.625 \~5 \rightarrow
+\begin{bmatrix}
+1 & 2 & 3 \\
+4 & \colorbox{yellow}{5} & 6 \\ 
+7 & 5 & 9
+\end{bmatrix}
+\]
+    \item \textbf{Filtro gaussiano}: convoluzione con kernel gaussiano pesato, preserva meglio i bordi \parencite{gonzalez2018digital}.
+    \begin{figure}[h!]
+        \centering
+        \includegraphics[width=0.4\textwidth]{img/gaussian_filter.jpg}
+        \caption{Diagramma schematico di un kernel per convoluzione con filtro gaussiano. Mostra come i pesi centrali contribuiscono maggiormente al valore del nuovo pixel.}
+        \label{fig:gaussian_kernel}
+    \end{figure}
+\clearpage
   \item \textbf{Filtro mediano}: robusto al rumore impulsivo, efficace soprattutto con rumore sale e pepe \parencite{huang1979median}.
+      \begin{figure}[h!]
+        \centering
+        \includegraphics[width=0.4\textwidth]{img/median_filter.jpg}
+        \caption{Esempio di funzionamento del filtro mediano.}
+    \end{figure}
 \end{itemize}
 
 \subsection{Denoising nel dominio della frequenza}
@@ -133,7 +199,7 @@ Questo approccio è utile in presenza di rumore periodico, ma tende a sacrificar
 
 \paragraph{Limiti principali:}
 \begin{itemize}
-  \item Scarsa adattabilità al contenuto dell’immagine.
+  \item Scarsa adattabilità al contenuto dell'immagine.
   \item Compromesso tra riduzione del rumore e perdita di dettaglio.
   \item Prestazioni limitate su rumore non uniforme o strutturato.
 \end{itemize}
@@ -141,16 +207,16 @@ Questo approccio è utile in presenza di rumore periodico, ma tende a sacrificar
 
 \section{Innovazione}
 \label{sec:innovazione_denoising}
-Negli ultimi anni, l’intelligenza artificiale ha rivoluzionato il denoising delle immagini. 
-L’integrazione di reti profonde e metodi auto-supervisionati ha permesso di superare le limitazioni dei metodi tradizionali, ottenendo prestazioni superiori su dataset standard come BSD500 \parencite{MartinFTM01}, MIT-Adobe FiveK \parencite{fivek}, SIDD \parencite{Abdelhamed_2019_CVPR_Workshops}, DIV2K \parencite{Ignatov_2018_ECCV_Workshops} e RENOIR \parencite{anaya2014renoir}.
+Negli ultimi anni, l'intelligenza artificiale ha rivoluzionato il denoising delle immagini. 
+L'integrazione di reti profonde e metodi auto-supervisionati ha permesso di superare le limitazioni dei metodi tradizionali, ottenendo prestazioni superiori su dataset standard come BSD500 \parencite{MartinFTM01}, MIT-Adobe FiveK \parencite{5995413}, SIDD \parencite{Abdelhamed_2019_CVPR_Workshops}, DIV2K \parencite{Ignatov_2018_ECCV_Workshops} e RENOIR \parencite{anaya2014renoir}.
 
 \subsection{Reti Convoluzionali (CNN)}
 
-Le CNN sono state tra le prime architetture a essere impiegate per il denoising. DnCNN \parencite{zhang2017dncnn} è un esempio di successo, che ha introdotto il concetto di residual learning, permettendo alla rete di concentrare l’attenzione sulle componenti rumorose.
+Le CNN sono state tra le prime architetture a essere impiegate per il denoising. DnCNN \parencite{zhang2017dncnn} è un esempio di successo, che ha introdotto il concetto di residual learning, permettendo alla rete di concentrare l'attenzione sulle componenti rumorose.
 
 \subsection{Reti flessibili e adattive}
 
-Modelli come FFDNet \parencite{zhang2018ffdnet} hanno introdotto la possibilità di gestire livelli variabili di rumore in input, migliorando l’efficienza e la generalizzazione. Altri modelli hanno iniziato a incorporare meccanismi di attenzione per focalizzarsi selettivamente sulle aree più degradate.
+Modelli come FFDNet \parencite{zhang2018ffdnet} hanno introdotto la possibilità di gestire livelli variabili di rumore in input, migliorando l'efficienza e la generalizzazione. Altri modelli hanno iniziato a incorporare meccanismi di attenzione per focalizzarsi selettivamente sulle aree più degradate.
 
 \subsection{Apprendimento auto-supervisionato}
 
@@ -158,7 +224,7 @@ L'approccio \textit{Noise2Noise} \parencite{lehtinen2018noise2noise} ha dimostra
 
 \subsection{Prospettive future}
 
-L’introduzione di modelli basati su Transformer e reti neurali generative (GAN) promette di migliorare ulteriormente la qualità del denoising, specialmente in scenari complessi, come immagini mediche, notturne o compresse.
+L'introduzione di modelli basati su Transformer e reti neurali generative (GAN) promette di migliorare ulteriormente la qualità del denoising, specialmente in scenari complessi, come immagini mediche, notturne o compresse.
 
 \TODOComment{
 innovazione denoising img con ia
@@ -171,474 +237,308 @@ La letteratura sul denoising delle immagini è estremamente ricca e articolata. 
 
 \subsection{Approcci basati su patch}
 
-Metodi come \textbf{Non-Local Means} (NLM) \parencite{buades2005nonlocal} e \textbf{BM3D} \parencite{dabov2007bm3d} si basano sul concetto di similitudine tra porzioni (patch) di immagine. Questi algoritmi ricercano blocchi simili all'interno dell'immagine per effettuare una media ponderata più efficace. BM3D, in particolare, è considerato uno dei migliori metodi non-appresi tuttora in uso.
+Metodi come \textbf{Non-Local Means} (NLM) \parencite{buades2005nonlocal} e \textbf{BM3D} \parencite{dabov2007bm3d} si basano sul concetto di similitudine tra porzioni (patch) di immagine. Questi algoritmi ricercano blocchi simili all'interno dell'immagine per effettuare una media ponderata più efficace. BM3D, in particolare, è considerato uno dei migliori metodi non-apprendenti ed è tuttora in uso.
 
 \subsection{Metodi basati su sparse coding}
 
 Questi approcci modellano ogni patch come una combinazione sparsa di elementi di un dizionario. Algoritmi come K-SVD \parencite{aharon2006ksvd, wang2020_review, cloud_ksvd2023} apprendono un dizionario adattivo dai dati per una rappresentazione più efficiente. Sebbene più costosi computazionalmente, offrono buoni risultati su immagini naturali e sono particolarmente efficaci nel preservare dettagli locali rispetto ai filtri classici.
 
-La rappresentazione sparsa ha rappresentato un passo fondamentale nell’evoluzione dei metodi di denoising, introducendo concetti di apprendimento adattivo e modellazione statistica dei dati, aprendo la strada ai successivi approcci basati su reti neurali.
+La rappresentazione sparsa ha rappresentato un passo fondamentale nell'evoluzione dei metodi di denoising, introducendo concetti di apprendimento adattivo e modellazione statistica dei dati, aprendo la strada ai successivi approcci basati su reti neurali.
 
 \subsection{Tecniche deep learning}
 
-Dalla metà degli anni 2010, l’adozione di modelli convoluzionali ha permesso un salto di qualità significativo. Reti come DnCNN \parencite{zhang2017dncnn} e FFDNet \parencite{zhang2018ffdnet} hanno dimostrato come reti profonde possano apprendere direttamente la mappatura da immagini rumorose a pulite. Approcci auto-supervisionati come Noise2Noise \parencite{lehtinen2018noise2noise} hanno reso possibile l’addestramento senza immagini pulite di riferimento.  
+Dalla metà degli anni 2010, l'adozione di modelli convoluzionali ha permesso un salto di qualità significativo. Reti come DnCNN \parencite{zhang2017dncnn} e FFDNet \parencite{zhang2018ffdnet} hanno dimostrato come reti profonde possano apprendere direttamente la mappatura da immagini rumorose a pulite. Approcci auto-supervisionati come Noise2Noise \parencite{lehtinen2018noise2noise} hanno reso possibile l'addestramento senza immagini pulite di riferimento.  
 
-Modelli più recenti basati su U-Net, GAN e transformer \parencite{9010324} hanno ulteriormente migliorato la capacità di generalizzazione a diversi tipi di rumore e scenari complessi. L’evoluzione dal denoising classico a modelli di deep learning mostra come l’integrazione di apprendimento adattivo e capacità di modellare relazioni non locali abbia trasformato il campo.
-%\newpage
+Modelli più recenti basati su U-Net, GAN e transformer \parencite{9010324} hanno ulteriormente migliorato la capacità di generalizzazione a diversi tipi di rumore e scenari complessi. L'evoluzione dal denoising classico a modelli di deep learning mostra come l'integrazione di apprendimento adattivo e capacità di modellare relazioni non locali abbia trasformato il campo.
+
 \section{Riflessione sulla letteratura}
 
 Nonostante i risultati eccellenti dei modelli deep learning, permangono sfide aperte:
 
 \begin{itemize}
-    \item L’adattamento a rumori complessi o misti che non corrispondono ai modelli sintetici utilizzati in fase di training \parencite{wang2020_review, pmc2020_review}.
-    \item L’addestramento in assenza di dati puliti o con dataset limitati.
-    \item L’applicazione in tempo reale per video e flussi di immagini, dove la complessità computazionale dei modelli può essere un limite.
-    \item L’integrazione di metodi di denoising con altri task di miglioramento delle immagini, come super-risoluzione o deblurring, rappresenta una direzione promettente.
+    \item L'adattamento a rumori complessi o misti che non corrispondono ai modelli sintetici utilizzati in fase di training \parencite{wang2020_review, wang2020_review}.
+    \item L'addestramento in assenza di dati puliti o con dataset limitati.
+    \item L'applicazione in tempo reale per video e flussi di immagini, dove la complessità computazionale dei modelli può essere un limite.
+    \item L'integrazione di metodi di denoising con altri task di miglioramento delle immagini, come super-risoluzione o deblurring, rappresenta una direzione promettente.
 \end{itemize}
 
-L’analisi della letteratura evidenzia come il denoising delle immagini abbia conosciuto un’evoluzione significativa: dai filtri spaziali e trasformate classiche ai complessi modelli neurali. Ogni approccio presenta vantaggi e limiti specifici, e le ricerche più recenti tendono a combinare metodi classici e deep learning, oppure ad incorporare conoscenza specifica del dominio, per ottenere soluzioni più robuste e generalizzabili.
-
+L'analisi della letteratura evidenzia come il denoising delle immagini abbia conosciuto un'evoluzione significativa: dai filtri spaziali e trasformate classiche ai complessi modelli neurali. Ogni approccio presenta vantaggi e limiti specifici, e le ricerche più recenti tendono a combinare metodi classici e deep learning, oppure ad incorporare conoscenza specifica del dominio, per ottenere soluzioni più robuste e generalizzabili.
 
 \chapter{Reti neurali analizzate}
-In questo capitolo vengono descritte le principali architetture di reti neurali utilizzate per il problema della rimozione del rumore dalle immagini (\textit{image denoising}).  
-La scelta delle reti è stata effettuata in base alla loro diffusione nella letteratura scientifica, alla semplicità di implementazione e alla capacità di rappresentare approcci diversi allo stesso problema.\\\\
-Le tre architetture analizzate sono:
+In questo capitolo vengono descritte le principali architetture di reti neurali utilizzate per il problema della rimozione del rumore dalle immagini (\textit{image denoising}).\\
+La scelta delle reti è stata effettuata in base alla loro diffusione nella letteratura scientifica, alla semplicità di implementazione e alla capacità di rappresentare approcci diversi allo stesso problema.  
+
+Negli ultimi decenni sono stati proposti sia metodi tradizionali di denoising, come il \textit{Non-Local Means} \parencite{buades2005nonlocal,buades2005nlmeans} e il celebre algoritmo BM3D \parencite{dabov2007bm3d}, sia approcci di tipo \textit{learning-based}, che hanno rapidamente superato i limiti delle tecniche classiche.  \\
+In particolare, le reti convoluzionali hanno introdotto una vera e propria rivoluzione, garantendo migliori prestazioni sia su rumori sintetici che su scenari più realistici \parencite{zhang2017dncnn,zhang2018ffdnet,lehtinen2018noise2noise,batson2019noise2self}.
+
+Le tre architetture analizzate in questa tesi sono:
 \begin{itemize}
     \item \textbf{RIDNet} – una rete moderna e avanzata, specificamente progettata per il denoising di immagini reali;
-    \item \textbf{DnCNN} – un modello pionieristico che ha introdotto l’idea del denoising come stima del residuo;
-    \item \textbf{Autoencoder} – un’architettura generica, versatile e adattabile a diversi scenari di apprendimento non supervisionato.
+    \item \textbf{DnCNN} – un modello pionieristico che ha introdotto l'idea del denoising come stima del residuo;
+    \item \textbf{Autoencoder} – un'architettura generica, versatile e adattabile a diversi scenari di apprendimento non supervisionato.
 \end{itemize}
 
 \section{RIDNet}
-La \textbf{Residual Image Denoising Network} (RIDNet) rappresenta uno dei modelli più moderni per la riduzione del rumore in immagini naturali.  
-Il suo principale punto di forza è la capacità di gestire rumori reali, come quelli provenienti dai sensori fotografici digitali, che non seguono distribuzioni statistiche ideali.  
-L’architettura è basata su \textit{blocchi residui} e meccanismi di attenzione che consentono di bilanciare in maniera ottimale la riduzione del rumore e la preservazione dei dettagli fini. 
-\\\\
+La \textbf{Residual Image Denoising Network} (RIDNet) rappresenta uno dei modelli più moderni e robusti per la riduzione del rumore in immagini naturali \parencite{Abdelhamed_2019_CVPR_Workshops}.  \\
+Il suo principale punto di forza è la capacità di gestire rumori \textbf{reali}, come quelli provenienti dai sensori fotografici digitali, che non seguono distribuzioni statistiche ideali come il rumore gaussiano additivo \parencite{janesick2007,foi2008,makitalo2013}.  \\\\
+L'architettura è basata su \textit{blocchi residui} e meccanismi di attenzione che consentono di bilanciare in maniera ottimale la riduzione del rumore e la preservazione dei dettagli fini.  
 In particolare:
 \begin{itemize}
-    \item l’uso di \textbf{connessioni residue} facilita il flusso dell’informazione, riducendo la perdita di dettaglio e migliorando la stabilità dell’addestramento;
-    \item l’integrazione di \textbf{attenzione spaziale e di canale} consente di focalizzare l’elaborazione sulle regioni e sulle caratteristiche più rilevanti per il denoising;
+    \item l'uso di \textbf{connessioni residue} facilita il flusso dell'informazione, riducendo la perdita di dettaglio e migliorando la stabilità dell'addestramento, sulla scia delle reti ResNet \parencite{he2016deep};
+    \item l'integrazione di \textbf{attenzione spaziale e di canale} permette di focalizzare l'elaborazione sulle regioni e caratteristiche più rilevanti per il denoising, riducendo al minimo la rimozione di dettagli utili \parencite{hu2018squeeze};
     \item la progettazione modulare rende RIDNet scalabile e adattabile a immagini di diversa risoluzione e qualità.
 \end{itemize}
-Grazie a queste caratteristiche, RIDNet è considerata uno standard di riferimento per il denoising in scenari realistici, superando molti dei limiti dei metodi classici basati su rumori sintetici.
-\subsection{Implementazione RIDNet}
-In questa sezione viene riportata l'implementazione della rete \textbf{RIDNet} in \texttt{Keras/TensorFlow} presa dal caso di studio \textbf{Real Image Denoising with Feature Attention} \parencite{9010324}
-%[language=Python, caption={}, label={lst:}]
-\subsubsection{Blocchi di base}
-\begin{lstlisting}[language=Python, caption={Implementazione del blocco di base BasicBlock}, label={lst:basicblock}]
-@register_keras_serializable("BasicBlock")
-def BasicBlock(x, out_channels, ksize=3, stride=1, pad='same'):
-    x = Conv2D(out_channels, ksize, strides=stride, padding=pad)(x)
-    x = ReLU()(x)
-    return x
-\end{lstlisting}
-Questo blocco esegue due operazioni fondamentali:  
-\begin{enumerate}
-    \item Una \textbf{convoluzione}, cioè un’operazione che “legge” l’immagine con un filtro (o kernel) e produce nuove mappe di caratteristiche (\textit{feature maps}). Queste mappe contengono informazioni sui bordi, sui contorni e su pattern locali.  
-    \item Una funzione di attivazione \textbf{ReLU}, che sostituisce i valori negativi con zero e mantiene i positivi invariati. Questo passaggio rende la rete capace di apprendere relazioni non lineari, fondamentali per rappresentare dettagli complessi dell’immagine.  
-\end{enumerate}
-In altre parole, il \texttt{BasicBlock} prende un’immagine o una mappa di caratteristiche e ne produce una nuova versione, mettendo in evidenza strutture locali utili per distinguere rumore da dettaglio.
 
-\begin{lstlisting}[language=Python, caption={Implementazione del blocco di base con sigmoide BasicBlockSig}, label={lst:basicblocksig}]
-@register_keras_serializable("BasicBlockSig")
-def BasicBlockSig(x, out_channels, ksize=3, stride=1, pad='same'):
-    x = Conv2D(out_channels, ksize, strides=stride, padding=pad)(x)
-    x = tf.keras.activations.sigmoid(x)
-    return x
-\end{lstlisting}
-La differenza con il blocco precedente è che al posto della \texttt{ReLU} utilizza una \textbf{sigmoide}.\\
-La sigmoide restituisce valori compresi tra 0 e 1, ed è molto utile quando vogliamo “pesare” le informazioni: un valore vicino a 1 indica che una certa caratteristica è molto importante, mentre un valore vicino a 0 indica che può essere trascurata.\\  
-Questo blocco viene usato nei moduli di attenzione.
-\newpage
-\subsubsection{Blocchi avanzati}
-\begin{lstlisting}[language=Python, caption={Blocco Merge\_Run\_dual per l'estrazione multiscala}, label={lst:merge_run_dual}]
-@register_keras_serializable("Merge_Run_dual")
-def Merge_Run_dual(x, in_channels, out_channels):
-    b1 = Conv2D(out_channels, 3, padding='same')(x)
-    b1 = ReLU()(b1)
-    b1 = Conv2D(out_channels, 3, padding='same', dilation_rate=2)(x)
-    b1 = ReLU()(b1)
-    b2 = Conv2D(out_channels, 3, padding='same', dilation_rate=3)(x)
-    b2 = ReLU()(b2)
-    b2 = Conv2D(out_channels, 3, padding='same', dilation_rate=4)(x)
-    b2 = ReLU()(b2)
-    c = Concatenate(axis=-1)([b1, b2])
-    out = Conv2D(out_channels, 3, padding='same')(c)
-    out = ReLU()(out)
-    return Add()([out, x])
-\end{lstlisting}
-\begin{itemize}
-    \item L’input viene analizzato con convoluzioni che hanno diversi \textbf{tassi di dilatazione}.\\
-    La dilatazione permette al filtro di “saltare” dei pixel, e quindi di catturare informazioni non solo dai pixel vicini, ma anche da quelli più lontani. In questo modo, il modello riesce a vedere sia dettagli fini sia strutture più ampie.  
-    \item I risultati vengono \textbf{concatenati}, cioè messi uno accanto all’altro, e passati a un’altra convoluzione che li mescola.  
-    \item Infine, si aggiunge l’output all’input originale (\textbf{connessione residua}), in modo da non perdere informazioni.  
-\end{itemize}
-Questo blocco serve a dare al modello la capacità di comprendere l’immagine a più “scale” contemporaneamente.
-\begin{lstlisting}[language=Python, caption={Blocco ResidualBlock con connessione residua}, label={lst:residualblock}]
-@register_keras_serializable("ResidualBlock")
-def ResidualBlock(x, out_channels):
-    res = Conv2D(out_channels, 3, padding='same')(x)
-    res = ReLU()(res)
-    res = Conv2D(out_channels, 3, padding='same')(res)
-    return ReLU()(Add()([res, x]))
-\end{lstlisting}
-Questo è un classico \textbf{blocco residuo}, introdotto con le ResNet(Reti Neurali Residuali).\\  
-L’idea è che invece di trasformare completamente l’input, la rete impara a calcolare solo la “correzione” necessaria (residuo). Questo rende l’apprendimento più stabile e veloce.\\
-Il risultato è la somma tra input originale e la trasformazione appresa.
-\newpage
-\begin{lstlisting}[language=Python, caption={Blocco EResidualBlock con convoluzioni a gruppi}, label={lst:eresidualblock}]
-@register_keras_serializable("EResidualBlock")
-def EResidualBlock(x, out_channels, group=1):
-    res = Conv2D(out_channels, 3, padding='same', groups=group)(x)
-    res = ReLU()(res)
-    res = Conv2D(out_channels, 3, padding='same', groups=group)(res)
-    res = ReLU()(res)
-    res = Conv2D(out_channels, 1, padding='valid')(res)
-    return ReLU()(Add()([res, x]))
-\end{lstlisting}
-Variante più profonda del blocco residuo. Qui vengono usate le \textbf{convoluzioni a gruppi}, che dividono i canali in sottoinsiemi elaborati separatamente: in questo modo il modello può specializzarsi su diversi tipi di caratteristiche senza aumentare troppo i calcoli.\\
-Alla fine una convoluzione 1x1(\texttt{Conv2D(out\_channels, 1, [...]}) ricompone i canali.
+Grazie a queste caratteristiche, RIDNet è considerata uno standard di riferimento per il denoising in scenari realistici, superando molti dei limiti dei metodi classici basati su rumori sintetici \parencite{dabov2007bm3d,buades2005nonlocal}.
 
-\subsubsection{Layer di supporto}
-\begin{lstlisting}[language=Python, caption={Layer MeanShift per normalizzazione dei valori dei pixel}, label={lst:meanshift}]
-@register_keras_serializable("MeanShift")
-def MeanShift(rgb_range, rgb_mean, rgb_std, sign=-1):
-    @register_keras_serializable("shift")
-    def shift(x):
-        rgb_mean_tensor = tf.constant(rgb_mean, dtype=tf.float32)
-        rgb_std_tensor = tf.constant(rgb_std, dtype=tf.float32)
-        return (x + sign * rgb_range * rgb_mean_tensor) / rgb_std_tensor
-    shift_layer = Lambda(shift)
-    shift_layer.shift_fn = shift
-    return shift_layer
-\end{lstlisting}
-
-Serve a \textbf{normalizzare} i valori dei pixel. Le immagini hanno tipicamente valori compresi tra 0 e 255, ma è più facile per la rete lavorare su dati con media zero e varianza unitaria.\\ 
-Questo strato sposta (\texttt{shift(x)}) e ridimensiona i valori dei pixel in base alla media e deviazione standard di ciascun canale RGB.
-\newpage
-\begin{lstlisting}[language=Python, caption={Layer di attenzione sui canali (CALayer)}, label={lst:calayer}]
-@register_keras_serializable("CALayer")
-def CALayer(x, channel, reduction=16):
-    y = GlobalAveragePooling2D()(x)
-    y = Reshape((1, 1, channel))(y)
-    y = BasicBlock(y, channel // reduction, ksize=1, pad='valid')
-    y = BasicBlockSig(y, channel, ksize=1, pad='valid')
-    return Multiply()([x, y])
-\end{lstlisting}
-È un \textbf{layer di attenzione sui canali}.  
-Funziona così:  
-\begin{enumerate}
-    \item Fa una media globale per ogni canale (es. canale rosso, verde, blu), in modo da capire quanto ciascun canale contribuisce all’immagine(\texttt{GlobalAveragePooling2D}).
-    \item Passa questi valori attraverso piccole reti (convoluzioni 1x1 + sigmoide) per ottenere dei pesi tra 0 e 1.
-    \item Moltiplica questi pesi ai canali originali: accendendo i canali più utili e spegnendo quelli meno importanti(\texttt{Multiply()([x, y])}).
-\end{enumerate}
-\subsubsection{Blocco completo}
-Alla fine i layer \texttt{Merge\_Run\_Dual}(\ref{lst:merge_run_dual}), \texttt{ResidualBlock}(\ref{lst:residualblock}), \texttt{EResidualBlock}(\ref{lst:eresidualblock}) e \texttt{CALayer}(\ref{lst:calayer}) sono riuniti a formare l'unità base della rete
-
-\begin{lstlisting}[language=Python, caption={Blocco completo che unisce moduli multiscala, residui e attenzione}, label={lst:block}]
-@register_keras_serializable("Block")
-def Block(x, in_channels, out_channels):
-    x = Merge_Run_dual(x, in_channels, out_channels)
-    x = ResidualBlock(x, out_channels)
-    x = EResidualBlock(x, out_channels)
-    x = CALayer(x, out_channels)
-    return x
-\end{lstlisting}
-\newpage
-\subsubsection{Architettura RIDNet}
-Qui di seguito viene mostrata la costruzione completa della rete \textbf{RIDNet}, che combina tutti i blocchi e layer precedentemente definiti.
-\begin{lstlisting}[language=Python, caption={Costruzione dell'architettura completa RIDNet}, label={lst:build_ridnet}]
-@register_keras_serializable("build_RIDNET")
-def build_RIDNET(input_shape, n_feats, reduction, rgb_range=1.0):
-    rgb_mean = (0.4488, 0.4371, 0.4040)
-    rgb_std = (1.0, 1.0, 1.0)
-    inputs = Input(shape=input_shape)
-    x = MeanShift(rgb_range, rgb_mean, rgb_std, sign=-1)(inputs)
-\end{lstlisting}
-
-In questa prima parte viene definita la funzione \texttt{build\_RIDNET}, che costruisce il modello.
-\begin{itemize}
-    \item[-] L’input è un’immagine con una forma specificata da \texttt{input\_shape}.
-    \item[-] Prima di elaborarla, viene applicato un \texttt{MeanShift}, che normalizza i valori dei pixel in base alla media e alla deviazione standard dei canali RGB.
-\end{itemize}
-Questo passaggio serve a semplificare l’apprendimento della rete.
-
-\begin{lstlisting}[language=Python, caption={Corpo della ridnet}, label={lst:ridnet_block}]
-    x = BasicBlock(x, n_feats)
-    b1 = Block(x, n_feats, n_feats)
-    b2 = Block(b1, n_feats, n_feats)
-    b3 = Block(b2, n_feats, n_feats)
-    b4 = Block(b3, n_feats, n_feats)
-\end{lstlisting}
-Nella parte centrale:
-\begin{itemize}
-    \item[-] Viene applicato un primo \texttt{BasicBlock}\ref{lst:basicblock}, che funziona come livello iniziale di estrazione delle caratteristiche.
-    \item[-] Successivamente, l’immagine passa attraverso una serie di \texttt{Block}\ref{lst:block}, ognuno composto da più sottostrutture (convoluzioni multiscala, blocchi residui e meccanismi di attenzione sui canali).
-    \item[-] I blocchi sono concatenati (\texttt{b1}, \texttt{b2}, \texttt{b3}, \texttt{b4}), così che la rete possa catturare informazioni via via più complesse e dettagliate.
-La struttura dell'eperimento citato \parencite{9010324} usa solo quattro blocchi
-\end{itemize}
-\begin{lstlisting}[language=Python, caption={Ultimo blocco della rete}, label={lst:last_ridnet}]
-    res = Conv2D(3, 3, padding='same')(b4)
-\end{lstlisting}
-Dopo l’ultimo blocco, si applica una convoluzione finale con \texttt{3} filtri, corrispondenti ai tre canali RGB.\\
-Il risultato è un’immagine “ricostruita” che rappresenta una prima versione denoised dell’input.
-\begin{lstlisting}[language=Python, caption={Pezzo finale della rete}, label={lst:}]
-    out = MeanShift(rgb_range, rgb_mean, rgb_std, sign=1)(res)
-    out = Add()([out, inputs])
-    model = Model(inputs=inputs, outputs=out)
-    return model
-\end{lstlisting}
-
-Infine:  
-\begin{itemize}
-    \item[-] Si applica nuovamente un \texttt{MeanShift}, questa volta con \texttt{sign=1}, per riportare i valori dei pixel alla scala originale.
-    \item[-] Viene effettuata una somma residua (\texttt{Add}) tra l’output elaborato e l’immagine di input: questo permette alla rete di concentrarsi sulla rimozione del rumore, mantenendo però i dettagli originali.
-    \item[-] Il modello finale viene costruito e restituito.
-\end{itemize}
-In questo modo, la \textbf{RIDNet} sfrutta il concetto di connessioni residue e blocchi multiscala per ridurre il rumore dalle immagini mantenendo il più possibile la loro qualità visiva.\\
-
-\begin{lstlisting}[language=Python, caption={Costruzione della RIDNet}, label={lst:ridnet_build_2}]
-model = build_RIDNET(input_shape=(None, None, 3), n_feats=64, reduction=16)
-\end{lstlisting}
-Dunque la rete vien così inizializzata, seguendo in parte l'esperimento di partenza utilizzando lo shape delle immagini di input come \texttt{None} per poter analizzare qualsiasi tipo di risoluzione ma lasciando \texttt{3} per specificare immagini a colori, 64 features map(filtri convoluzionali interni) e la reduction a 16 che serve nei blocchi di attenzione per comprimere temporaneamente le informazioni e poi espanderle, riducendo il costo computazionale.
-\begin{lstlisting}[language=Python, caption={Compilazione del modello}, label={lst:ridnet_compile}]
-model.compile(optimizer=tf.keras.optimizers.Adam(1e-04), loss="mse", metrics=["accuracy"])
-\end{lstlisting}
-Viene compilata con:
-\begin{itemize}
-    \item[-] Come ottimizzatore Adam con tasso di apprendimento 1$e^{-4}$ utilizzato per aggiornare i pesi della rete in maniera stabile ed efficace.
-    \item[-] Come funzione di errore la scelta è Mean Squared Error (MSE), cioè l’errore quadratico medio, tipico nei problemi di denoising e ricostruzione di immagini.
-    \item[-] infine viene aggiunta l'accuratezza del modello nelle metriche di valutazione per poter monitorare l'andamento del modello e poterne fare grafici
-\end{itemize}
-\newpage
 \section{DnCNN}
-La \textbf{Denoising Convolutional Neural Network} (DnCNN) è una rete convoluzionale profonda introdotta per la prima volta come architettura dedicata al denoising.  
-La sua importanza è legata all’idea innovativa di formulare il problema non come una mappatura diretta tra immagine rumorosa e immagine pulita, ma come la stima del \textbf{residuo} (ossia il rumore stesso).  
+La \textbf{Denoising Convolutional Neural Network} (DnCNN) è stata introdotta da \cite{zhang2017dncnn} come una delle prime reti profonde dedicate al denoising di immagini corrotte da rumore gaussiano additivo.  
+La sua innovazione principale è quella di formulare il problema non come una mappatura diretta tra immagine rumorosa e immagine pulita, ma come la stima del \textbf{residuo} (ossia il rumore stesso).  
 
-Il funzionamento di DnCNN può essere riassunto in tre fasi principali:
+Il funzionamento di DnCNN può essere riassunto in tre fasi:
 \begin{enumerate}
-    \item riceve in input un’immagine rumorosa;
-    \item apprende a predire la componente di rumore associata a quell’immagine;
-    \item sottrae il rumore stimato dall’immagine originale, ottenendo un risultato denoised.
+    \item riceve in input un'immagine rumorosa;
+    \item apprende a predire la componente di rumore associata a quell'immagine;
+    \item sottrae il rumore stimato dall'immagine originale, ottenendo un risultato denoised.
 \end{enumerate}
 
-L’architettura utilizza più strati convoluzionali seguiti da \textit{batch normalization} e funzioni di attivazione ReLU, che permettono di estrarre rappresentazioni sempre più complesse.  
-Uno dei vantaggi di DnCNN è la sua capacità di generalizzare a diversi livelli di rumore, senza dover essere riaddestrata per ogni condizione.  
+L'architettura utilizza più strati convoluzionali seguiti da \textit{batch normalization} e funzioni di attivazione ReLU, che permettono di estrarre rappresentazioni sempre più complesse.  
+Un aspetto chiave è la capacità di generalizzare a diversi livelli di rumore, senza dover essere riaddestrata per ogni condizione.  
 
-Per questi motivi, DnCNN viene spesso considerata un punto di riferimento sperimentale e un’architettura di base su cui sviluppare metodi più sofisticati.
+Per queste ragioni, DnCNN è ampiamente utilizzata come \textbf{baseline sperimentale} in numerosi studi successivi \parencite{zhang2018ffdnet,lehtinen2018noise2noise,batson2019noise2self}, e ha posto le basi per una nuova generazione di metodi di denoising basati su reti neurali profonde.
 
-\subsection{Implementazione DnCNN}
-Qui di seguito l'implementazione iniziale della rete seguendo l'esperimento \textbf{Beyond a Gaussian Denoiser: Residual Learning of Deep CNN for Image Denoising} \parencite{zhang2017dncnn}
-
-\subsubsection{Definizione della funzione principale}
-\begin{lstlisting}[language=Python, caption={Definizione della funzione build\_DnCNN}, label={lst:dncnn_def}]
-def build_DnCNN(input_shape):
-    input = Input(input_shape, name = 'input')
-\end{lstlisting}
-\paragraph{Definizione della funzione}
-Qui viene definita la funzione \texttt{build\_DnCNN}, che riceve come parametro la dimensione dell’immagine in ingresso (\texttt{input\_shape}). Viene quindi creato il \textit{layer di input}, ossia il punto da cui i dati entreranno nella rete.
-\subsubsection{Primo strato convoluzionale}
-\begin{lstlisting}[language=Python, caption={Primo strato convoluzionale}, label={lst:dncnn_first_layer}]
-    x = Conv2D(64, kernel_size = (3,3), padding = 'same', name = 'conv2d_l1')(input)
-    x = Activation('relu', name = 'act_l1')(x)
-\end{lstlisting}
-\paragraph{Primo strato}
-Viene applicata una convoluzione con 64 filtri $3\times3$ con padding \texttt{same}, seguita da una funzione di attivazione \texttt{ReLU}.  
-Questo consente alla rete di estrarre le prime caratteristiche di basso livello dall’immagine di input.
-\newpage
-\subsubsection{Blocchi ripetuti}
-\begin{lstlisting}[language=Python, caption={Ciclo con blocchi ripetuti}, label={lst:dncnn_loop}]
-    for i in range(17):
-        x = Conv2D(64, kernel_size = (3,3), padding = 'same', name = 'conv2d_' + str(i))(x)
-        x = BatchNormalization(axis = -1, name = 'BN_' + str(i))(x)
-        x = Activation('relu', name = 'act_' + str(i))(x)
-\end{lstlisting}
-\paragraph{Blocchi intermedi}
-La rete esegue un ciclo di 17 blocchi identici, ognuno composto da: 
-\begin{itemize}
-    \item[-] una convoluzione con 64 filtri
-    \item[-] una normalizzazione batch (\texttt{BatchNormalization}) per stabilizzare e velocizzare l’allenamento
-    \item[-] una funzione di attivazione \texttt{ReLU} per introdurre non-linearità
-\end{itemize}
-Questi blocchi permettono di catturare informazioni più profonde e complesse, rendendo la rete capace di modellare il rumore presente nell’immagine.
-\subsubsection{Strato finale e sottrazione residua}
-\begin{lstlisting}[language=Python, caption={Strato finale e output}, label={lst:dncnn_output}]
-    x = Conv2D(3, kernel_size = (3,3), padding = 'same', name = 'conv2d_l3')(x)
-    x = Subtract(name = 'subtract')([input, x])
-    return Model(input, x)
-\end{lstlisting}
-Alla fine, un ultimo strato convoluzionale riduce i canali di uscita a 3 (uno per ogni canale RGB).  
-Successivamente, viene eseguita una sottrazione tra l’immagine di input e il risultato della convoluzione. \\
-Questa operazione implementa il concetto di \textbf{residual learning}: la rete impara a stimare il rumore presente nell’immagine, che viene poi sottratto per ottenere un’immagine pulita. \\
-\newpage
 \section{Autoencoder}
-Gli \textbf{autoencoder} costituiscono un’architettura più generica, non progettata specificamente per il denoising ma ampiamente utilizzata a tale scopo grazie alla loro natura di rete compressiva e ricostruttiva.  
+Gli \textbf{autoencoder} rappresentano un'architettura più generica, non progettata specificamente per il denoising, ma ampiamente utilizzata a tale scopo grazie alla loro capacità di apprendere rappresentazioni compatte dei dati \parencite{goodfellow2016deep}.  
 Un autoencoder è composto da due blocchi principali:
 \begin{itemize}
-    \item un \textbf{encoder}, che riduce progressivamente la dimensione dell’immagine di input, comprimendola in uno spazio latente a bassa dimensionalità;
-    \item un \textbf{decoder}, che tenta di ricostruire l’immagine originale a partire dalla rappresentazione latente.
+    \item un \textbf{encoder}, che riduce progressivamente la dimensione dell'immagine di input, comprimendola in uno spazio latente a bassa dimensionalità;
+    \item un \textbf{decoder}, che tenta di ricostruire l'immagine originale a partire dalla rappresentazione latente.
 \end{itemize}
 
-Nel contesto del denoising, l’autoencoder sfrutta il fatto che il processo di compressione tende a eliminare le variazioni casuali non rilevanti (come il rumore), mentre il decoder è addestrato a ricostruire le strutture coerenti dell’immagine.  
-In questo modo, l’output risulta spesso più regolare e meno rumoroso rispetto all’input.  
+Nel contesto del denoising, l'autoencoder sfrutta il fatto che il processo di compressione tende a eliminare le variazioni casuali non rilevanti (come il rumore), mentre il decoder è addestrato a ricostruire le strutture coerenti dell'immagine \parencite{vincent2008dae}.  
 
-Esistono due principali approcci all’uso degli autoencoder per il denoising:
+Esistono due principali approcci:
 \begin{enumerate}
-    \item \textbf{Denoising Autoencoder (DAE)} – addestrati esplicitamente fornendo in input immagini rumorose e in output le corrispondenti immagini pulite;
-    \item \textbf{Variational Autoencoder (VAE)} – che sfruttano una formulazione probabilistica per modellare la distribuzione delle immagini, con la possibilità di generare nuove istanze coerenti e prive di rumore.
+    \item \textbf{Denoising Autoencoder (DAE)} – addestrati esplicitamente fornendo in input immagini rumorose e in output le corrispondenti immagini pulite \parencite{vincent2008dae};
+    \item \textbf{Variational Autoencoder (VAE)} – che sfruttano una formulazione probabilistica per modellare la distribuzione delle immagini \parencite{kingma2013vae}, con la possibilità di generare nuove istanze coerenti e prive di rumore.
 \end{enumerate}
-
-Sebbene le prestazioni di base degli autoencoder siano inferiori rispetto a modelli più specializzati come RIDNet o DnCNN, essi rappresentano un approccio estremamente flessibile e didatticamente utile, oltre a costituire la base di architetture moderne più complesse (ad esempio le GAN e le reti transformer-based per il denoising).
-
-\subsection{Implementazione Autoencoder}
-
-\subsubsection{Definizione e primo livello convoluzionale e pooling}
-\begin{lstlisting}[language=Python, caption={Definizione e primo livello convoluzionale}, label={lst:autoencoder_1}]
-def build_autoencoder(input_shape):
-    input = Input(input_shape, name = 'Input')
-    x = Conv2D(64, kernel_size = (3,3), kernel_initializer = 'he_normal',
-               activation = 'relu', padding = 'same', name = 'Conv2d_1')(input)
-    x = MaxPool2D(name = 'Maxpool_1')(x)
-\end{lstlisting}
-La funzione \texttt{build\_autoencoder} riceve come parametro la dimensione delle immagini di input. \\
-Il layer di input è il punto da cui i dati vengono forniti alla rete.\\
-Si applica una convoluzione con 64 filtri $3\times3$, con inizializzazione dei pesi \texttt{he\_normal} e funzione di attivazione \texttt{ReLU}.  \\
-Segue un’operazione di \textbf{max pooling}, che riduce la dimensione spaziale (compressione), mantenendo le informazioni più rilevanti.
-\subsubsection{Secondo livello di convoluzione e pooling}
-\begin{lstlisting}[language=Python, caption={Secondo livello convolutivo + pooling}, label={lst:autoencoder_enc2}]
-    x = Conv2D(64, kernel_size = (3,3), kernel_initializer = 'he_normal',
-               activation = 'relu', padding = 'same', name = 'Conv2d_2')(x)
-    x = MaxPool2D(name = 'Maxpool_2')(x)
-\end{lstlisting}
-Viene applicata una nuova convoluzione con le stesse caratteristiche della precedente, seguita da un ulteriore \textbf{max pooling}.  
-Questa sequenza riduce ulteriormente le dimensioni spaziali e costituisce la parte di \textbf{encoder}, ossia compressione delle informazioni.
-\subsubsection{Inizio del decoder con upsampling}
-\begin{lstlisting}[language=Python, caption={Terzo livello convolutivo + upsampling}, label={lst:autoencoder_decoder}]
-    x = Conv2D(64, kernel_size = (3,3), kernel_initializer = 'he_normal',
-               activation = 'relu', padding = 'same', name = 'Conv2d_3')(x)
-    x = UpSampling2D(name = 'Upsample_1')(x)
-    x = Conv2D(64, kernel_size = (3,3), kernel_initializer = 'he_normal',
-               activation = 'relu', padding = 'same', name = 'Conv2d_4')(x)
-    x = UpSampling2D(name = 'Upsample_2')(x)
-\end{lstlisting}
-Dopo la compressione, inizia la fase di ricostruzione (\textbf{decoder}). \\ 
-Viene applicata una convoluzione seguita da un’operazione di \textbf{upsampling}, che aumenta la dimensione spaziale riportandola gradualmente alla risoluzione originale con una convoluzione a 64 filtri seguita da un upsampling, che ricostruisce ulteriormente l’immagine.
-\subsubsection{Strato finale}
-\begin{lstlisting}[language=Python, caption={Strato finale dell'autoencoder}, label={lst:autoencoder_output}]
-    x = Conv2D(3, kernel_size = (3,3), kernel_initializer = 'he_normal', 
-               activation = 'relu', padding = 'same', name = 'Conv2d_5')(x)
-
-    return Model(input, x)
-\end{lstlisting}
-\paragraph{Output della rete}
-Infine, uno strato convoluzionale con 3 filtri (uno per canale RGB) ricostruisce l’immagine di output.  
-La funzione \texttt{Model} collega l’input con l’output, restituendo il modello completo. 
+Sebbene le prestazioni di base degli autoencoder siano inferiori rispetto a modelli più specializzati come RIDNet o DnCNN, essi costituiscono un approccio estremamente flessibile, utile per la didattica e come punto di partenza per architetture più complesse (es. GAN \parencite{goodfellow2014gan} e modelli basati su Transformer \parencite{dosovitskiy2020vit}).
 
 \chapter{Dataset Utilizzati}
 
-L’efficacia di qualunque modello di visione artificiale dipende in larga misura dalla qualità e dalla varietà dei dati su cui viene addestrato. Per questo motivo, sono stati utilizzati cinque dataset pubblici largamente adottati nella comunità scientifica. I dataset scelti sono divisi in due gruppi: il primo composto da tre dataset BSD500\parencite{MartinFTM01}, DIV2K\parencite{Ignatov_2018_ECCV_Workshops} e MIT-Adobe FiveK\parencite{fivek} a cui è stato applicato un rumore artificiale, mentre il secondo gruppo sono due dataset SSID\parencite{Abdelhamed_2019_CVPR_Workshops} e RENOIR\parencite{anaya2014renoir} con rumore reale  
+L'efficacia di qualunque modello di visione artificiale dipende in larga misura dalla qualità, dalla varietà e dalla rappresentatività dei dati su cui viene addestrato. Per questo motivo, in questo lavoro sono stati impiegati cinque dataset pubblici ampiamente adottati nella comunità scientifica. I dataset selezionati sono stati suddivisi in due gruppi: il primo comprende tre dataset \textbf{BSD500} \parencite{MartinFTM01}, \textbf{DIV2K} \parencite{Ignatov_2018_ECCV_Workshops} e \textbf{MIT-Adobe FiveK} \parencite{5995413}, a cui è stato applicato rumore artificiale; il secondo gruppo include due dataset con rumore reale, \textbf{SIDD} \parencite{Abdelhamed_2019_CVPR_Workshops} e \textbf{RENOIR} \parencite{anaya2014renoir}.
 
-Nello specifico, i dataset sono:
+Nello specifico, i dataset sono stati selezionati per coprire scenari diversi:
 
 \begin{itemize}
-  \item \textbf{BSD500} – per valutazioni di segmentazione e denoising su immagini naturali;
-  \item \textbf{DIV2K} – per il task di super-risoluzione;
-  \item \textbf{MIT-Adobe FiveK} – per il miglioramento automatico delle immagini;
-  \item \textbf{SSID} – per il denoising su immagini reali catturate da smartphone;
-  \item \textbf{RENOIR} – per la rimozione di rumore in scenari reali e a bassa illuminazione.
+  \item \textbf{BSD500} – immagini naturali utilizzate per segmentazione e denoising;
+  \item \textbf{DIV2K} – immagini ad alta risoluzione per il task di super-risoluzione;
+  \item \textbf{MIT-Adobe FiveK} – dataset per il miglioramento automatico delle immagini (\textit{image enhancement});
+  \item \textbf{SIDD} – immagini reali da smartphone per denoising in condizioni di acquisizione realistiche;
+  \item \textbf{RENOIR} – immagini con rumore reale in scenari a bassa illuminazione, acquisite con DSLR e smartphone.
+  \item \textbf{KVASIR} – immagini mediche endoscopiche per la rimozione del rumore in ambito sanitario.
 \end{itemize}
-
-
+\newpage
 \section{BSD500}
 
-Il \textbf{Berkeley Segmentation Dataset 500} (BSD500) è un benchmark classico nell’ambito della visione artificiale, introdotto originariamente per valutare algoritmi di segmentazione semantica. Il dataset contiene un totale di 500 immagini naturali ad alta qualità, suddivise in tre insiemi: 200 per l’addestramento, 100 per la validazione e 200 per il test.
+Il \textbf{Berkeley Segmentation Dataset 500} (BSD500) è un benchmark classico nell'ambito della visione artificiale, introdotto originariamente per la valutazione di algoritmi di segmentazione semantica \parencite{MartinFTM01}. Contiene un totale di 500 immagini naturali ad alta qualità, suddivise in tre insiemi: 200 per l'addestramento, 100 per la validazione e 200 per il test.
 
-Ogni immagine è accompagnata da annotazioni di segmentazione eseguite manualmente da più utenti, fornendo così un confronto tra segmentazioni automatiche e percezione umana. 
-
-Nonostante il suo scopo originale non fosse legato alla rimozione del rumore o alla super-risoluzione, la sua varietà contenutistica e la buona qualità visiva ne hanno determinato un uso esteso in numerosi lavori di \textit{image denoising}, \textit{super-resolution} e compressione.
+Ogni immagine è accompagnata da annotazioni di segmentazione manuali, fornite da più utenti, permettendo di confrontare segmentazioni automatiche con la percezione umana. Nonostante il suo scopo originario non fosse il denoising o la super-risoluzione, la qualità visiva e la varietà semantica hanno reso BSD500 un dataset ampiamente impiegato anche in questi task \parencite{Zhang_2017_CVPR}.
 
 \textbf{Caratteristiche principali:}
 \begin{itemize}
-  \item Immagini naturali di alta qualità;
+  \item Immagini naturali ad alta qualità;
   \item Diversità semantica (scene urbane, naturali, indoor/outdoor);
   \item Annotazioni di segmentazione manuali;
-  \item Esteso utilizzo in compiti di visione oltre la segmentazione.
+  \item Ampio impiego in compiti di denoising, super-risoluzione e compressione.
 \end{itemize}
 
+\begin{figure}[h!]
+    \centering
+    \begin{tabular}{ccc}
+        \fbox{\includegraphics[width=0.3\textwidth]{img/img_dataset/bsd/bimba.jpg}} &
+        \fbox{\includegraphics[width=0.3\textwidth]{img/img_dataset/bsd/gattp.jpg}} &
+        \fbox{\includegraphics[width=0.3\textwidth]{img/img_dataset/bsd/paesaggio_completo.jpg}} \\
+    \end{tabular}
+    \caption{Esempi di immagini del dataset BSD500, contenenti scene naturali e urbane ad alta qualità.}
+    \label{fig:bsd500_examples}
+\end{figure}
+
+\newpage
 \section{DIV2K}
 
-Il dataset \textbf{DIV2K} (DIVerse 2K resolution images) è uno dei benchmark più utilizzati per la valutazione di algoritmi di super-risoluzione. Contiene 1000 immagini ad alta definizione (risoluzione 2K), delle quali:
+Il dataset \textbf{DIV2K} (DIVerse 2K resolution images) è uno dei benchmark principali per la valutazione di algoritmi di super-risoluzione \parencite{Ignatov_2018_ECCV_Workshops}. Contiene 1000 immagini ad alta definizione (risoluzione 2K), suddivise in:
 \begin{itemize}
-  \item 800 sono dedicate al training,
-  \item 100 alla validazione,
-  \item 100 al test.
+  \item 800 immagini per training,
+  \item 100 per validazione,
+  \item 100 per test.
 \end{itemize}
 
-Le immagini sono state selezionate per garantire diversità semantica e alta qualità visiva, provenendo da diverse fonti fotografiche. Il dataset include versioni degradate delle immagini originali (LR – Low Resolution) ottenute tramite downscaling con vari metodi, tra cui bicubico, bicubico + blur e compressione JPEG, consentendo lo sviluppo e la comparazione di metodi avanzati di upscaling.
+Le immagini, selezionate per garantire varietà semantica e alta qualità visiva, includono versioni degradate (LR – Low Resolution) ottenute tramite downscaling con diversi metodi, come bicubico, bicubico + blur e compressione JPEG. Ciò consente lo sviluppo e la comparazione di metodi avanzati di upscaling e denoising.
 
 \textbf{Caratteristiche principali:}
 \begin{itemize}
   \item Immagini ad alta risoluzione (2K);
-  \item Disponibilità di versioni degradate a più scale (\( \times 2 \), \( \times 3 \), \( \times 4 \));
-  \item Uso esteso in challenge internazionali (NTIRE);
+  \item Versioni degradate a più scale (\( \times 2 \), \( \times 3 \), \( \times 4 \));
+  \item Impiego in challenge internazionali (NTIRE \parencite{Timofte2017NTIRE});
   \item Elevata diversità semantica.
 \end{itemize}
 
+\begin{figure}[h!]
+    \centering
+    \begin{tabular}{ccc}
+        \fbox{\includegraphics[width=0.3\textwidth]{img/img_dataset/div2k/mongolfiere.jpg}} &
+        \fbox{\includegraphics[width=0.3\textwidth]{img/img_dataset/div2k/pandar.jpg}} &
+        \fbox{\includegraphics[width=0.3\textwidth]{img/img_dataset/div2k/oktoberfest.jpg}} \\
+    \end{tabular}
+    \caption{Esempi di immagini ad alta risoluzione dal dataset DIV2K. Mostrano la varietà semantica e la qualità visiva tipica del dataset.}
+    \label{fig:div2k_examples}
+\end{figure}
+
+\newpage
 \section{MIT-Adobe FiveK}
 
-Il \textbf{MIT-Adobe FiveK} è un dataset pensato per il miglioramento delle immagini (\textit{image enhancement}). È composto da 5000 fotografie scattate in formato RAW da vari fotografi, e ogni immagine è accompagnata da cinque versioni modificate da esperti di fotoritocco, fornendo un riferimento multiplo per la qualità “ideale” di un'immagine.
+Il \textbf{MIT-Adobe FiveK} è un dataset progettato per il miglioramento automatico delle immagini (\textit{image enhancement}) \parencite{5995413}. Comprende 5000 fotografie in formato RAW scattate da diversi fotografi, ognuna accompagnata da cinque versioni ritoccate da esperti di fotoritocco. Questo fornisce un riferimento multiplo per la qualità “ideale” di un'immagine.
 
-Il dataset è particolarmente adatto per addestrare modelli che mirano a replicare interventi di editing umano (esposizione, contrasto, bilanciamento del bianco, saturazione), rendendolo un riferimento di alta qualità nei task di fotoritocco automatico e personalizzazione dello stile.
+Il dataset è particolarmente utile per addestrare modelli che replicano interventi di editing umano su esposizione, contrasto, bilanciamento del bianco e saturazione, rappresentando uno standard di riferimento per lo sviluppo di algoritmi di image enhancement e personalizzazione dello stile.
 
 \textbf{Caratteristiche principali:}
 \begin{itemize}
   \item Immagini RAW e versioni ritoccate da 5 esperti;
   \item Varietà di scene (ritratti, paesaggi, interni, notturne);
   \item Impiego in modelli di apprendimento supervisionato per image enhancement;
-  \item Disponibilità di dati in formato ad alta profondità di bit.
+  \item Disponibilità di dati ad alta profondità di bit.
 \end{itemize}
+
+\begin{figure}[h!]
+    \centering
+    \begin{tabular}{ccc}
+        \fbox{\includegraphics[height = 4cm]{img/img_dataset/fivek/hq1.jpg}} &
+        \fbox{\includegraphics[height = 4cm]{img/img_dataset/fivek/hq2.jpg}} &
+        \fbox{\includegraphics[height = 4cm]{img/img_dataset/fivek/hq6.jpg}} \\
+    \end{tabular}
+    \caption{Esempi di immagini RAW del dataset MIT-Adobe FiveK.}
+    \label{fig:fivek_examples}
+\end{figure}
 \newpage
-\section{SSID}
+\section{SIDD}
 
-Il \textbf{Smartphone Image Denoising Dataset} (SSID) è stato sviluppato per colmare il divario tra denoising su immagini sintetiche e denoising in condizioni reali. Le immagini contenute nel dataset sono state acquisite con dispositivi mobili e presentano rumore autentico generato in condizioni di bassa luminosità.
+Il \textbf{Smartphone Image Denoising Dataset} (SIDD) è stato sviluppato per colmare il divario tra denoising su immagini sintetiche e denoising in condizioni reali \parencite{Abdelhamed_2019_CVPR_Workshops}. Contiene immagini acquisite con dispositivi mobili che presentano rumore autentico, spesso derivante da condizioni di scarsa luminosità.
 
-Ogni immagine “noisy” è accompagnata dalla relativa versione “clean”, ottenuta mediante esposizioni multiple o tecniche di denoising hardware, e le immagini sono state acquisite in vari ambienti indoor e outdoor.
+Ogni immagine “noisy” è accompagnata dalla corrispondente versione “clean”, ottenuta tramite esposizioni multiple o tecniche hardware di riduzione del rumore. Le immagini coprono diversi ambienti indoor e outdoor, con vari livelli ISO e illuminazione.
 
 \textbf{Caratteristiche principali:}
 \begin{itemize}
   \item Acquisizione da smartphone in condizioni reali;
   \item Coppie noisy-clean disponibili;
   \item Diversi livelli di ISO e condizioni di luce;
-  \item Utile per sviluppare modelli robusti al rumore reale.
+  \item Utile per lo sviluppo di modelli robusti al rumore reale.
 \end{itemize}
 
+\begin{figure}[h!]
+    \centering
+    \begin{tabular}{ccc}
+        \fbox{\includegraphics[width=0.3\textwidth, height = 3cm]{img/img_dataset/ssid/camion.jpg}} &
+        \fbox{\includegraphics[width=0.3\textwidth, height = 3cm]{img/img_dataset/ssid/peperoni.jpg}} &
+        \fbox{\includegraphics[width=0.3\textwidth, height = 3cm]{img/img_dataset/ssid/colori.jpg}} \\
+    \end{tabular}
+    \caption{Esempi di immagini dataset SIDD, acquisite con smartphone in condizioni reali di illuminazione.}
+    \label{fig:SIDD_examples}
+\end{figure}
+\begin{figure}[h!]
+    \centering
+    \begin{tabular}{ccc}
+        \fbox{\includegraphics[width=0.3\textwidth, height = 3cm]{img/img_dataset/ssid/peperoni.jpg}} &
+        \fbox{\includegraphics[width=0.3\textwidth, height = 3cm]{img/img_dataset/ssid/peperoni_2.jpg}} &
+        \fbox{\includegraphics[width=0.3\textwidth, height = 3cm]{img/img_dataset/ssid/peperoni_3.jpg}} \\
+    \end{tabular}
+    \caption{Ogni soggetto ha molteplici foto con diverse ISO.}
+    \label{fig:SIDD_examples_ISO}
+\end{figure}
+\begin{figure}[h!]
+    \centering
+    \begin{tabular}{ccc}
+        \fbox{\includegraphics[width=0.3\textwidth, height = 3cm]{img/img_dataset/ssid/scacchi_gt.jpg}} &
+        \fbox{\includegraphics[width=0.3\textwidth, height = 3cm]{img/img_dataset/ssid/scacchi_noise_zoom.jpg}} \\
+    \end{tabular}
+    \caption{In più per ogni soggetto+iso esiste una coppia gt-noisy.}
+    \label{fig:SIDD_examples_coppia}
+\end{figure}
+
+
+\clearpage
 \section{RENOIR}
 
-Il \textbf{RENOIR} (Real Noise Image Dataset) è un dataset specificamente progettato per studiare la rimozione del rumore reale presente in immagini fotografiche acquisite in condizioni difficili. Le immagini sono state ottenute usando DSLR e smartphone, e ogni scena è catturata più volte: con esposizione breve (noisy) e lunga (clean), fornendo così una ground truth affidabile.
+Il \textbf{RENOIR} (Real Noise Image Dataset) è stato progettato per studiare la rimozione di rumore reale in immagini fotografiche acquisite in scenari difficili \parencite{anaya2014renoir}. Le immagini sono ottenute con DSLR e smartphone, catturando la stessa scena con esposizione breve (noisy) e lunga (clean), fornendo così una ground truth affidabile.
 
-Una delle caratteristiche distintive di RENOIR è la presenza di rumore proveniente da varie fonti: termico, elettronico, ISO elevato e compressione, tutti elementi che pongono sfide reali nel pre-processing delle immagini.
+Una caratteristica distintiva di RENOIR è la varietà di rumori presenti (termico, elettronico, ISO elevato, compressione), che rende il dataset particolarmente utile per testare algoritmi di denoising in condizioni realistiche.
 
 \textbf{Caratteristiche principali:}
 \begin{itemize}
   \item Immagini reali con rumore (no synthetic noise);
   \item Acquisite con più fotocamere e in diverse condizioni;
-  \item Triple noisy-clean-reference;
-  \item Utile per validare l'efficacia di algoritmi di denoising realistici.
+  \item Coppie noisy-clean-reference;
+  \item Valido per valutare l'efficacia di algoritmi di denoising realistici.
 \end{itemize}
 
-\section{Kvasir dataset}
-Idataset impiegato per effettuare fine tuning è il dataset Kvasir \parencite{Pogorelov:2017:KMI:3083187.3083212}, il quale comprende 1.000 immagini endoscopiche ad alta risoluzione, in particolare raffiguranti polipi e altre anomalie del tratto gastrointestinale. Sviluppato per supportare la ricerca nel campo della diagnosi assistita da computer (CADx), con l’obiettivo di migliorare l’accuratezza e la tempestività dell’identificazione di patologie gastrointestinali.
+\begin{figure}[h!]
+    \centering
+    \begin{tabular}{ccc}
+        \includegraphics[height = 4cm]{img/img_dataset/renoir/mi3_dadi_noise.jpg} &
+        \includegraphics[height = 4cm]{img/img_dataset/renoir/s90_biliardo_noise_zoom.jpg} &
+        \includegraphics[height = 4cm]{img/img_dataset/renoir/t3i_divano_noise_zoom.jpg} \\
+        \includegraphics[height = 4cm]{img/img_dataset/renoir/mi3_dadi.jpg} &
+        \includegraphics[height = 4cm]{img/img_dataset/renoir/s90_biliardo.jpg} &
+        \includegraphics[height = 4cm]{img/img_dataset/renoir/t3i_divano.jpg} \\
+    \end{tabular}
+    \caption[Esempi dal dataset RENOIR]{
+        Esempi di immagini dal dataset \textbf{RENOIR}. 
+        La prima riga mostra immagini a breve esposizione (noisy), 
+        mentre la seconda riga le corrispondenti immagini a lunga esposizione (clean).
+        Le colonne corrispondono ai tre dispositivi utilizzati nel dataset: \textbf{t3i}, \textbf{s90} e \textbf{mi3}.
+    }
+    \label{fig:renoir_examples}
+\end{figure}
+
+\newpage
+\section{KVASIR}
+Per il fine tuning dei modelli è stato impiegato il \textbf{Kvasir dataset} \parencite{Pogorelov_kvasir}, un insieme di dati che rappresenta un punto di riferimento nella ricerca applicata all'analisi automatica di immagini mediche endoscopiche. \\
+Il dataset comprende 1.000 immagini ad alta risoluzione, raccolte in contesti clinici reali, che mostrano polipi, lesioni e altre anomalie del tratto gastrointestinale.\\
+
+\textbf{Caratteristiche principali:}
+\begin{itemize}
+  \item Immagini endoscopiche ad alta risoluzione;
+  \item Include polipi e altre anomalie gastrointestinali;
+  \item Adatto per lo sviluppo di algoritmi \textit{computer-aided diagnosis} (CADx);
+  \item Utile per classificazione, rilevamento e segmentazione di patologie;
+  \item Include campioni reali caratterizzati da condizioni di illuminazione, angolazione e qualità visiva differenti, riproducendo fedelmente le difficoltà tipiche delle analisi endoscopiche reali;
+\end{itemize}\\
+
+Nel contesto di questa tesi, il dataset è stato utilizzato per valutare la capacità dei modelli di adattarsi a un dominio specifico, profondamente diverso rispetto alle immagini naturali comunemente usate per il training. L'obiettivo non è soltanto la riduzione del rumore visivo, ma anche la preservazione di dettagli clinicamente rilevanti, come bordi e texture dei polipi, che risultano fondamentali per una diagnosi accurata. \\ 
+
+Grazie a queste caratteristiche, il Kvasir dataset rappresenta non soltanto un banco di prova per le tecniche di denoising, ma anche un passo cruciale verso lo sviluppo di strumenti di supporto decisionale che possano essere realmente applicabili in ambienti clinici \parencite{Pogorelov_kvasir}.
+
+\begin{figure}[h!]
+    \centering
+    \begin{tabular}{ccc}
+        \fbox{\includegraphics[width=0.3\textwidth]{img/img_dataset/kvasir/kvasir_1.jpg}} &
+        \fbox{\includegraphics[width=0.3\textwidth]{img/img_dataset/kvasir/kvasir_2.jpg}} &
+        \fbox{\includegraphics[width=0.3\textwidth]{img/img_dataset/kvasir/kvasir_3.jpg}} \\
+    \end{tabular}
+    \caption{Esempi di immagini dal dataset KVASIR. Le immagini mostrano polipi e altre anomalie del tratto gastrointestinale, acquisite in contesti clinici reali.
+    (non so se aggiungerle sono molto brutte)}
+    \label{fig:kvasir_examples}
+\end{figure}
+
 
 \chapter{Elaborazione dei Dataset}
 In questa sezione saranno inseriti i dettagli tecnici relativi alla fase di preprocessing ed elaborazione dei dataset sopra descritti. I punti che verranno sviluppati includono:
 \\
 I vari dataset sono stati però manipolati prima di passarli a {SOGGETTP} usando come riferimento l'esperimento di Real image denoising with feature attention\parencite{9010324} sono state estratte 12 patch da 512x512 dai vari dataset con immagini 4k, mentre da BSD500 che ha immagini più piccole è stato effettuato un padding con specchiamento dei bordi per arrivare sempre ad una risoluzione di 512x512
-\TODOComment{CODICE?}
 
 Il preprocessing delle immagini è un passaggio cruciale per la standardizzazione del dataset, soprattutto in contesti in cui le dimensioni delle immagini devono essere uniformi per essere elaborate da modelli convoluzionali. Le tre modalità implementate coprono i principali scenari applicativi, permettendo flessibilità tra conservazione del contenuto e adattamento geometrico.
 
 \begin{itemize}
-
   \item Conversione di immagini RAW in RGB jpg (per MIT-Adobe FiveK);
   \item Suddivisione in patch da 512x512
   \item padding fino a 512x512
@@ -649,12 +549,12 @@ Il preprocessing delle immagini è un passaggio cruciale per la standardizzazion
 Questa parte è fondamentale per garantire che i dati in ingresso ai modelli siano coerenti, bilanciati e in grado di migliorare la convergenza durante la fase di addestramento.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Conversione immagini RAW}
+\section{Conversione immagini RAW}
 Le immagini contenute nei dataset come MIT-Adobe FiveK o RENOIR sono spesso fornite in formato RAW. Per utilizzare tali immagini nei pipeline di addestramento dei modelli di deep learning, è necessario convertirle in un formato più accessibile e standard.
 
 A tal fine, è stato sviluppato uno script Python che sfrutta le librerie \texttt{rawpy} e \texttt{imageio} per effettuare la conversione in maniera ricorsiva su intere cartelle. Di seguito viene analizzato il codice sorgente, commentandolo nei suoi blocchi funzionali.
 \newpage
-\subsubsection{Importazione dei Moduli e Definizione della Funzione}
+\subsection{Importazione dei Moduli e Definizione della Funzione}
 
 \begin{lstlisting}[language=Python, caption={Conversione immagini raw a jpg}, label={lst:raw-to-jpg}]
 def convert_raw_to_jpg_recursive(input_folder, output_folder):
@@ -670,7 +570,7 @@ In questo primo blocco:
     \item Se la cartella di output non esiste, viene creata automaticamente tramite \texttt{mkdir(parents=True, exist\_ok=True)}.
 \end{itemize}
 
-\subsubsection{Estensioni RAW supportate}
+\subsection{Estensioni RAW supportate}
 
 \begin{lstlisting}[language=Python, caption={Estensioni immagini raw}, label={lst:raw-extension}]
     raw_extensions = ['.CR2', '.NEF', '.ARW', '.RW2', '.RAF', '.DNG', '.ORF', '.PEF']
@@ -678,7 +578,7 @@ In questo primo blocco:
 
 Si definisce una lista delle estensioni più comuni per i file RAW prodotti da vari modelli di fotocamere digitali. Queste estensioni verranno utilizzate per filtrare i file da convertire.
 
-\subsubsection{Scansione Ricorsiva della Cartella}
+\subsection{Scansione Ricorsiva della Cartella}
 
 \begin{lstlisting}[language=Python, caption={Scansione ricorsiva cartelle}, label={lst:directory-scan}]
     for raw_file in input_path.rglob('*'):
@@ -687,11 +587,11 @@ Si definisce una lista delle estensioni più comuni per i file RAW prodotti da v
 
 Qui si esegue una scansione ricorsiva all'interno della cartella di input usando \texttt{rglob('*')}, che restituisce tutti i file e sottocartelle. Per ogni file:
 \begin{itemize}
-    \item Si verifica che l’estensione (in maiuscolo) appartenga alla lista di estensioni RAW supportate;
-    \item Si controlla che l’elemento sia effettivamente un file (e non una directory).
+    \item Si verifica che l'estensione (in maiuscolo) appartenga alla lista di estensioni RAW supportate;
+    \item Si controlla che l'elemento sia effettivamente un file (e non una directory).
 \end{itemize}
 
-\subsubsection{Lettura e Conversione del File RAW}
+\subsection{Lettura e Conversione del File RAW}
 
 \begin{lstlisting}[language=Python, caption={Lettura immagini con OpenCV}, label={lst:raw-imread}]
             try:
@@ -699,9 +599,9 @@ Qui si esegue una scansione ricorsiva all'interno della cartella di input usando
                     rgb = raw.postprocess()
 \end{lstlisting}
 
-All'interno del blocco \texttt{try}, viene utilizzata la libreria \texttt{rawpy}, che fornisce un’interfaccia per la decodifica dei file RAW. La funzione \texttt{postprocess()} converte i dati RAW nel formato RGB, eseguendo demosaicizzazione, bilanciamento del bianco e correzione del colore.
+All'interno del blocco \texttt{try}, viene utilizzata la libreria \texttt{rawpy}, che fornisce un'interfaccia per la decodifica dei file RAW. La funzione \texttt{postprocess()} converte i dati RAW nel formato RGB, eseguendo demosaicizzazione, bilanciamento del bianco e correzione del colore.
 
-\subsubsection{Generazione del Nome File di Output}
+\subsection{Generazione del Nome File di Output}
 %[language=Python, caption={}, label={lst:}]
 \begin{lstlisting}[language=Python, caption={Rinomina file}, label={lst:raw-rename}]
                     parent_name = raw_file.parent.name
@@ -716,7 +616,7 @@ Per generare un nome univoco al file JPG risultante:
     \item Il file verrà salvato nella directory di output.
 \end{itemize}
 
-\subsubsection{Scrittura del File e gestione delle eccezioni}
+\subsection{Scrittura del File e gestione delle eccezioni}
 
 \begin{lstlisting}[language=Python, caption={Salvataggio immagine}, label={lst:raw-imwrite}]
                     imageio.imwrite(str(output_file), rgb)
@@ -727,17 +627,17 @@ Per generare un nome univoco al file JPG risultante:
 
 La libreria \texttt{imageio} viene utilizzata per salvare l'immagine RGB come file JPG. Viene anche stampato a console un messaggio di conferma con il nome del file convertito.
 
-Infine, viene catturata qualsiasi eccezione durante il processo di conversione. Questo è utile per non interrompere lo script in caso di file corrotti o non leggibili. L’errore viene riportato a console per un’eventuale analisi successiva.
+Infine, viene catturata qualsiasi eccezione durante il processo di conversione. Questo è utile per non interrompere lo script in caso di file corrotti o non leggibili. L'errore viene riportato a console per un'eventuale analisi successiva.
 \\\\
 Questo script permette di gestire automaticamente grandi volumi di immagini RAW provenienti da più sorgenti e formati. La conversione a JPG è un passaggio fondamentale per:
 \begin{itemize}
     \item Uniformare i dati in ingresso ai modelli;
     \item Ridurre lo spazio occupato;
-    \item Permettere l’applicazione di tecniche di preprocessing standard;
+    \item Permettere l'applicazione di tecniche di preprocessing standard;
     \item Consentire la visualizzazione rapida dei dati convertiti.
 \end{itemize}
 
-L’esecuzione ricorsiva rende il sistema scalabile per dataset organizzati in sottocartelle, come spesso accade in raccolte fotografiche professionali.
+L'esecuzione ricorsiva rende il sistema scalabile per dataset organizzati in sottocartelle, come spesso accade in raccolte fotografiche professionali.
 \newpage
 \subsection{Classificazione immagini GT-Noisy}
 Il dataset RENOIR contiene, per ogni scena, una serie di 4/5 immagini acquisite con diversi tempi di esposizione.  
@@ -768,7 +668,7 @@ def mse(img1, img2):
 \end{lstlisting}
 
 La funzione \texttt{mse} calcola il \textit{Mean Squared Error}, ovvero la differenza media al quadrato tra due immagini.\\
-Questo indice è molto usato per stimare quanto un'immagine differisca da un’altra: più il valore è basso, maggiore è la somiglianza.  
+Questo indice è molto usato per stimare quanto un'immagine differisca da un'altra: più il valore è basso, maggiore è la somiglianza.  
 
 \begin{lstlisting}[language=Python, caption={Classificazione batch con MSE}, label={lst:mse-classification}]
 def classify_batch(batch_images, input_folder):
@@ -799,7 +699,7 @@ Questo passaggio assicura coerenza nelle dimensioni, fondamentale per il calcolo
 \end{lstlisting}
 
 Successivamente, per ogni immagine del batch si calcola l'errore medio rispetto a tutte le altre (escludendo i confronti con se stessa).  
-L’immagine con il valore medio di MSE più basso viene identificata come \textit{ground truth}, poiché è quella che differisce meno dalle altre.
+L'immagine con il valore medio di MSE più basso viene identificata come \textit{ground truth}, poiché è quella che differisce meno dalle altre.
 
 \begin{lstlisting}[language=Python, caption={Elaborazione dei risultati}, label={lst:save-mse-1}]
     result = {}
@@ -809,7 +709,7 @@ L’immagine con il valore medio di MSE più basso viene identificata come \text
     return result
 \end{lstlisting}
 
-In questa fase, i risultati vengono raccolti in un dizionario: l’immagine riconosciuta come GT riceve l’etichetta \texttt{GT}, mentre le altre vengono etichettate come \texttt{NOISE}.  
+In questa fase, i risultati vengono raccolti in un dizionario: l'immagine riconosciuta come GT riceve l'etichetta \texttt{GT}, mentre le altre vengono etichettate come \texttt{NOISE}.  
 Per ciascun file viene salvato anche il relativo punteggio di errore.
 
 \begin{lstlisting}[language=Python, caption={Salvataggio della classificazione}, label={lst:save-mse-2}]
@@ -838,7 +738,7 @@ def main(input_folder, output_file):
     print(f" Classificazione completata. Risultati salvati in: {output_file}")
 \end{lstlisting}
 
-Infine, la funzione \texttt{main} coordina l’intero processo:  
+Infine, la funzione \texttt{main} coordina l'intero processo:  
 \begin{enumerate}
     \item suddivide le immagini in batch,
     \item applica la classificazione GT/NOISE ad ogni gruppo,
@@ -882,7 +782,7 @@ Inizia recuperando il nome del batch e prepara una lista per memorizzare i file 
 
 Nel \texttt{Primo Step} si gestiscono le immagini di riferimento (\texttt{Reference}).  
 Se presenti, vengono duplicate e rinominate con suffissi numerici (\_1, \_2).  
-L’originale viene poi eliminato, così da mantenere solo i duplicati coerenti.
+L'originale viene poi eliminato, così da mantenere solo i duplicati coerenti.
 
 \begin{lstlisting}[language=Python, caption={Step 2: Gestione Noisy}, label={lst:manage_noisy}]
     noisy_files = sorted(glob.glob(os.path.join(batch_folder, '*Noisy.bmp')))
@@ -937,10 +837,10 @@ La funzione \texttt{main} scorre tutte le cartelle nella directory principale, s
 \newpage
 %\end{lstlisting}
 %\begin{lstlisting}[language=Python, caption={}, label={lst:}]
-\subsection{Padding di immagini con risoluzione inferiore a 512x512}
-Nel contesto dell’addestramento dei modelli di deep learning, è spesso necessario uniformare la dimensione delle immagini in input. Questo script Python permette di adattare immagini a una risoluzione di \(512 \times 512\) pixel.
+\section{Padding di immagini con risoluzione inferiore a 512x512}
+Nel contesto dell'addestramento dei modelli di deep learning, è spesso necessario uniformare la dimensione delle immagini in input. Questo script Python permette di adattare immagini a una risoluzione di \(512 \times 512\) pixel.
 
-\subsubsection{Definizione delle Costanti}
+\subsection{Definizione delle Costanti}
 Il dataset BSD 500 è composto da tre cartelle con immagini non RAW e dimensioni variabili inferiori alla risoluzione 512x512
 \\
 \\
@@ -953,7 +853,7 @@ DIR_TEST = "testdir"
 DIR_RESULT = "resultdir"
 \end{lstlisting}
 Sono definite le directory di input e output, rispettivamente per i set di training, validation e test.
-\subsubsection{Padding centrato}
+\subsection{Padding centrato}
 
 \begin{lstlisting}[language=Python, caption={Funzione di padding}, label={lst:pad_to_512}]
 def pad_to_512(img):
@@ -973,7 +873,7 @@ Poi si calcola per le 2 grandezze lo scarto di pixel che manca ad arrivare a 512
 Poi gli scarti calcolati vengono suddivisi per mantenere il padding centrato.\\
 Infine viene applicato un bordo riflesso(padding) tramite \texttt{cv2.copyMakeBorder} su tutti lati dell'immagine mantenendo la risoluzione originale, dunque senza snaturarla e aumentandone le dimensioni a quelle volute.\\
 \texttt{cv2.BORDER\_REFLECT\_101} è una costante di OpenCV utilizzata per specificare se l'immagine vada specchiata o ripetuta sui bordi riflessi
-\subsubsection{Funzione di elaborazione batch delle immagini}
+\subsection{Funzione di elaborazione batch delle immagini}
 \begin{lstlisting}[language=Python, caption={Definizione funzione di elaborazione immagini}, label={lst:process_img}]
 def process_images(input_dir, output_dir):
     count = 0
@@ -999,10 +899,22 @@ Ad ogni file viene controllata l'estensione, in caso non sia un'immagine il prog
 \end{lstlisting}
 Viene fatto un unione di percorso e nome immagine per compatibilità di sistema e convertita in un oggetto manipolabile da OpenCV.\\
 Controlla che  l'immagine non sia corrotta o illeggibile, applica il padding e crea il file nella cartella di output. Alla fine stampa il numero di file processati
+
+\begin{figure}[h!]
+    \centering
+    \begin{tabular}{ccc}
+        \fbox{\includegraphics[width=0.3\textwidth]{img/img_dataset/bsd/signorina.jpg}} &
+        \fbox{\includegraphics[width=0.3\textwidth]{img/img_dataset/bsd/signorina specchiata.jpg}} \\
+    \end{tabular}
+    \caption{Esempio di padding sul dataset BSD500.}
+    \label{fig:bsd500_pad}
+\end{figure}
+
 \newpage
 \section{Patching}
-Il \textbf{patching} è una tecnica comunemente utilizzata nell’ambito dell’elaborazione di immagini e dell’addestramento di reti neurali convoluzionali, che consiste nel suddividere un’immagine di grandi dimensioni in più sotto-immagini quadrate o rettangolari, dette \textit{patch}. Questo approccio presenta diversi vantaggi: riduce il consumo di memoria e il tempo di addestramento, permette di aumentare la quantità di dati disponibili (poiché da una singola immagine possono essere ricavati numerosi patch), e consente al modello di concentrarsi su porzioni locali dell’immagine, migliorando la capacità di apprendere dettagli fini e strutture locali.\\Durante la fase di ricostruzione o inferenza, i patch possono essere riuniti per ricomporre l’immagine originale, spesso con tecniche di sovrapposizione e fusione per evitare artefatti lungo i bordi. In sintesi, il patching rappresenta una strategia essenziale per la gestione efficiente di dataset ad alta risoluzione e per l’ottimizzazione delle prestazioni nei modelli di visione artificiale.
-\newpage
+Il \textbf{patching} è una tecnica comunemente utilizzata nell'ambito dell'elaborazione di immagini e dell'addestramento di reti neurali convoluzionali, che consiste nel suddividere un'immagine di grandi dimensioni in più sotto-immagini quadrate o rettangolari, dette \textit{patch}. Questo approccio presenta diversi vantaggi: riduce il consumo di memoria e il tempo di addestramento, permette di aumentare la quantità di dati disponibili (poiché da una singola immagine possono essere ricavati numerosi patch), e consente al modello di concentrarsi su porzioni locali dell'immagine, migliorando la capacità di apprendere dettagli fini e strutture locali.\\Durante la fase di ricostruzione o inferenza, i patch possono essere riuniti per ricomporre l'immagine originale, spesso con tecniche di sovrapposizione e fusione per evitare artefatti lungo i bordi. In sintesi, il patching rappresenta una strategia essenziale per la gestione efficiente di dataset ad alta risoluzione e per l'ottimizzazione delle prestazioni nei modelli di visione artificiale.
+
+\subsection{Padding iniziale}
 \begin{lstlisting}[language=Python, caption={Costanti per il patching}, label={lst:patch_const}]
 PATCH_SIZE = 512
 # Layout per immagini orizzontali
@@ -1023,6 +935,10 @@ def pad_image(img, target_width, target_height):
 \end{lstlisting}
 Fare padding su immagini grandi per renderle divisibili per la dimensione delle patch, delle colonne e delle righe.\\
 In questo caso vengono aggiunti pixel solo nei lati \texttt{BOTTOM} e \texttt{RIGHT}.
+
+\newpage
+\subsection{Estrazione delle patch}
+\subsubsection{Variabili e costanti}
 \begin{lstlisting}[language=Python, caption={Funzione di estrazione patch dalle immagini}, label={lst:extraction_patch}]
 def extract_orientation_aware_patches(image, patch_size=PATCH_SIZE):
     h, w = image.shape[:2]
@@ -1036,7 +952,8 @@ def extract_orientation_aware_patches(image, patch_size=PATCH_SIZE):
     img = pad_image(image, total_width, total_height)
 \end{lstlisting}
 Questa funzione parte prendendo altezza e larghezza dell'immagine passata, controlla se deve usare le costanti per immagini orizzontali o verticali, calcola le dimensioni per il padding e poi 
-\newpage
+
+\subsubsection{Calcolo dei passi e creazione delle patch}
 \begin{lstlisting}[language=Python, caption={Calcolo dei passi e creazione patch}, label={lst:patch_create}]
     row_step = (h - patch_size) // (rows - 1) if rows > 1 else 0
     col_step = (w - patch_size) // (cols - 1) if cols > 1 else 0
@@ -1058,6 +975,8 @@ Successivamente, due cicli annidati percorrono l'immagine riga per riga e colonn
 Ogni ritaglio ha dimensione fissa (\texttt{patch\_size}) e viene verificato che corrisponda esattamente alle dimensioni attese prima di essere aggiunto alla lista \texttt{patches}.
 
 Infine, la funzione restituisce l'insieme di tutte le patch ottenute, che potranno essere usate come input per modelli di deep learning o per altre operazioni di elaborazione delle immagini.
+\newpage
+\subsubsection{Elaborazione delle cartelle di immagini}
 \begin{lstlisting}[language=Python, caption={}, label={lst:}]
 def process_folder(input_dir, output_dir):
     os.makedirs(output_dir, exist_ok=True)
@@ -1066,7 +985,8 @@ def process_folder(input_dir, output_dir):
 \end{lstlisting}
 Questa funzione serve per caricare tutte le immagini e creare le patch su disco.
 Viene chimata la funzione per la cartella di output che crea la directory in caso non esista, vengono specificate le estensioni accettate dal programma, e viene stilata una lista con tutti i file trovati
-\newpage
+
+\subsubsection{Ciclo di elaborazione delle immagini e verifica preliminare}
 \begin{lstlisting}[language=Python, caption={Ciclo di elaborazione delle immagini e verifica preliminare}, label={lst:processing_images}]
     for fname in filenames:
         print(f"Processing {fname}...")
@@ -1081,9 +1001,10 @@ Viene chimata la funzione per la cartella di output che crea la directory in cas
         patches = extract_orientation_aware_patches(img)
 \end{lstlisting}
 Viene eseguito un ciclo su tutti i file contenuti in una lista di immagini (\texttt{filenames}), processandoli uno alla volta. \\
-Per ciascun file viene costruito il percorso completo e l’immagine viene caricata con \texttt{cv2.imread}.  
-Se l’immagine non è valida o non ha la dimensioni richiesta, il programma passa al file successivo, evitando così crash o elaborazioni inutili. \\ 
+Per ciascun file viene costruito il percorso completo e l'immagine viene caricata con \texttt{cv2.imread}.  
+Se l'immagine non è valida o non ha la dimensioni richiesta, il programma passa al file successivo, evitando così crash o elaborazioni inutili. \\ 
 Solo le immagini valide e sufficientemente grandi vengono infine suddivise in patch tramite la funzione \texttt{extract\_orientation\_aware\_patches}.
+\subsubsection{Salvataggio delle patch su disco}
 \begin{lstlisting}[language=Python, caption={}, label={lst:}]
         base_name = os.path.splitext(fname)[0]
         for i, patch in enumerate(patches):
@@ -1093,7 +1014,51 @@ Solo le immagini valide e sufficientemente grandi vengono infine suddivise in pa
 \end{lstlisting}
 Per ogni patch creata questa avrà il nome dell'immagine originale seguita dal numero di patch corrispondente per poi essere scritta su disco usando sempre OpenCV.
 
+\begin{figure}[h!]
+    \centering
+    \begin{minipage}{0.5\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img/img_dataset/fivek/hq6.jpg}
+        \vspace{0.2cm}
+        \caption*{(a) Immagine completa presa dal dataset FiveK}
+    \end{minipage}
+    %\hfill
+    \begin{minipage}{0.4\textwidth}
+        \centering
+        \begin{tabular}{cccc}
+            \includegraphics[width=0.22\textwidth]{img/img_dataset/fivek/patch/hq6_patch0.jpg} &
+            \includegraphics[width=0.22\textwidth]{img/img_dataset/fivek/patch/hq6_patch1.jpg} &
+            \includegraphics[width=0.22\textwidth]{img/img_dataset/fivek/patch/hq6_patch2.jpg} &
+            \includegraphics[width=0.22\textwidth]{img/img_dataset/fivek/patch/hq6_patch3.jpg} \\
+
+            \includegraphics[width=0.22\textwidth]{img/img_dataset/fivek/patch/hq6_patch4.jpg} &
+            \includegraphics[width=0.22\textwidth]{img/img_dataset/fivek/patch/hq6_patch5.jpg} &
+            \includegraphics[width=0.22\textwidth]{img/img_dataset/fivek/patch/hq6_patch6.jpg} &
+            \includegraphics[width=0.22\textwidth]{img/img_dataset/fivek/patch/hq6_patch7.jpg} \\
+
+            \includegraphics[width=0.22\textwidth]{img/img_dataset/fivek/patch/hq6_patch8.jpg} &
+            \includegraphics[width=0.22\textwidth]{img/img_dataset/fivek/patch/hq6_patch9.jpg} &
+            \includegraphics[width=0.22\textwidth]{img/img_dataset/fivek/patch/hq6_patch10.jpg} &
+            \includegraphics[width=0.22\textwidth]{img/img_dataset/fivek/patch/hq6_patch11.jpg} \\
+        \end{tabular}
+        \vspace{0.2cm}
+        \caption*{(b) Patch estratti dall'immagine}
+    \end{minipage}
+    \caption[Esempio di layout immagini]{
+        Risultato del processo di patching sulle immagini grandi. L'immagine originale (a) è dunque suddivisa in 12 patch (b) di dimensione \(512 \times 512\) pixel ciascuna.
+    }
+    \label{fig:tabella_immagini}
+\end{figure}
+
+
+
 \section{Aggiunta del rumore}
+In questa sezione viene descritto il processo di \textbf{aggiunta artificiale di rumore} alle immagini, applicato unicamente ai dataset che non \textit{noisy}(\textbf{BSD512}, \textbf{Div2K}, \textbf{FiveK}).\\
+L'obiettivo è simulare condizioni realistiche in cui il modello deve operare, garantendo così una maggiore generalizzazione durante la fase di addestramento.  
+
+Il rumore più comunemente impiegato è quello \textbf{gaussiano additivo}, caratterizzato da media nulla e varianza controllabile, che permette di generare diverse intensità di corruzione.  
+Questa scelta riflette uno dei modelli più utilizzati in letteratura per la simulazione del rumore fotografico, ed è adatta a valutare la capacità delle reti neurali di rimuovere disturbi casuali preservando i dettagli strutturali delle immagini.  
+
 \begin{lstlisting}[language=Python, caption={Aggiunta di rumore da lista}, label={lst:add_noise}]
 def add_noise(x):
     noise_levels = [15 / 255.0, 25 / 255.0, 50 / 255.0]
@@ -1103,6 +1068,37 @@ def add_noise(x):
     x_noisy = tf.clip_by_value(x_noisy, 0.0, 1.0)
     return x_noisy
 \end{lstlisting}
+La funzione 
+
+La funzione implementata consente di:
+\begin{itemize}
+    \item ricevere in input un'immagine priva di rumore;
+    \item aggiungere rumore gaussiano di intensità variabile. L'intensità viene selezionata casualmente da una lista predefinita di valori normalizzati tra 0 e 1: (15, 25, 50) che divisi per 255 valgono (0,0588235294117647, 0,0980392156862745, 0,196078431372549);
+    \item restituire l'immagine degradata e normalizzata tra 0 e 1, che può essere utilizzata come input per l'addestramento dei modelli.
+\end{itemize}
+
+\begin{figure}[h!]
+    \centering
+    \subcaptionbox{Immagine completa}{%
+        \includegraphics[width=0.3\textwidth]{img/noise/aereo.jpg}} \\[0.4cm]
+    
+    \begin{minipage}{0.3\textwidth}
+        \centering
+        \subcaptionbox{$\sigma = 15$}{\includegraphics[width=\textwidth]{img/noise/noisy_aereo_15.png}}
+    \end{minipage}\hspace{0.02\textwidth}%
+    \begin{minipage}{0.3\textwidth}
+        \centering
+        \subcaptionbox{$\sigma = 25$}{\includegraphics[width=\textwidth]{img/noise/noisy_aereo_25.png}}
+    \end{minipage}\hspace{0.02\textwidth}%
+    \begin{minipage}{0.3\textwidth}
+        \centering
+        \subcaptionbox{$\sigma = 50$}{\includegraphics[width=\textwidth]{img/noise/noisy_aereo_50.png}}
+    \end{minipage}
+
+    \caption[Esempio di aggiunta del rumore]{Esempio di immagine originale presa da \textbf{BSD} e corrispondenti versioni con tre diversi livelli di rumore}
+    \label{fig:noise_levels}
+\end{figure}
+
 \begin{lstlisting}[language=Python, caption={Aggiunta del rumore da funzione}, label={lst:add_noise_2}]
 def add_noise_2(x, noise_factor):
     noise = tf.random.normal(shape=tf.shape(x), mean=0.0, stddev=noise_factor)
@@ -1110,23 +1106,1113 @@ def add_noise_2(x, noise_factor):
     x_noisy = tf.clip_by_value(x_noisy, 0.0, 1.0)
     return x_noisy
 \end{lstlisting}
+Questa funzione è simile alla precedente, ma consente di specificare direttamente il livello di rumore desiderato tramite il parametro \texttt{noise\_factor}.\\
+Questo permette una maggiore flessibilità, ad esempio per testare il modello con diversi livelli di rumore in modo controllato.
 
-\chapter{Analisi ed ottimizzazione}
-\section{allenamento}
-\section{valutazioni}
-ridnet autoencoder dncnn bm3d(<-da implementare)
+\section{Creazione dei dataset}
+Qui si andrà a descrivere il processo di creazione dei dataset di training, validation e test set, sia per le immagini non rumorose che per quelle con rumore aggiunto artificialmente.
 
-\section{fine tuning}
-\section{study}
+\subsection{Creazione dataset non noisy}
+I dataset \textbf{BSD512}, \textbf{Div2K} e \textbf{FiveK} sono dataset di immagini non rumorose.\\
+Per creare i dataset di training, validation e test set, si utilizza la libreria TensorFlow, che offre strumenti efficienti per la gestione e il preprocessing delle immagini.
+\begin{lstlisting}[language=Python, caption={Definizione della funzione di creazione dei dataset}, label={lst:ds_split_def}]
+    def load_and_split_dataset(input_dir, train_pct=0.6, val_pct=0.2, test_pct=0.2, batch_size=32, shuffle=True):
+    assert abs(train_pct + val_pct + test_pct - 1.0) < 1e-5, "Le percentuali devono sommare a 1.0"
 
-PSNR è il metodo più comune per misurare la qualità delle immagini.\\
+    RANDOM_SEED = 42
+    # Prendi tutti i percorsi dei file nella cartella
+    file_paths = [os.path.join(input_dir, fname) for fname in os.listdir(input_dir)
+                  if fname.lower().endswith(('.jpg', '.jpeg', '.png', '.bmp'))]
+
+    random.seed(RANDOM_SEED)
+    random.shuffle(file_paths)
+\end{lstlisting}
+La funzione \texttt{load\_and\_split\_dataset} inizia con la definizione delle percentuali di suddivisione del dataset in training, validation e test set.  
+Viene poi impostato un seme casuale per garantire la riproducibilità della suddivisione.  
+Successivamente, vengono raccolti tutti i percorsi dei file immagine presenti nella cartella di input, considerando solo i formati più comuni.  
+Infine, la lista dei percorsi viene mescolata in modo casuale per evitare qualsiasi ordine predefinito che potrebbe influenzare la suddivisione.
+
+\begin{lstlisting}[language=Python, caption={Calcolo degli indici di divisione}, label={lst:ds_split_calc}]
+    # Calcola gli indici di divisione
+    total_files = len(file_paths)
+    print(f"total files: {total_files}")
+    train_size = int(train_pct * total_files)
+    val_size = int(val_pct * total_files)
+    # Il test size viene calcolato implicitamente prendendo il resto
+
+    # Dividi i percorsi dei file
+    train_files = file_paths[:train_size]
+    val_files = file_paths[train_size : train_size + val_size]
+    test_files = file_paths[train_size + val_size:]
+\end{lstlisting}
+Viene calcolato il numero totale di file e, in base alle percentuali specificate, vengono determinati gli indici per suddividere la lista dei percorsi in tre sottoinsiemi: training, validation e test set.
+\newpage
+\begin{lstlisting}[language=Python, caption={Definizione sottofunzione per caricare le immagini}, label={lst:load_preprocess_img}]
+
+    def _load_and_preprocess_image(path):
+        print(path)
+        image = tf.io.read_file(path)
+        image = tf.image.decode_image(image, channels=3, expand_animations=False)
+        image = tf.image.resize(image, [128, 128])
+        image = tf.image.convert_image_dtype(image, tf.float32) / 255.0  # Normalizza in [0,1]
+        return image
+\end{lstlisting}
+Questa funzione interna si occupa di caricare e preprocessare ogni immagine.  
+Riceve in input il percorso di un'immagine, la legge, la decodifica in un formato utilizzabile da TensorFlow, la ridimensiona a \(128 \times 128\) pixel e normalizza i valori dei pixel nell'intervallo [0, 1].
+\begin{lstlisting}[language=Python, caption={Creazione dei dataset TensorFlow}, label={lst:tensor_create}]
+    options = tf.data.Options()
+    options.experimental_optimization.apply_default_optimizations = True
+    options.experimental_distribute.auto_shard_policy = tf.data.experimental.AutoShardPolicy.OFF
+    # Crea i dataset TensorFlow
+    train_ds = tf.data.Dataset.from_tensor_slices(train_files)
+    val_ds = tf.data.Dataset.from_tensor_slices(val_files)
+    test_ds = tf.data.Dataset.from_tensor_slices(test_files)
+    train_ds = train_ds.map(_load_and_preprocess_image, num_parallel_calls=tf.data.AUTOTUNE)
+    val_ds = val_ds.map(_load_and_preprocess_image, num_parallel_calls=tf.data.AUTOTUNE)
+    test_ds = test_ds.map(_load_and_preprocess_image, num_parallel_calls=tf.data.AUTOTUNE)
+
+    train_ds = train_ds.batch(batch_size).prefetch(tf.data.AUTOTUNE).with_options(options)
+    val_ds = val_ds.batch(batch_size).prefetch(tf.data.AUTOTUNE).with_options(options)
+    test_ds = test_ds.batch(batch_size).prefetch(tf.data.AUTOTUNE).with_options(options)
+
+    print(f"Dataset di training creato:\n{train_ds}\nNumero di file: {len(train_files)}")
+    print(f"Dataset di validation creato:\n{val_ds}\nNumero di file: {len(val_files)}")
+    print(f"Dataset di test creato:\n{test_ds}\nNumero di file: {len(test_files)}")
+    return train_ds, val_ds, test_ds
+\end{lstlisting}
+Vengono impostate alcune opzioni per ottimizzare le prestazioni del dataset.  
+Successivamente, vengono creati i dataset TensorFlow a partire dai percorsi dei file suddivisi in precedenza.  
+Ogni dataset viene mappato alla funzione di caricamento e preprocessamento delle immagini, con l'uso di chiamate parallele per migliorare l'efficienza.  
+Infine, i dataset vengono raggruppati in batch, prefetchati per migliorare le prestazioni durante l'addestramento, e le opzioni di ottimizzazione vengono applicate.  
+La funzione stampa informazioni sui dataset creati e restituisce i tre dataset.
+
+\subsection{Aggiunta del rumore nei dataset}
+
+\begin{lstlisting}[language=Python, caption={Aggiunta del rumore nei dataset}, label={lst:ds_split_noisy}]
+def noisy_part(ds):
+  noisy_ds = ds.map((lambda x: (add_noise(x), x)), num_parallel_calls=tf.data.AUTOTUNE)
+  return noisy_ds.prefetch(tf.data.AUTOTUNE)
+\end{lstlisting}
+Questa funzione è utilizzata per generare un dataset rumoroso a partire da un dataset originale.  
+Riceve in input un dataset di immagini pulite e applica la funzione \texttt{add\_noise} a ciascuna immagine, creando così una coppia di immagini: l'immagine rumorosa e l'immagine originale.  
+Il dataset risultante viene prefetchato per migliorare le prestazioni durante l'addestramento.
+
+\subsection{Creazione dataset noisy}
+\begin{lstlisting}[language=Python, caption={Creazione del dataset rumoroso}, label={lst:ds_noisy_create}]
+def load_and_split_paired_dataset(gt_dir, noisy_dir, train_pct=0.6, val_pct=0.2, test_pct=0.2, batch_size=32, shuffle=True):
+  # GT
+  gt_train, gt_val, gt_test = load_and_split_dataset(gt_dir, train_pct, val_pct, test_pct, batch_size, shuffle)
+
+  # NOISY
+  noisy_train, noisy_val, noisy_test = load_and_split_dataset(noisy_dir, train_pct, val_pct, test_pct, batch_size, shuffle)
+
+  train_ds = tf.data.Dataset.zip((noisy_train, gt_train)).prefetch(tf.data.AUTOTUNE)
+  val_ds = tf.data.Dataset.zip((noisy_val, gt_val)).prefetch(tf.data.AUTOTUNE)
+  test_ds = tf.data.Dataset.zip((noisy_test, gt_test)).prefetch(tf.data.AUTOTUNE)
+
+  return train_ds, val_ds, test_ds
+\end{lstlisting}
+Questa funzione consente di creare dataset di immagini rumorose e corrispondenti immagini pulite (ground truth) per l'addestramento, la validazione e il test di modelli di denoising.  
+Riceve in input le directory contenenti le immagini pulite e rumorose, insieme alle percentuali di suddivisione e altre opzioni.  
+Utilizza la funzione \texttt{load\_and\_split\_dataset} per caricare e suddividere entrambi i dataset.  
+Successivamente, i dataset rumorosi e puliti vengono combinati in coppie utilizzando \texttt{tf.data.Dataset.zip}, e il risultato viene prefetchato per migliorare le prestazioni.  
+Infine, la funzione restituisce i tre dataset pronti per l'addestramento.
+La caratteristica principale di questa funzione è la capacità di mantenere la corrispondenza tra immagini rumorose e pulite grazie al seed casuale che mantiene la stessa suddivisione in training, validation e test set per entrambi i dataset, essenziale per l'addestramento supervisionato di modelli di denoising.
+
+\chapter{Sperimentazione e analisi dei modelli}
+In questo capitolo vengono presentati i modelli implementati, i loro risultati e le analisi effettuate.
+
+\section{Implementazione modelli}
+
+\subsection{RIDNet}
+In questa sezione viene riportata l'implementazione della rete \textbf{RIDNet} in \texttt{Keras/TensorFlow} presa dal caso di studio \textbf{Real Image Denoising with Feature Attention} \parencite{9010324}
+%[language=Python, caption={}, label={lst:}]
+\subsubsection{Blocchi di base}
+\begin{lstlisting}[language=Python, caption={Implementazione del blocco di base BasicBlock}, label={lst:basicblock}]
+@register_keras_serializable("BasicBlock")
+def BasicBlock(x, out_channels, ksize=3, stride=1, pad='same'):
+    x = Conv2D(out_channels, ksize, strides=stride, padding=pad)(x)
+    x = ReLU()(x)
+    return x
+\end{lstlisting}
+Questo blocco esegue due operazioni fondamentali:  
+\begin{enumerate}
+    \item Una \textbf{convoluzione}, cioè un'operazione che “legge” l'immagine con un filtro (o kernel) e produce nuove mappe di caratteristiche (\textit{feature maps}). Queste mappe contengono informazioni sui bordi, sui contorni e su pattern locali.  
+    \item Una funzione di attivazione \textbf{ReLU}, che sostituisce i valori negativi con zero e mantiene i positivi invariati. Questo passaggio rende la rete capace di apprendere relazioni non lineari, fondamentali per rappresentare dettagli complessi dell'immagine.  
+\end{enumerate}
+In altre parole, il \texttt{BasicBlock} prende un'immagine o una mappa di caratteristiche e ne produce una nuova versione, mettendo in evidenza strutture locali utili per distinguere rumore da dettaglio.
+\newpage
+\begin{lstlisting}[language=Python, caption={Implementazione del blocco di base con sigmoide BasicBlockSig}, label={lst:basicblocksig}]
+@register_keras_serializable("BasicBlockSig")
+def BasicBlockSig(x, out_channels, ksize=3, stride=1, pad='same'):
+    x = Conv2D(out_channels, ksize, strides=stride, padding=pad)(x)
+    x = tf.keras.activations.sigmoid(x)
+    return x
+\end{lstlisting}
+La differenza con il blocco precedente è che al posto della \texttt{ReLU} utilizza una \textbf{sigmoide}.\\
+La sigmoide restituisce valori compresi tra 0 e 1, ed è molto utile quando vogliamo “pesare” le informazioni: un valore vicino a 1 indica che una certa caratteristica è molto importante, mentre un valore vicino a 0 indica che può essere trascurata.\\  
+Questo blocco viene usato nei moduli di attenzione.
+\subsubsection{Blocchi avanzati}
+\begin{lstlisting}[language=Python, caption={Blocco Merge\_Run\_dual per l'estrazione multiscala}, label={lst:merge_run_dual}]
+@register_keras_serializable("Merge_Run_dual")
+def Merge_Run_dual(x, in_channels, out_channels):
+    b1 = Conv2D(out_channels, 3, padding='same')(x)
+    b1 = ReLU()(b1)
+    b1 = Conv2D(out_channels, 3, padding='same', dilation_rate=2)(x)
+    b1 = ReLU()(b1)
+    b2 = Conv2D(out_channels, 3, padding='same', dilation_rate=3)(x)
+    b2 = ReLU()(b2)
+    b2 = Conv2D(out_channels, 3, padding='same', dilation_rate=4)(x)
+    b2 = ReLU()(b2)
+    c = Concatenate(axis=-1)([b1, b2])
+    out = Conv2D(out_channels, 3, padding='same')(c)
+    out = ReLU()(out)
+    return Add()([out, x])
+\end{lstlisting}
+\begin{itemize}
+    \item L'input viene analizzato con convoluzioni che hanno diversi \textbf{tassi di dilatazione}.\\
+    La dilatazione permette al filtro di “saltare” dei pixel, e quindi di catturare informazioni non solo dai pixel vicini, ma anche da quelli più lontani. In questo modo, il modello riesce a vedere sia dettagli fini sia strutture più ampie.  
+    \item I risultati vengono \textbf{concatenati}, cioè messi uno accanto all'altro, e passati a un'altra convoluzione che li mescola.  
+    \item Infine, si aggiunge l'output all'input originale (\textbf{connessione residua}), in modo da non perdere informazioni.  
+\end{itemize}
+Questo blocco serve a dare al modello la capacità di comprendere l'immagine a più “scale” contemporaneamente.
+\begin{lstlisting}[language=Python, caption={Blocco ResidualBlock con connessione residua}, label={lst:residualblock}]
+@register_keras_serializable("ResidualBlock")
+def ResidualBlock(x, out_channels):
+    res = Conv2D(out_channels, 3, padding='same')(x)
+    res = ReLU()(res)
+    res = Conv2D(out_channels, 3, padding='same')(res)
+    return ReLU()(Add()([res, x]))
+\end{lstlisting}
+Questo è un classico \textbf{blocco residuo}, introdotto con le ResNet(Reti Neurali Residuali).\\  
+L'idea è che invece di trasformare completamente l'input, la rete impara a calcolare solo la “correzione” necessaria (residuo). Questo rende l'apprendimento più stabile e veloce.\\
+Il risultato è la somma tra input originale e la trasformazione appresa.
+
+\begin{lstlisting}[language=Python, caption={Blocco EResidualBlock con convoluzioni a gruppi}, label={lst:eresidualblock}]
+@register_keras_serializable("EResidualBlock")
+def EResidualBlock(x, out_channels, group=1):
+    res = Conv2D(out_channels, 3, padding='same', groups=group)(x)
+    res = ReLU()(res)
+    res = Conv2D(out_channels, 3, padding='same', groups=group)(res)
+    res = ReLU()(res)
+    res = Conv2D(out_channels, 1, padding='valid')(res)
+    return ReLU()(Add()([res, x]))
+\end{lstlisting}
+Variante più profonda del blocco residuo. Qui vengono usate le \textbf{convoluzioni a gruppi}, che dividono i canali in sottoinsiemi elaborati separatamente: in questo modo il modello può specializzarsi su diversi tipi di caratteristiche senza aumentare troppo i calcoli.\\
+Alla fine una convoluzione 1x1(\texttt{Conv2D(out\_channels, 1, [...]}) ricompone i canali.
+
+\subsubsection{Layer di supporto}
+\begin{lstlisting}[language=Python, caption={Layer MeanShift per normalizzazione dei valori dei pixel}, label={lst:meanshift}]
+@register_keras_serializable("MeanShift")
+def MeanShift(rgb_range, rgb_mean, rgb_std, sign=-1):
+    @register_keras_serializable("shift")
+    def shift(x):
+        rgb_mean_tensor = tf.constant(rgb_mean, dtype=tf.float32)
+        rgb_std_tensor = tf.constant(rgb_std, dtype=tf.float32)
+        return (x + sign * rgb_range * rgb_mean_tensor) / rgb_std_tensor
+    shift_layer = Lambda(shift)
+    shift_layer.shift_fn = shift
+    return shift_layer
+\end{lstlisting}
+
+Serve a \textbf{normalizzare} i valori dei pixel. Le immagini hanno tipicamente valori compresi tra 0 e 255, ma è più facile per la rete lavorare su dati con media zero e varianza unitaria.\\ 
+Questo strato sposta (\texttt{shift(x)}) e ridimensiona i valori dei pixel in base alla media e deviazione standard di ciascun canale RGB.
+\newpage
+\begin{lstlisting}[language=Python, caption={Layer di attenzione sui canali (CALayer)}, label={lst:calayer}]
+@register_keras_serializable("CALayer")
+def CALayer(x, channel, reduction=16):
+    y = GlobalAveragePooling2D()(x)
+    y = Reshape((1, 1, channel))(y)
+    y = BasicBlock(y, channel // reduction, ksize=1, pad='valid')
+    y = BasicBlockSig(y, channel, ksize=1, pad='valid')
+    return Multiply()([x, y])
+\end{lstlisting}
+È un \textbf{layer di attenzione sui canali}.  
+Funziona così:  
+\begin{enumerate}
+    \item Fa una media globale per ogni canale (es. canale rosso, verde, blu), in modo da capire quanto ciascun canale contribuisce all'immagine(\texttt{GlobalAveragePooling2D}).
+    \item Passa questi valori attraverso piccole reti (convoluzioni 1x1 + sigmoide) per ottenere dei pesi tra 0 e 1.
+    \item Moltiplica questi pesi ai canali originali: accendendo i canali più utili e spegnendo quelli meno importanti(\texttt{Multiply()([x, y])}).
+\end{enumerate}
+\subsubsection{Blocco completo}
+Alla fine i layer \texttt{Merge\_Run\_Dual}(\ref{lst:merge_run_dual}), \texttt{ResidualBlock}(\ref{lst:residualblock}), \texttt{EResidualBlock}(\ref{lst:eresidualblock}) e \texttt{CALayer}(\ref{lst:calayer}) sono riuniti a formare l'unità base della rete
+
+\begin{lstlisting}[language=Python, caption={Blocco completo che unisce moduli multiscala, residui e attenzione}, label={lst:block}]
+@register_keras_serializable("Block")
+def Block(x, in_channels, out_channels):
+    x = Merge_Run_dual(x, in_channels, out_channels)
+    x = ResidualBlock(x, out_channels)
+    x = EResidualBlock(x, out_channels)
+    x = CALayer(x, out_channels)
+    return x
+\end{lstlisting}
+
+\subsubsection{Architettura RIDNet}
+Qui di seguito viene mostrata la costruzione completa della rete \textbf{RIDNet}, che combina tutti i blocchi e layer precedentemente definiti.
+\begin{lstlisting}[language=Python, caption={Costruzione dell'architettura completa RIDNet}, label={lst:build_ridnet}]
+@register_keras_serializable("build_RIDNET")
+def build_RIDNET(input_shape, n_feats, reduction, rgb_range=1.0):
+    rgb_mean = (0.4488, 0.4371, 0.4040)
+    rgb_std = (1.0, 1.0, 1.0)
+    inputs = Input(shape=input_shape)
+    x = MeanShift(rgb_range, rgb_mean, rgb_std, sign=-1)(inputs)
+\end{lstlisting}
+
+In questa prima parte viene definita la funzione \texttt{build\_RIDNET}, che costruisce il modello.
+\begin{itemize}
+    \item[-] L'input è un'immagine con una forma specificata da \texttt{input\_shape}.
+    \item[-] Prima di elaborarla, viene applicato un \texttt{MeanShift}, che normalizza i valori dei pixel in base alla media e alla deviazione standard dei canali RGB.
+\end{itemize}
+Questo passaggio serve a semplificare l'apprendimento della rete.
+
+\begin{lstlisting}[language=Python, caption={Corpo della ridnet}, label={lst:ridnet_block}]
+    x = BasicBlock(x, n_feats)
+    b1 = Block(x, n_feats, n_feats)
+    b2 = Block(b1, n_feats, n_feats)
+    b3 = Block(b2, n_feats, n_feats)
+    b4 = Block(b3, n_feats, n_feats)
+\end{lstlisting}
+Nella parte centrale:
+\begin{itemize}
+    \item[-] Viene applicato un primo \texttt{BasicBlock}\ref{lst:basicblock}, che funziona come livello iniziale di estrazione delle caratteristiche.
+    \item[-] Successivamente, l'immagine passa attraverso una serie di \texttt{Block}\ref{lst:block}, ognuno composto da più sottostrutture (convoluzioni multiscala, blocchi residui e meccanismi di attenzione sui canali).
+    \item[-] I blocchi sono concatenati (\texttt{b1}, \texttt{b2}, \texttt{b3}, \texttt{b4}), così che la rete possa catturare informazioni via via più complesse e dettagliate.
+La struttura dell'eperimento citato \parencite{9010324} usa solo quattro blocchi
+\end{itemize}
+\begin{lstlisting}[language=Python, caption={Ultimo blocco della rete}, label={lst:last_ridnet}]
+    res = Conv2D(3, 3, padding='same')(b4)
+\end{lstlisting}
+Dopo l'ultimo blocco, si applica una convoluzione finale con \texttt{3} filtri, corrispondenti ai tre canali RGB.\\
+Il risultato è un'immagine “ricostruita” che rappresenta una prima versione denoised dell'input.
+\begin{lstlisting}[language=Python, caption={Pezzo finale della rete}, label={lst:}]
+    out = MeanShift(rgb_range, rgb_mean, rgb_std, sign=1)(res)
+    out = Add()([out, inputs])
+    model = Model(inputs=inputs, outputs=out)
+    return model
+\end{lstlisting}
+
+Infine:  
+\begin{itemize}
+    \item[-] Si applica nuovamente un \texttt{MeanShift}, questa volta con \texttt{sign=1}, per riportare i valori dei pixel alla scala originale.
+    \item[-] Viene effettuata una somma residua (\texttt{Add}) tra l'output elaborato e l'immagine di input: questo permette alla rete di concentrarsi sulla rimozione del rumore, mantenendo però i dettagli originali.
+    \item[-] Il modello finale viene costruito e restituito.
+\end{itemize}
+In questo modo, la \textbf{RIDNet} sfrutta il concetto di connessioni residue e blocchi multiscala per ridurre il rumore dalle immagini mantenendo il più possibile la loro qualità visiva.\\
+
+\begin{lstlisting}[language=Python, caption={Costruzione della RIDNet}, label={lst:ridnet_build_2}]
+model = build_RIDNET(input_shape=(None, None, 3), n_feats=64, reduction=16)
+\end{lstlisting}
+Dunque la rete vien così inizializzata, seguendo in parte l'esperimento di partenza utilizzando lo shape delle immagini di input come \texttt{None} per poter analizzare qualsiasi tipo di risoluzione ma lasciando \texttt{3} per specificare immagini a colori, 64 features map(filtri convoluzionali interni) e la reduction a 16 che serve nei blocchi di attenzione per comprimere temporaneamente le informazioni e poi espanderle, riducendo il costo computazionale.
+\begin{lstlisting}[language=Python, caption={Compilazione del modello}, label={lst:ridnet_compile}]
+model.compile(optimizer=tf.keras.optimizers.Adam(1e-04), loss="mse", metrics=["accuracy"])
+\end{lstlisting}
+Viene compilata con:
+\begin{itemize}
+    \item[-] Come ottimizzatore Adam con tasso di apprendimento 1$e^{-4}$ utilizzato per aggiornare i pesi della rete in maniera stabile ed efficace.
+    \item[-] Come funzione di errore la scelta è Mean Squared Error (MSE), cioè l'errore quadratico medio, tipico nei problemi di denoising e ricostruzione di immagini.
+    \item[-] infine viene aggiunta l'accuratezza del modello nelle metriche di valutazione per poter monitorare l'andamento del modello e poterne fare grafici
+\end{itemize}
+\subsection{DnCNN}
+Qui di seguito l'implementazione iniziale della rete seguendo l'esperimento \textbf{Beyond a Gaussian Denoiser: Residual Learning of Deep CNN for Image Denoising} \parencite{zhang2017dncnn}
+
+\subsubsection{Definizione della funzione principale}
+\begin{lstlisting}[language=Python, caption={Definizione della funzione build\_DnCNN}, label={lst:dncnn_def}]
+def build_DnCNN(input_shape):
+    input = Input(input_shape, name = 'input')
+\end{lstlisting}
+\paragraph{Definizione della funzione}
+Qui viene definita la funzione \texttt{build\_DnCNN}, che riceve come parametro la dimensione dell'immagine in ingresso (\texttt{input\_shape}). Viene quindi creato il \textit{layer di input}, ossia il punto da cui i dati entreranno nella rete.
+\subsubsection{Primo strato convoluzionale}
+\begin{lstlisting}[language=Python, caption={Primo strato convoluzionale}, label={lst:dncnn_first_layer}]
+    x = Conv2D(64, kernel_size = (3,3), padding = 'same', name = 'conv2d_l1')(input)
+    x = Activation('relu', name = 'act_l1')(x)
+\end{lstlisting}
+\paragraph{Primo strato}
+Viene applicata una convoluzione con 64 filtri $3\times3$ con padding \texttt{same}, seguita da una funzione di attivazione \texttt{ReLU}.  
+Questo consente alla rete di estrarre le prime caratteristiche di basso livello dall'immagine di input.
+
+\subsubsection{Blocchi ripetuti}
+\begin{lstlisting}[language=Python, caption={Ciclo con blocchi ripetuti}, label={lst:dncnn_loop}]
+    for i in range(17):
+        x = Conv2D(64, kernel_size = (3,3), padding = 'same', name = 'conv2d_' + str(i))(x)
+        x = BatchNormalization(axis = -1, name = 'BN_' + str(i))(x)
+        x = Activation('relu', name = 'act_' + str(i))(x)
+\end{lstlisting}
+\paragraph{Blocchi intermedi}
+La rete esegue un ciclo di 17 blocchi identici, ognuno composto da: 
+\begin{itemize}
+    \item[-] una convoluzione con 64 filtri
+    \item[-] una normalizzazione batch (\texttt{BatchNormalization}) per stabilizzare e velocizzare l'allenamento
+    \item[-] una funzione di attivazione \texttt{ReLU} per introdurre non-linearità
+\end{itemize}
+Questi blocchi permettono di catturare informazioni più profonde e complesse, rendendo la rete capace di modellare il rumore presente nell'immagine.
+\subsubsection{Strato finale e sottrazione residua}
+\begin{lstlisting}[language=Python, caption={Strato finale e output}, label={lst:dncnn_output}]
+    x = Conv2D(3, kernel_size = (3,3), padding = 'same', name = 'conv2d_l3')(x)
+    x = Subtract(name = 'subtract')([input, x])
+    return Model(input, x)
+\end{lstlisting}
+Alla fine, un ultimo strato convoluzionale riduce i canali di uscita a 3 (uno per ogni canale RGB).  
+Successivamente, viene eseguita una sottrazione tra l'immagine di input e il risultato della convoluzione. \\
+Questa operazione implementa il concetto di \textbf{residual learning}: la rete impara a stimare il rumore presente nell'immagine, che viene poi sottratto per ottenere un'immagine pulita. \\
+\newpage
+\subsection{Autoencoder}
+\subsubsection{Definizione e primo livello convoluzionale e pooling}
+\begin{lstlisting}[language=Python, caption={Definizione e primo livello convoluzionale}, label={lst:autoencoder_1}]
+def build_autoencoder(input_shape):
+    input = Input(input_shape, name = 'Input')
+    x = Conv2D(64, kernel_size = (3,3), kernel_initializer = 'he_normal',
+               activation = 'relu', padding = 'same', name = 'Conv2d_1')(input)
+    x = MaxPool2D(name = 'Maxpool_1')(x)
+\end{lstlisting}
+La funzione \texttt{build\_autoencoder} riceve come parametro la dimensione delle immagini di input. \\
+Il layer di input è il punto da cui i dati vengono forniti alla rete.\\
+Si applica una convoluzione con 64 filtri $3\times3$, con inizializzazione dei pesi \texttt{he\_normal} e funzione di attivazione \texttt{ReLU}.  \\
+Segue un'operazione di \textbf{max pooling}, che riduce la dimensione spaziale (compressione), mantenendo le informazioni più rilevanti.
+\subsubsection{Secondo livello di convoluzione e pooling}
+\begin{lstlisting}[language=Python, caption={Secondo livello convolutivo + pooling}, label={lst:autoencoder_enc2}]
+    x = Conv2D(64, kernel_size = (3,3), kernel_initializer = 'he_normal',
+               activation = 'relu', padding = 'same', name = 'Conv2d_2')(x)
+    x = MaxPool2D(name = 'Maxpool_2')(x)
+\end{lstlisting}
+Viene applicata una nuova convoluzione con le stesse caratteristiche della precedente, seguita da un ulteriore \textbf{max pooling}.  
+Questa sequenza riduce ulteriormente le dimensioni spaziali e costituisce la parte di \textbf{encoder}, ossia compressione delle informazioni.
+\subsubsection{Inizio del decoder con upsampling}
+\begin{lstlisting}[language=Python, caption={Terzo livello convolutivo + upsampling}, label={lst:autoencoder_decoder}]
+    x = Conv2D(64, kernel_size = (3,3), kernel_initializer = 'he_normal',
+               activation = 'relu', padding = 'same', name = 'Conv2d_3')(x)
+    x = UpSampling2D(name = 'Upsample_1')(x)
+    x = Conv2D(64, kernel_size = (3,3), kernel_initializer = 'he_normal',
+               activation = 'relu', padding = 'same', name = 'Conv2d_4')(x)
+    x = UpSampling2D(name = 'Upsample_2')(x)
+\end{lstlisting}
+Dopo la compressione, inizia la fase di ricostruzione (\textbf{decoder}). \\ 
+Viene applicata una convoluzione seguita da un'operazione di \textbf{upsampling}, che aumenta la dimensione spaziale riportandola gradualmente alla risoluzione originale con una convoluzione a 64 filtri seguita da un upsampling, che ricostruisce ulteriormente l'immagine.
+\subsubsection{Strato finale}
+\begin{lstlisting}[language=Python, caption={Strato finale dell'autoencoder}, label={lst:autoencoder_output}]
+    x = Conv2D(3, kernel_size = (3,3), kernel_initializer = 'he_normal', 
+               activation = 'relu', padding = 'same', name = 'Conv2d_5')(x)
+
+    return Model(input, x)
+\end{lstlisting}
+\paragraph{Output della rete}
+Infine, uno strato convoluzionale con 3 filtri (uno per canale RGB) ricostruisce l'immagine di output.  
+La funzione \texttt{Model} collega l'input con l'output, restituendo il modello completo. 
+
+\section{Allenamento}
+In questa sezione vengono descritti i processi di addestramento delle tre architetture analizzate: \textbf{RIDNet}, \textbf{DnCNN} e \textbf{Autoencoder}.  
+Per ciascun modello sono stati definiti i parametri principali di training, come il numero di epoche, la dimensione del batch, la funzione di perdita e l'ottimizzatore.  
+L'allenamento è stato eseguito utilizzando immagini corrotte da diversi livelli di rumore gaussiano, con l'obiettivo di apprendere una mappatura robusta verso la corrispondente immagine pulita.  
+Vengono inoltre discusse le differenze nell'approccio all'addestramento: RIDNet con i suoi blocchi residui e meccanismi di attenzione, DnCNN con la strategia del residuo, e l'Autoencoder come architettura compressiva generica.  
+
+\subsection{Allenamento RIDNet}
+RIDNet è stato addestrato sfruttando i suoi blocchi residui e i meccanismi di attenzione spaziale e di canale, che consentono di focalizzare l'elaborazione sulle regioni più significative dell'immagine.  
+
+\begin{lstlisting}[language=Python, caption={Creazione della Ridnet}, label={lst:ridnet_build}]
+ridnet = build_RIDNET(
+    input_shape = (None, None, 3), 
+    n_feats     = 64, 
+    reduction   = 16
+)
+\end{lstlisting}
+Utilizzando la funzione di creazione della Ridnet [\ref{lst:ridnet_build}], il modello viene inizializzato con immagini di input di qualsiasi dimensione a 3 canali (RGB), 64 feature map interne e una riduzione di 16 nei blocchi di attenzione.
+Questo setup permette alla rete di gestire immagini di varie risoluzioni, mantenendo una buona capacità di estrazione delle caratteristiche.
+\newpage
+\begin{lstlisting}[language=Python, caption={Compilazione della Ridnet}, label={lst:ridnet_compile}]
+ridnet.compile(
+    optimizer = tf.keras.optimizers.Adam(1e-04), 
+    loss      = "mse", 
+    metrics   = ['accuracy'])
+\end{lstlisting}
+Il modello viene dunque compilato con l'ottimizzatore Adam, noto per la sua efficienza nell'aggiornamento dei pesi, e la funzione di perdita MSE (Mean Squared Error), adatta ai problemi di regressione come il denoising.\\
+Adam con un tasso di apprendimento di $1e^{-4}$ consente un'apprendimento stabile e graduale.\\
+Infine le metriche sono impostate per monitorare anche l'accuratezza oltre che alla loss durante l'addestramento.
+
+\begin{lstlisting}[language=Python, caption={Creazione delle callback}, label={lst:ridnet_callback}]
+cp_callback = tf.keras.callbacks.ModelCheckpoint(filepath="best_ridnet.keras", save_weights_only=False, verbose=1, save_best_only=True) # To save the model if the metric is improved
+
+cp_callback_2 = tf.keras.callbacks.ModelCheckpoint(filepath="ridnet_128_8.keras", save_weights_only=False, verbose=1, save_best_only=False)
+
+cp_weights_callback = tf.keras.callbacks.ModelCheckpoint(filepath="best_ridnet_8_128_saed.weights.h5", save_weights_only=True, verbose=1, save_best_only=False)
+
+# Salva la history in un CSV man mano che procede
+csv_logger_cb = CSVLogger("ridnet_training_log.csv", append=True)
+
+tensorboard_callback = tf.keras.callbacks.TensorBoard('.', histogram_freq=1)
+
+
+def scheduler(lr):
+    return lr * 0.9
+
+lrScheduler = tf.keras.callbacks.LearningRateScheduler(scheduler)
+
+callbacks = [
+    cp_callback,
+    cp_callback_2
+    cp_weights_callback,
+    
+    csv_logger_cb,
+
+    tensorboard_callback,
+    lrScheduler,
+    ]
+\end{lstlisting}
+Qui si vanno a creare le \textbf{callback} utilizzate durante l'addestramento:
+\begin{itemize}
+    \item[-] \texttt{ModelCheckpoint}: per salvare il modello ad ogni iterazione. 
+        \begin{itemize}
+            \item \texttt{cp\_callback}: salva il modello solo se la metrica di validazione migliora. Utilizzato per monitorare il miglioramento effettivo.
+            \item \texttt{cp\_callback\_2}: salva il modello ad ogni epoca, indipendentemente dal miglioramento. Utilizzato per avere il modello completo di tutte le epoche e anche dei non miglioramenti.
+        \end{itemize}
+    \item[-] \texttt{CSVLogger}: per registrare la storia dell'addestramento in un file CSV.
+    \item[-] \texttt{TensorBoard}: per visualizzare metriche e grafici durante l'addestramento.
+    \item[-] \texttt{LearningRateScheduler}: per modificare il tasso di apprendimento in base a una funzione definita.
+\end{itemize}
+La funzione scheduler riduce il tasso di apprendimento del 90\% ogni epoca, favorendo una convergenza più stabile.
+
+
+\begin{lstlisting}[language=Python, caption={Compilazione della Ridnet}, label={lst:ridnet_compile}]
+history_ridnet = model.fit(
+              train_ds_noisy,
+              #initial_epoch = 8,
+              epochs=8,
+              validation_data=val_ds_noisy,
+              callbacks=callbacks)
+\end{lstlisting}
+L'addestramento viene eseguito per 8 epoche, con valutazione continua delle prestazioni su un set di validazione. \\ 
+Le callback definite in precedenza vengono utilizzate per monitorare e salvare i progressi del modello.\\
+\begin{lstlisting}[language=Python, caption={Caricamento e nuovo train della ridnet}, label={lst:ridnet_load_checkpoint}]
+custom_objects = {
+    'BasicBlock': BasicBlock,
+    'BasicBlockSig': BasicBlockSig,
+    'Merge_Run_dual': Merge_Run_dual,
+    'ResidualBlock': ResidualBlock,
+    'EResidualBlock': EResidualBlock,
+    'MeanShift': MeanShift,
+    'CALayer': CALayer,
+    'Block': Block,
+    'build_RIDNET': build_RIDNET,
+    'shift': MeanShift(1.0, (0.4488, 0.4371, 0.4040), (1.0, 1.0, 1.0)).shift_fn} # Access the inner function
+ridnet = load_model("best_ridnet.keras")
+
+#[...] callbacks definition [...]
+df = pd.read_csv('ridnet_training_log_15.csv')
+best_value = df["val_loss"].iloc[-1]
+
+
+cp_callback.best = best_value
+cp_callback_2.best = best_value
+callbacks = [...] # same as before
+
+history_2 = model.fit(train_ds_noisy,
+              initial_epoch   = 8, # next: 16
+              epochs          = 16, # next: 23
+              validation_data = val_ds_noisy,
+              callbacks       = callbacks)
+\end{lstlisting}
+Il modello viene caricato, e vegono salvati in memoria anche tutti i blocchi personalizzati e le funzioni di supporto utilizzate per costruire la rete, in modo che il caricamento del modello avvenga senza errori. \\
+Viene caricato anche il csv con la history dell'allenamento precedente per poter prenderel'ultimo valore tra tutte le entry di validazione della loss, e venire ricaricato come valore da cui ripartire per il salvataggio del modello.\\
+Infine viene eseguito un nuovo ciclo di addestramento per altre 8 epoche, partendo dall'epoca 8 fino alla 16, sempre con valutazione continua su un set di validazione e con le callback attive. Il successivo e ultimo train parte dall'epoca 16 e arriva a 23 epoche totali senza aver cambiato nulla tra callback e il resto delle opzioni.
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{0.45\textwidth}
+        \includegraphics[width=\linewidth]{img/Ridnet_loss.jpg}
+        \caption{Loss di training e validation della Ridnet}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.45\textwidth}
+        \includegraphics[width=\linewidth]{img/Ridnet_accuracy.jpg}
+        \caption{Accuracy di train e validation della RIDNet}
+    \end{subfigure}
+    \caption{Andamento delle curve di addestramento della RIDNet.}
+    \label{fig:ridnet_graph}
+\end{figure}
+
+\subsection{Allenamento DnCNN}
+DnCNN è stato addestrato per apprendere il rumore residuo da sottrarre all'immagine rumorosa.  
+La presenza di \textit{batch normalization} e ReLU ha permesso una stabilizzazione del training.  
+
+\begin{lstlisting}[language=Python, caption={Creazione, compilazione e training di DnCNN}, label={lst:dncnn_train}]
+dncnn = build_DnCNN(input_shape=(None, None, 3))
+\end{lstlisting}
+Creazione del modello DnCNN con immagini di input di qualsiasi dimensione a 3 canali (RGB) usando la funzione di creazione [\ref{lst:dncnn_def}].
+\newpage
+\begin{lstlisting}[language=Python, caption={}, label={lst:}]
+dncnn.compile(optimizer=tf.keras.optimizers.Adam(1e-04), loss="mse", metrics=['accuracy'])
+
+history_dncnn = dncnn.fit(train_ds_noisy,
+              epochs=8,
+              validation_data=val_ds_noisy,
+              callbacks=callbacks)
+
+history_dncnn = dncnn.fit(train_ds_noisy,
+              epochs=13, # next: 14
+              initial_epoch=8, # next: 23
+              validation_data=val_ds_noisy,
+              callbacks=callbacks)
+\end{lstlisting}
+La compilazione avviene nello stesso metodo della Ridnet, con Adam, MSE e accuratezza.\\
+Le callback sono le stesse definite in precedenza per la ridnet[\ref{lst:ridnet_callback}].\\
+L'addestramento viene eseguito esattamente come per la ridnet, per 8 epoche, poi come per la ridnet si usano i checkpoint per arrivare a 23 epoche totali.
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{0.45\textwidth}
+        \includegraphics[width=\linewidth]{img/DnCNN_loss.jpg}
+        \caption{Loss di training e validation della DnCNN}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.45\textwidth}
+        \includegraphics[width=\linewidth]{img/DnCNN_accuracy.jpg}
+        \caption{Accuracy di training e validation della DnCNN}
+    \end{subfigure}
+    \caption{Andamento delle curve di addestramento di DnCNN.}
+    \label{fig:dncnn_training}
+\end{figure}
+
+\subsection{Allenamento Autoencoder}
+L'Autoencoder è stato allenato come architettura compressiva, sfruttando la fase di codifica e decodifica per ridurre il rumore durante la ricostruzione dell'immagine.  
+
+\begin{lstlisting}[language=Python, caption={Creazione, compilazione e training di un Autoencoder}, label={lst:autoencoder_train}]
+model = build_autoencoder(input_shape=(None, None, 3))
+
+model.compile(optimizer=tf.keras.optimizers.Adam(1e-04), loss="mse", metrics=metics )
+\end{lstlisting}
+Il modello viene creato utilizzando la funzione di costruzione dell'Autoencoder [\ref{lst:autoencoder_1}], con immagini di input di qualsiasi dimensione a 3 canali (RGB).\\
+La compilazione avviene nello stesso modo delle reti precedenti, con Adam, MSE e accuratezza.
+\begin{lstlisting}[language=Python, caption={}, label={lst:}]
+history_2 = model.fit(train_ds_noisy,
+              epochs=23,
+              validation_data=val_ds_noisy,
+              callbacks=callbacks)
+\end{lstlisting}
+L'addestramento dell'Autoencoder è stato eseguito per 23 epoche direttamente poichè più veloce da addestrare, con valutazione continua su un set di validazione e con le callback attive come per i modelli precedenti.
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{0.45\textwidth}
+        \includegraphics[width=\linewidth]{img/Autoen_loss.jpg}
+        \caption{Loss di training e validation dell'Autoencoder}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.45\textwidth}
+        \includegraphics[width=\linewidth]{img/Autoen_loss.jpg}
+        \caption{Accuracy di training e validation dell'Autoencoder}
+    \end{subfigure}
+    \caption{Andamento delle curve di addestramento dell'Autoencoder.}
+    \label{fig:autoencoder_training}
+\end{figure}
+
+\subsection{BM3D}
+BM3D (Block-Matching and 3D Filtering) è un algoritmo di denoising basato su tecniche di filtraggio collaborativo in domini trasformati.  \\
+Non richiede un processo di addestramento come le reti neurali, ma si basa su principi matematici e statistici per ridurre il rumore nelle immagini.  
+BM3D funziona raggruppando blocchi simili nell'immagine e applicando un filtraggio 3D per migliorare la qualità visiva.  \\
+È noto per la sua efficacia nel preservare i dettagli dell'immagine durante il processo di denoising.  
+In questo studio, BM3D è stato utilizzato come baseline di confronto per valutare le prestazioni delle reti neurali addestrate.\\ 
+Di seguito vengono mostrate le due implementazioni di BM3D, una semplice che richiede l'input di un dataset rumoroso con coppie (noisy, gt) per stimare il livello di rumore, e una più complessa che richiede l'input del dataset rumoroso e il livello di rumore noto.
+
+\begin{lstlisting}[language=Python, caption={Definzione di BM3D}, label={lst:bm3d_simple_def}]
+def bm3d_psnr_plot_paired(test_ds_noisy_paired, plot_num=5):
+  print("Estimating noise level...")
+  noise_levels = []
+  for batch in test_ds_noisy_paired.take(1):
+      x_noisy_batch, x_original_batch = batch
+      # Calculate the difference between noisy and original images
+      noise = x_noisy_batch - x_original_batch
+      for i in range(min(16, x_noisy_batch.shape[0])):
+          patch = noise[i, 0:32, 0:32, :] # Take a small patch
+          noise_levels.append(np.std(patch.numpy()))
+
+  estimated_sigma = np.mean(noise_levels) * 255.0 # Convert back to 0-255 range
+  print(f"Estimated noise level (sigma_psd) for BM3D: {estimated_sigma:.4f}")
+\end{lstlisting}
+In questa prima parte della funzione \texttt{bm3d\_psnr\_plot\_paired}, viene stimato il livello di rumore (\texttt{sigma\_psd}) analizzando le differenze tra le immagini rumorose e quelle originali in un batch del dataset.
+Essendo che passare tutta l'immagine potrebbe essere computazionalmente costoso, si prendono in considerazione solo piccole patch di dimensione $32\times32$ da un massimo di 16 immagini per ottenere una stima più robusta.
+La media delle deviazioni standard calcolate dalle patch viene moltiplicata per 255 per riportare il valore alla scala originale dei pixel (0-255).
+\begin{lstlisting}[language=Python, caption={}, label={lst:}]
+
+  for batch in test_ds_noisy_paired.take(1):
+    x_noisy_batch, x_original_batch = batch
+    break
+
+  noisy_np = x_noisy_batch.numpy()
+  original_np = x_original_batch.numpy()
+
+  # Denoising con BM3D usando il sigma stimato
+  decoded_imgs = []
+  for i in tqdm(range(len(noisy_np)), desc="Applying BM3D"):
+    # BM3D attende immagini in uint8 con valori tra 0 e 255
+    noisy_img_uint8 = (noisy_np[i] * 255).astype(np.uint8)
+    denoised_img = bm3d.bm3d(noisy_img_uint8, sigma_psd=estimated_sigma, stage_arg=bm3d.BM3DStages.ALL_STAGES)
+    decoded_imgs.append(denoised_img.astype(np.float32) / 255.0)
+  decoded_imgs = np.array(decoded_imgs)
+  return decoded_imgs
+\end{lstlisting}
+Una volta stimato il livello di rumore, la funzione procede a denoising delle immagini rumorose nel batch.
+Per ogni immagine:
+\begin{itemize}
+    \item[-] L'immagine rumorosa viene convertita in formato \texttt{uint8} con valori tra 0 e 255, come richiesto dalla libreria BM3D.
+    \item[-] Viene applicato l'algoritmo BM3D utilizzando il livello di rumore stimato.
+    \item[-] L'immagine denoised viene convertita nuovamente in formato \texttt{float32} con valori normalizzati tra 0 e 1.
+\end{itemize}
+Le immagini denoised vengono raccolte in una lista e convertite in un array NumPy, che viene restituito come output della funzione.
+
+\begin{lstlisting}[language=Python, caption={Definizione di BM3D con rumore definito}, label={lst:bm3d_def_2}]
+def bm3d_psnr_plot_gt(test_ds_gt, noise_levels = [15 / 255.0, 25 / 255.0, 50 / 255.0], plot_num=5):
+  for level in noise_levels:
+    print(f"\nProcessing with noise level: {level:.4f}")
+    # Add noise to the ground truth images
+    noisy_ds = test_ds_gt.map(lambda sample: (add_noise_2(sample, level), sample))
+    for batch in noisy_ds.take(1):
+      x_noisy_batch, x_original_batch = batch
+      break
+    noisy_np = x_noisy_batch.numpy()
+    original_np = x_original_batch.numpy()
+\end{lstlisting}
+A differenza della funzione precedente, in questa parte della funzione \texttt{bm3d\_psnr\_plot\_gt}, viene aggiunto rumore gaussiano alle immagini di ground truth per simulare immagini rumorose a diversi livelli di rumore specificati nella lista \texttt{noise\_levels}.
+
+\begin{lstlisting}[language=Python, caption={}, label={lst:}]
+    # Denoising con BM3D
+    decoded_imgs = []
+    # Convert sigma from [0,1] range to [0,255] range for BM3D
+    sigma_psd_bm3d = level * 255.0
+    for i in tqdm(range(len(noisy_np)), desc=f"Applying BM3D (sigma={sigma_psd_bm3d:.2f})"):
+      # BM3D attende immagini in uint8 con valori tra 0 e 255
+      noisy_img_uint8 = (noisy_np[i] * 255).astype(np.uint8)
+      denoised_img = bm3d.bm3d(noisy_img_uint8, sigma_psd=sigma_psd_bm3d, stage_arg=bm3d.BM3DStages.ALL_STAGES)
+      # Converti di nuovo a float32 in [0, 1]
+      decoded_imgs.append(denoised_img.astype(np.float32) / 255.0)
+
+    decoded_imgs = np.array(decoded_imgs)
+    
+    return decoded_imgs
+\end{lstlisting}
+Il processo di denoising è simile a quello della funzione precedente, ma qui il livello di rumore (\texttt{sigma\_psd\_bm3d}) viene calcolato direttamente dal livello di rumore specificato nella lista, moltiplicato per 255 per adattarsi alla scala richiesta da BM3D.
+Le immagini denoised vengono raccolte e restituite come array NumPy.
+
+\section{Valutazioni}
+Per valutare l'efficacia dei modelli è stato utilizzato il \textbf{Peak Signal-to-Noise Ratio (PSNR)}, una metrica standard per quantificare la qualità delle immagini ricostruite rispetto a quelle di riferimento.  \\
+Le valutazioni sono state effettuate su tre diversi livelli di rumore, al fine di testare la capacità dei modelli di generalizzare a condizioni più o meno difficili.  \\
+I risultati sono confrontati tra loro e in aggiunta è stato calcolato anche con \textbf{BM3D}, considerato uno dei baseline più solidi nel campo del denoising.  \\
+L'analisi consente di evidenziare punti di forza e limiti di ciascuna architettura in scenari controllati.
+\begin{lstlisting}[language=Python, caption={Calcolo di PSNR}, label={lst:psnr_calc}]
+psnrs = [psnr(original_np[i], decoded_imgs[i], data_range=1.0) for i in range(len(decoded_imgs))]
+\end{lstlisting}
+Il calcolo del PSNR viene effettuato confrontando ogni immagine originale con la corrispondente immagine denoised, utilizzando la funzione \texttt{psnr} della libreria \texttt{skimage.metrics}.\\
+Il parametro \texttt{data\_range=1.0} indica che i valori dei pixel sono normalizzati tra 0 e 1.\\
 Il PSNR è definito come il rapporto tra il massimo valore possibile di un segnale e il valore del rumore che disturba la qualità della sua rappresentazione.\\ Normalmente misurato in una scala logaritmica in decibel(dB).\\
 Data l'immagine originale(\textit{g}) e l'immagine rumorosa(\textit{f}), il PSNR è definito come: \[PSNR=20log_{10}(\frac{MAX_f}{\sqrt{MSE}})\] dove $MAX_f$ è il valore massimo del pixel dell'immagine e si calcola come \[MSE=\frac{1}{mn}\sum_{0}^{m-1}\sum_{0}^{n-1}||f(i,j)-g(i,j)||^2  \] mentre $MSE$(\textit{Mean Square Error}) è l'errore quadratico medio tra l'immagine originale e quella rumorosa.\\
 
+Qui di seguito sono riportati i risultati ottenuti in termini di PSNR per ciascun modello e dataset, suddivisi per dataset, livelli di rumore e modelli.
+\begin{table}[ht]
+\centering
+\setlength{\tabcolsep}{2pt} % spaziatura colonne
+\renewcommand{\arraystretch}{1.2} % altezza righe
+\begin{tabular}{!{\vrule width 1.5pt} c l 
+                !{\vrule width 1.5pt} c|c|c 
+                !{\vrule width 1.5pt} c|c|c 
+                !{\vrule width 1.5pt} c|c|c 
+                !{\vrule width 1.5pt} c|c|c 
+                !{\vrule width 1.5pt}}
+\hline
+\multicolumn{2}{!{\vrule width 1.5pt}c!{\vrule width 1.5pt}}{} % Dataset + Rumore vuoti
+& \multicolumn{9}{c!{\vrule width 1.5pt}}{\textbf{Modelli}} 
+& \multicolumn{3}{c!{\vrule width 1.5pt}}{} \\ 
+\cline{3-11}
+\multirow{2}{*}{Dataset} & \multirow{2}{*}{Rumore} 
+& \multicolumn{3}{c}{Ridnet} 
+& \multicolumn{3}{c}{DnCNN} 
+& \multicolumn{3}{c!{\vrule width 1.5pt}}{Autoencoder} 
+& \multicolumn{3}{c!{\vrule width 1.5pt}}{BM3D} \\
+\cline{3-5} \cline{6-8} \cline{9-11} \cline{12-14}
+& & \rowcolor{orange!30} Max & Min & Avg 
+& Max & Min & Avg 
+& Max & Min & Avg 
+& Max & Min & Avg \\
+\hline
+
+\multirow{2}{*}{}
+Renoir & & 40.09 & 25.18 & 30.85 & 35.36 & 21.40 & 28.18 & 37.20 & 21.32 & 29.49 & 46.31 & 18.33 & 32.37 \\
+SIDD   & &\rowcolor{blue!10} 37.84 & 22.38 & 30.13 & 34.93 & 19.68 & 27.31 & 34.43 & 21.64 & 28.11 & 45.36 & 19.99 & 36.05 \\ % \rowcolor{blue!10}
+\hline
+\multirow{3}{*}{BSD500}
+ & $\sigma=15$ & 31.46 & 27.73 & 29.57 & 28.98 & 26.39 & 27.72 & 27.74 & 17.51 & 22.48 & 31.37 & 25.63 & 28.31 \\
+ &\cellcolor{orange!30} $\sigma=25$ &\rowcolor{blue!10} 29.10 & 24.69 & 26.85 & 26.96 & 23.55 & 25.18 & 26.83 & 17.38 & 22.16 & 28.74 & 22.29 & 25.35 \\ % \rowcolor{blue!10}
+ & $\sigma=50$ & 25.93 & 20.66 & 23.35 & 23.54 & 19.33 & 21.46 & 24.69 & 16.94 & 21.21 & 25.89 & 18.22 & 21.79 \\
+\cline{2-14}
+\multirow{3}{*}{FiveK}
+ &\cellcolor{orange!30} $\sigma=15$ &\rowcolor{blue!10} 35.02 & 20.57 & 30.05 & 31.23 & 17.99 & 26.88 & 33.07 & 20.50 & 27.43 & 44.41 & 26.38 & 34.09 \\ % \rowcolor{blue!10}
+ & $\sigma=25$ & 32.39 & 19.58 & 27.76 & 28.79 & 16.42 & 24.61 & 31.59 & 19.27 & 26.03 & 42.29 & 23.49 & 31.51 \\
+ &\cellcolor{orange!30} $\sigma=50$ &\rowcolor{blue!10} 28.54 & 17.15 & 24.38 & 24.27 & 11.69 & 20.39 & 28.03 & 16.38 & 23.79 & 37.65 & 20.73 & 27.35 \\ % \rowcolor{blue!10}
+\cline{2-14}
+\multirow{3}{*}{Div2K}
+ & $\sigma=15$ & 35.17 & 23.36 & 29.76 & 31.39 & 15.15 & 27.41 & 34.89 & 18.18 & 23.32 & 42.39 & 25.88 & 29.82 \\
+ &\cellcolor{orange!30} $\sigma=25$ &\rowcolor{blue!10} 31.94 & 21.17 & 27.07 & 29.08 & 13.45 & 24.98 & 33.02 & 18.04 & 22.82 & 37.13 & 22.58 & 26.79 \\ % \rowcolor{blue!10}
+ & $\sigma=50$ & 28.43 & 18.87 & 23.58 & 24.96 &  9.52 & 21.27 & 28.80 & 17.26 & 21.73 & 28.82 & 18.74 & 22.77 \\
+\bottomrule
+\end{tabular}
+\caption{Confronto PSNR (Max, Min, Avg) per dataset e modello. I dataset non noisy sono valutati su tre livelli di rumore: $\sigma=15$, $\sigma=25$, $\sigma=50$.}
+\end{table}
+
+I risultati qualitativi sono riportati in \autoref{chap:appendice_risultati}.
+\newpage
+\section{Fine Tuning}
+Oltre all'addestramento iniziale, è stato condotto un processo di \textbf{fine tuning} utilizzando il \textbf{Kvasir dataset}, composto da immagini endoscopiche reali.  
+Lo scopo di questa fase è valutare la capacità dei modelli di adattarsi a domini specifici, caratterizzati da rumore e texture differenti rispetto ai dataset sintetici.  
+Il fine tuning permette infatti di affinare i pesi delle reti in modo da specializzarle al contesto medico, migliorando la loro efficacia nella rimozione del rumore in immagini endoscopiche. 
+
+\begin{lstlisting}[language=Python, caption={Definizione nuovo learning scheduler}, label={lst:learning_scheduler}]
+def lr_schedule(epoch):
+"""Linear warmup + cosine decay"""
+if epoch < warmup_epochs:
+    return initial_lr * (epoch / warmup_epochs)
+else:
+    decay_epochs = total_epochs - warmup_epochs
+    cosine_decay = 0.5 * (1 + np.cos(np.pi * (epoch - warmup_epochs) / decay_epochs))
+    return initial_lr * cosine_decay
+\end{lstlisting}
+Per il fine tuning, è stato implementato un nuovo \textbf{learning rate scheduler} che combina un riscaldamento lineare iniziale con un decadimento coseno successivo [\ref{lst:learning_scheduler}].
+Questa strategia consente di iniziare l'addestramento con un tasso di apprendimento basso, per poi aumentarlo gradualmente, riducendolo infine in modo più morbido.
+Questo approccio aiuta a stabilizzare l'addestramento, evitando oscillazioni e favorendo una convergenza più efficace verso un minimo locale ottimale.
+
+\begin{lstlisting}[language=Python, caption={Ottimizzatore e compilazione per fine tuning}, label={lst:finetune_compile}]
+initial_lr = 1e-5
+warmup_epochs = 5
+optimizer = tf.keras.optimizers.Adam(learning_rate=initial_lr) # Usa initial_lr dallo scheduler
+model.compile(optimizer=optimizer, loss="mse", metrics=['accuracy'])
+\end{lstlisting}
+Il tasso di apprendimento iniziale è stato impostato a $1e^{-5}$, con un riscaldamento lineare per le prime 5 epoche.\\
+I modelli sono nuovamente compilati con l'ottimizzatore Adam con il nuovo learning rate e la funzione di perdita MSE.
+
+\begin{lstlisting}[language=Python, caption={Callback per ridurre il LR}, label={lst:lr_reduce}]
+reduce_lr = tf.keras.callbacks.ReduceLROnPlateau(
+    monitor='val_loss',
+    factor=0.2,
+    patience=5,
+    verbose = 1,
+    min_lr=1e-7
+    )
+\end{lstlisting}
+In aggiunta, è stata introdotta una callback \texttt{ReduceLROnPlateau} per ridurre ulteriormente il tasso di apprendimento se la metrica di validazione non migliora per 5 epoche consecutive.\\
+Questo aiuta a evitare stagnazioni durante il fine tuning, permettendo al modello di adattarsi meglio ai nuovi dati.
+
+\begin{lstlisting}[language=Python, caption={Fine tuning dei modelli}, label={lst:ridnet_finetune}]
+callbacks = [
+    cp_callback,
+    cp_callback_2,
+    tensorboard_callback,
+    lrScheduler,
+    csv_logger_cb,
+    reduce_lr
+    ]
+
+dncnn_finetune = dncnn.fit(
+    train_ds_noisy,
+    validation_data=val_ds_noisy,
+    epochs=23,
+    callbacks=callbacks
+)
+\end{lstlisting}
+Nelle callback per il fine tuning sono incluse quelle definite in precedenza per salvare il modello a ogni epoca e il csv con i dati di allenamento, con l'aggiunta di \texttt{reduce\_lr} per la riduzione del learning rate.\\
+Il fine tuning viene eseguito a partire da capo per 23 epoche in modo da coprire l'intero intervallo di apprendimento, con valutazione continua.\\
+
+\subsection{Grafici di fine tuning}
+Qui di seguito sono riportati i grafici delle curve di loss e accuracy per ciascun modello durante il fine tuning sul dataset Kvasir.
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{0.45\textwidth}
+        \includegraphics[width=\linewidth]{img/finetune/ridnet/ridnet_finetune_loss.png}
+        \caption{Loss di training e validation dell'Autoencoder}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.45\textwidth}
+        \includegraphics[width=\linewidth]{img/finetune/ridnet/ridnet_finetune_accuracy.png}
+        \caption{Accuracy di training e validation dell'Autoencoder}
+    \end{subfigure}
+    \caption{Andamento delle curve di fine tuning della Ridnet.}
+    \label{fig:ridnet_finetune}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{0.45\textwidth}
+        \includegraphics[width=\linewidth]{img/finetune/dncnn/dncnn_finetune_loss.png}
+        \caption{Loss di training e validation dell'Autoencoder}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.45\textwidth}
+        \includegraphics[width=\linewidth]{img/finetune/dncnn/dncnn_finetune_accurcy.png}
+        \caption{Accuracy di training e validation dell'Autoencoder}
+    \end{subfigure}
+    \caption{Andamento delle curve di fine tuning della DnCNN.}
+    \label{fig:dncnn_finetune}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{0.45\textwidth}
+        \includegraphics[width=\linewidth]{img/finetune/autoencoder/autoen_finetune_loss.png}
+        \caption{Loss di training e validation dell'Autoencoder}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.45\textwidth}
+        \includegraphics[width=\linewidth]{img/finetune/autoencoder/autoen_finetune_accurcy.png}
+        \caption{Accuracy di training e validation dell'Autoencoder}
+    \end{subfigure}
+    \caption{Andamento delle curve di finetuning dell'Autoencoder.}
+    \label{fig:autoencoder_finetune}
+\end{figure}
+
+\subsection{Valutazion denoising pre e post finetune}
+Qui di seguito sono riportati i risultati ottenuti in termini di PSNR per ciascun modello prima e dopo il fine tuning sul dataset Kvasir, suddivisi per livelli di rumore e modelli.
+
+\begin{table}[ht]
+\centering
+\setlength{\tabcolsep}{5pt} % spaziatura colonne
+\renewcommand{\arraystretch}{1.3} % altezza righe
+\begin{tabular}{!{\vrule width 1.5pt} c l 
+                !{\vrule width 1.5pt} c|c|c 
+                !{\vrule width 1.5pt} c|c|c 
+                !{\vrule width 1.5pt} c|c|c 
+                !{\vrule width 1.5pt} c|c|c
+                !{\vrule width 1.5pt}}
+\hline
+\multicolumn{2}{!{\vrule width 1.5pt}c!{\vrule width 1.5pt}}{}
+& \multicolumn{9}{c!{\vrule width 1.5pt}}{\textbf{Modelli}} \\ 
+\cline{3-11}
+\multirow{2}{*}{Dataset} & \multirow{2}{*}{Rumore} 
+& \multicolumn{3}{c}{Ridnet} 
+& \multicolumn{3}{c}{DnCNN} 
+& \multicolumn{3}{c!{\vrule width 1.5pt}}{Autoencoder}\\
+\cline{3-11}
+& & \rowcolor{orange!30} Max & Min & Avg 
+& Max & Min & Avg 
+& Max & Min & Avg\\
+\hline
+Kvasir          % MAX     MIN     AVG
+ & $\sigma=15$ & 33.66 & 29.81 & 31.67 &
+                 31.48 & 27.39 & 29.50 & 
+                 26.03 & 29.84 & 22.74 \\
+pre
+ &\cellcolor{orange!30} $\sigma=25$ & \rowcolor{blue!10}
+                 31.72 & 27.17 & 29.29 & 
+                 29.28 & 25.42 & 27.28 & 
+                 29.10 & 22.54 & 25.57 \\ % \rowcolor{blue!10}
+fine tune
+ & $\sigma=50$ & 26.06 & 28.57 & 23.92 & 
+                 25.28 & 22.19 & 23.51 & 
+                 27.41 & 21.77 & 24.39 \\
+\hline
+Kvasir
+ &\cellcolor{orange!30} $\sigma=15$ & \rowcolor{blue!10}
+                 32.18 & 34.30 & 30.26 & 
+                 32.49 & 28.84 & 30.48 & 
+                 30.45 & 22.86 & 26.29 \\
+post
+ & $\sigma=25$ & 
+                 32.38 & 27.57 & 29.86 &
+                 30.33 & 26.62 & 28.22 &
+                 29.78 & 22.62 & 25.91 \\ % \rowcolor{blue!10}
+fine tune
+ &\cellcolor{orange!30} $\sigma=50$ & \rowcolor{blue!10}
+                 28.92 & 24.32 & 26.56 &
+                 25.91 & 22.76 & 24.16 &
+                 27.95 & 21.96 & 24.76 \\
+\bottomrule
+\end{tabular}
+\caption{Confronto PSNR (Max, Min, Avg) pre e post fine tuning sul dataset Kvasir. Il dataset essendo non noisy è valutato sui tre livelli di rumore: $\sigma=15$, $\sigma=25$, $\sigma=50$.}
+\end{table}
+
+
+
+
+\subsection{Confronto con BM3D}
+
+
+
+\begin{table}[ht]
+\centering
+\setlength{\tabcolsep}{6pt} % spaziatura colonne
+\renewcommand{\arraystretch}{1.6} % altezza righe
+\begin{tabular}{!{\vrule width 1.5pt} c l 
+                !{\vrule width 1.5pt} c|c|c
+                !{\vrule width 1.5pt}}
+\hline
+\multirow{2}{*}{} & \multirow{2}{*}{Rumore} & \multicolumn{3}{c!{\vrule width 1.5pt}}{BM3D} \\
+\cline{3-5}
+& &\rowcolor{orange!30}\multicolumn{1}{c!}{Max} & Min & Avg\\
+\hline
+\multirow{3}{*}{Kvasir}
+ & $\sigma=15$ & 33.22 & 27.85 & 30.52 \\
+ &\cellcolor{orange!30} 
+   $\sigma=25$ &\rowcolor{blue!10} 
+                 30.38 & 24.83 & 27.43 \\
+ & $\sigma=50$ & 25.56 & 21.12 & 23.60 \\
+\hline
+\bottomrule
+\end{tabular}
+\caption{Statistiche di BM3D come confronto per il fine tuning dei modelli.}
+\end{table}
+
+Nell'appendice \autoref{chap:finetuning_results} sono riportati i risultati qualitativi ottenuti sui diversi dataset con i tre modelli di denoising addestrati: \textbf{Ridnet}, \textbf{DnCNN} e \textbf{Autoencoder}, e \textbf{BM3D}.
+
+\section{Study}
+Infine, è stato svolto uno \textbf{studio di ottimizzazione degli iperparametri} mediante la libreria \textbf{Optuna}, uno strumento di ottimizzazione automatica basato su ricerca bayesiana ed evolutiva.  
+Lo scopo di questo studio è identificare le configurazioni ottimali di parametri quali il learning rate, il numero di filtri convoluzionali e la profondità della rete, al fine di massimizzare le prestazioni in termini di accuratezza e PSNR.  
+Questa analisi sistematica consente di comprendere meglio la sensibilità dei modelli ai diversi settaggi e di definire strategie di addestramento più robuste ed efficienti.  
+
+\subsection{Studio iperparametri finetuning per Ridnet}
+Il primo caso di studio riguarda il modello Ridnet, con l'obiettivo di ottimizzare gli iperparametri per il fine tuning sul dataset Kvasir.
+Gli iperparametri considerati includono:
+\begin{itemize}
+    \item[-] \textbf{Numero di filtri convoluzionali} (\texttt{n\_feats}): valori possibili 32, 64, 128. Che determina la capacità di estrazione delle caratteristiche del modello.
+    \item[-] \textbf{Fattore di riduzione} (\texttt{reduction}): valori possibili 8, 16, 32. Che influenza la compressione delle informazioni all'interno della rete.
+\end{itemize}
+
+\begin{lstlisting}[language=Python, caption={Definizione della funzione obiettivo}, label={lst:optuna_obj}]
+def objective(trial):
+    # Spazio di ricerca
+    n_feats = trial.suggest_categorical("n_feats", [32, 64, 128])
+    reduction = trial.suggest_categorical("reduction", [8, 16, 32])
+    model = build_RIDNET(input_shape=(None, None, 3), n_feats=n_feats, reduction = reduction)
+    model.compile(optimizer=keras.optimizers.Adam(),
+        loss="mse", metrics=["accuracy"] )
+\end{lstlisting}
+La funzione obiettivo \texttt{objective} definisce lo spazio di ricerca degli iperparametri utilizzando le funzioni di Optuna.\\
+Per ogni trial, viene costruito un nuovo modello Ridnet a cui è stata modificata la funzione di build per poter accettare i nuovi iperparametri.\\
+Il modello viene quindi compilato allo stesso modo di prima.
+
+\begin{lstlisting}[language=Python, caption={Corpo funzione obiettivo}, label={lst:optuna_obj}]
+    cp_callback = tf.keras.callbacks.ModelCheckpoint(filepath=f"ridnet_trial_{trial.number}.keras", save_weights_only=False, verbose=1, save_best_only=True)
+
+    cp_callback_weights = tf.keras.callbacks.ModelCheckpoint(filepath=f"ridnet_trial_{trial.number}_weight.keras.h5", save_weights_only=True, verbose=1, save_best_only=True)
+
+    # Addestramento rapido con early stopping (per velocizzare la ricerca)
+    history = model.fit(
+        train_ds_noisy,
+        validation_data=val_ds_noisy,
+        epochs=10,
+        callbacks=[
+            keras.callbacks.EarlyStopping(patience=3, restore_best_weights=True),
+            cp_callback, cp_callback_weights
+            ]
+    )
+
+    # Ritorna la loss di validazione media sull'ultima epoca
+    val_loss = history.history["val_loss"][-1]
+    return val_loss
+\end{lstlisting}
+Per ogni trial, viene definito un callback per salvare il modello e i pesi migliori durante l'addestramento.\\
+Il modello viene addestrato per un numero limitato di epoche (10) con early stopping per velocizzare la ricerca.\\
+La funzione obiettivo ritorna la loss di validazione media dell'ultima epoca, che Optuna cercherà di minimizzare.
+
+\begin{lstlisting}[language=Python, caption={Lancio dello studio Optuna}, label={lst:optuna_study}]
+# Lancio dello studio Optuna
+study = optuna.create_study(direction="minimize", study_name='fine_tuning_ridnet-study')
+study.optimize(objective, n_trials=30)
+
+print("Migliori parametri:", study.best_params)
+print("Migliore loss:", study.best_value)
+\end{lstlisting}
+Lo studio viene creato specificando che l'obiettivo è minimizzare la loss di validazione.\\
+Vengono eseguiti 30 trial per esplorare lo spazio degli iperparametri.\\
+Avendo definito due serie da 3 parametri ciascuno, il numero totale di combinazioni possibili è 9 e per poterne esplorare tutte almeno 3 volte ciascuna, sono stati eseguiti 30 trial.\\
+Al termine, vengono stampati i migliori parametri trovati e il valore della loss corrispondente.
+
+Lo studio è stato dunque completato con iperparametri migliori per il fine tuning di Ridnet:
+\begin{itemize}
+    \item[-] \texttt{trial = 11}
+    \item[-] \texttt{n\_feats = 32}
+    \item[-] \texttt{reduction = 8}
+\end{itemize}
+Con un valore di loss di validazione pari a 0.010027101263403893.
+
+\subsection{Studio iperparametri addestramento per DnCNN}
+Per la \textbf{DnCNN}, lo studio di ottimizzazione degli iperparametri si è concentrato su: 
+\begin{itemize}
+    \item [-] \textbf{Numero di filtri convoluzionali} (\texttt{n\_feats}): valori possibili 32, 64. Che determina la capacità di estrazione delle caratteristiche del modello.
+    \item [-] \textbf{Funzione di attivazione} (\texttt{activation}): valori possibili "relu", "leaky\_relu". Che influenza la non linearità introdotta nel modello.
+    \item [-] \textbf{Parametro alpha per LeakyReLU} (\texttt{alpha}): valori possibili 0.1, 0.2, 0.3. Che determina la pendenza della funzione di attivazione LeakyReLU.
+\end{itemize}
+Per un totale di 12 combinazioni possibili.
+Lo studio è stato condotto sull'addestramento iniziale sui 5 dataset iniziali, piuttosto che sul fine tuning, per valutare la robustezza della DnCNN in un contesto più generale.
+
+\begin{lstlisting}[language=Python, caption={Definizione della funzione obiettivo per DnCNN}, label={lst:dncnn_optuna_obj}]
+def objective(trial):
+    # Spazio di ricerca
+    n_feats = trial.suggest_categorical("n_feats", [32, 64])
+    activation = trial.suggest_categorical("activation", ["relu", "leaky_relu"])
+
+    # costruisci l'oggetto attivazione
+    if activation == "relu":
+        act_layer = tf.keras.layers.ReLU()
+    else:  # leaky_relu
+        alpha = trial.suggest_float("alpha", 0.1, 0.3, step=0.1)
+        act_layer = tf.keras.layers.LeakyReLU(alpha=alpha)
+
+    model = build_DnCNN(input_shape=(None, None, 3), activia=act_layer, n_feats=n_feats)
+\end{lstlisting}
+La funzione obiettivo per DnCNN è simile a quella di Ridnet, ma con l'aggiunta della scelta della funzione di attivazione e del parametro alpha per LeakyReLU.\\
+Il modello viene costruito utilizzando questi iperparametri e una versione modificata della funzione di build per accettare la nuova attivazione.
+Per il resto, la compilazione e l'addestramento sono analoghi a quelli di Ridnet con l'unica differenza di un Early Stop con pazienza 3.\\
+\newpage
+Dello studio sono state completate 18 trial su 30 totali, con i seguenti migliori iperparametri:
+\begin{itemize}
+    \item [-] \texttt{trial = 13}
+    \item [-] \texttt{n\_feats = 32}
+    \item [-] \texttt{activation = 'relu'}
+    \item [-] \texttt{alpha = None}
+\end{itemize}
+Con un valore di loss di validazione pari a 0.00201316736638546.
+
+Il trial 18 aveva gli stessi iperparametri ma un valore di loss più alto(4.324199199676514), probabilmente a causa della natura stocastica dell'addestramento delle reti neurali.
+
+\subsection{Studio iperparametri addestramento per Autoencoder}
+Per la \textbf{Autoencoder}, lo studio di ottimizzazione degli iperparametri si è concentrato su: 
+\begin{itemize}
+    \item [-] \textbf{Numero di filtri convoluzionali} (\texttt{n\_feats}): valori possibili 32, 64, 128. Che determina la capacità di estrazione delle caratteristiche del modello.
+    \item [-] \textbf{Funzione di attivazione} (\texttt{activation}): valori possibili "relu", "leaky\_relu". Che influenza la non linearità introdotta nel modello.
+    \item [-] \textbf{Parametro alpha per LeakyReLU} (\texttt{alpha}): valori possibili 0.1, 0.2, 0.3. Che determina la pendenza della funzione di attivazione LeakyReLU.
+\end{itemize}
+Per un totale di 18 combinazioni possibili.
+Lo studio è stato condotto sull'addestramento iniziale sui 5 dataset iniziali, piuttosto che sul fine tuning, per valutare la robustezza dell'Autoencoder in un contesto più generale.
+
+\begin{lstlisting}[language=Python, caption={Definizione della funzione obiettivo per Autoencoder}, label={lst:autoen_optuna_obj}]
+def objective(trial):
+    # Spazio di ricerca
+    n_feats = trial.suggest_categorical("n_feats", [32, 64, 128])
+    activation = trial.suggest_categorical("activation", ["relu", "leaky_relu"])
+
+    # costruisci l'oggetto attivazione
+    if activation == "relu":
+        act_layer = tf.keras.layers.ReLU()
+    else:  # leaky_relu
+        alpha = trial.suggest_float("alpha", 0.1, 0.3, step=0.1)
+        act_layer = tf.keras.layers.LeakyReLU(alpha=alpha)
+
+    model = build_autoencoder(input_shape=(None, None, 3), n_feats=n_feats,
+    activation = act_layer)
+\end{lstlisting}
+La funzione obiettivo per Autoencoder è uguale a quella di DnCNN, con l'aggiunta di un filtro convoluzionale in più.\\
+Il modello viene costruito utilizzando questi iperparametri e una versione modificata della funzione di build per accettare la nuova attivazione.
+Per il resto, la compilazione e l'addestramento sono analoghi a quelli di DnCNN.
+\newpage
+Dello studio sono state completate 34 trial su 40 totali, con i seguenti migliori iperparametri:
+\begin{itemize}
+    \item [-] \texttt{trial = 29}
+    \item [-] \texttt{n\_feats = 64}
+    \item [-] \texttt{activation = 'relu'}
+    \item [-] \texttt{alpha = None}
+\end{itemize}
+Con un valore di loss di validazione pari a 0.0016350658843293786.
+
+Il trial 34 aveva gli stessi iperparametri ma un valore di loss più alto(0.0026542791165411472), sempre a causa della natura stocastica dell'addestramento delle reti neurali.
+
+\include{appendicite}
+
 \printbibliography
 %\bibliography{bibliography}
-
-
 
 \end{document}
 

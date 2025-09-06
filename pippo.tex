@@ -1,0 +1,77 @@
+\chapter{Dataset Utilizzati}
+
+L’efficacia di qualunque modello di visione artificiale dipende in larga misura dalla qualità, dalla varietà e dalla rappresentatività dei dati su cui viene addestrato. Per questo motivo, in questo lavoro sono stati impiegati cinque dataset pubblici ampiamente adottati nella comunità scientifica. I dataset selezionati sono stati suddivisi in due gruppi: il primo comprende tre dataset \textbf{BSD500} \parencite{MartinFTM01}, \textbf{DIV2K} \parencite{Ignatov_2018_ECCV_Workshops} e \textbf{MIT-Adobe FiveK} \parencite{fivek}, a cui è stato applicato rumore artificiale; il secondo gruppo include due dataset con rumore reale, \textbf{SSID} \parencite{Abdelhamed_2019_CVPR_Workshops} e \textbf{RENOIR} \parencite{anaya2014renoir}.
+
+Nello specifico, i dataset sono stati selezionati per coprire scenari diversi:
+
+\begin{itemize}
+  \item \textbf{BSD500} – immagini naturali utilizzate per segmentazione e denoising;
+  \item \textbf{DIV2K} – immagini ad alta risoluzione per il task di super-risoluzione;
+  \item \textbf{MIT-Adobe FiveK} – dataset per il miglioramento automatico delle immagini (\textit{image enhancement});
+  \item \textbf{SSID} – immagini reali da smartphone per denoising in condizioni di acquisizione realistiche;
+  \item \textbf{RENOIR} – immagini con rumore reale in scenari a bassa illuminazione, acquisite con DSLR e smartphone.
+\end{itemize}
+
+\section{Esempi dei dataset}
+
+Di seguito vengono mostrati esempi rappresentativi dei dataset utilizzati. Le immagini servono a illustrare la tipologia di contenuto e le condizioni di acquisizione.
+
+\subsection{BSD500}
+\begin{figure}[h!]
+    \centering
+    \begin{tabular}{ccc}
+        \fbox{\includegraphics[width=0.3\textwidth]{placeholder_BSD500_1.jpg}} &
+        \fbox{\includegraphics[width=0.3\textwidth]{placeholder_BSD500_2.jpg}} &
+        \fbox{\includegraphics[width=0.3\textwidth]{placeholder_BSD500_3.jpg}} \\
+    \end{tabular}
+    \caption{Esempi di immagini del dataset BSD500, contenenti scene naturali e urbane ad alta qualità.}
+    \label{fig:bsd500_examples}
+\end{figure}
+
+\subsection{DIV2K}
+\begin{figure}[h!]
+    \centering
+    \begin{tabular}{ccc}
+        \fbox{\includegraphics[width=0.3\textwidth]{placeholder_DIV2K_1.jpg}} &
+        \fbox{\includegraphics[width=0.3\textwidth]{placeholder_DIV2K_2.jpg}} &
+        \fbox{\includegraphics[width=0.3\textwidth]{placeholder_DIV2K_3.jpg}} \\
+    \end{tabular}
+    \caption{Esempi di immagini ad alta risoluzione dal dataset DIV2K. Mostrano la varietà semantica e la qualità visiva tipica del dataset.}
+    \label{fig:div2k_examples}
+\end{figure}
+
+\subsection{MIT-Adobe FiveK}
+\begin{figure}[h!]
+    \centering
+    \begin{tabular}{ccc}
+        \fbox{\includegraphics[width=0.3\textwidth]{placeholder_FiveK_1.jpg}} &
+        \fbox{\includegraphics[width=0.3\textwidth]{placeholder_FiveK_2.jpg}} &
+        \fbox{\includegraphics[width=0.3\textwidth]{placeholder_FiveK_3.jpg}} \\
+    \end{tabular}
+    \caption{Esempi di immagini RAW del dataset MIT-Adobe FiveK, con diverse versioni ritoccate da esperti per il miglioramento automatico delle immagini.}
+    \label{fig:fivek_examples}
+\end{figure}
+
+\subsection{SSID}
+\begin{figure}[h!]
+    \centering
+    \begin{tabular}{ccc}
+        \fbox{\includegraphics[width=0.3\textwidth]{placeholder_SSID_1.jpg}} &
+        \fbox{\includegraphics[width=0.3\textwidth]{placeholder_SSID_2.jpg}} &
+        \fbox{\includegraphics[width=0.3\textwidth]{placeholder_SSID_3.jpg}} \\
+    \end{tabular}
+    \caption{Esempi di immagini noisy-clean dal dataset SSID, acquisite con smartphone in condizioni reali di illuminazione.}
+    \label{fig:ssid_examples}
+\end{figure}
+
+\subsection{RENOIR}
+\begin{figure}[h!]
+    \centering
+    \begin{tabular}{ccc}
+        \fbox{\includegraphics[width=0.3\textwidth]{placeholder_RENOIR_1.jpg}} &
+        \fbox{\includegraphics[width=0.3\textwidth]{placeholder_RENOIR_2.jpg}} &
+        \fbox{\includegraphics[width=0.3\textwidth]{placeholder_RENOIR_3.jpg}} \\
+    \end{tabular}
+    \caption{Esempi di immagini noisy-clean-reference del dataset RENOIR, con rumore reale proveniente da diverse fonti (ISO, elettronico, termico).}
+    \label{fig:renoir_examples}
+\end{figure}

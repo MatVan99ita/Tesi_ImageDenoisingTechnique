@@ -1,0 +1,116 @@
+
+\appendix
+\chapter{Appendice:\\Confronto visivo tra modelli} \label{chap:appendice_risultati}
+In questa appendice sono riportati i risultati qualitativi ottenuti
+sui diversi dataset con i tre modelli di denoising addestrati:
+\textbf{Ridnet}, \textbf{DnCNN} e \textbf{Autoencoder}, e \textbf{BM3D}.
+Per ogni dataset e livello di rumore si confrontano le uscite dei modelli.
+
+
+% -------------------------------------------------------
+% Definizione dei modelli
+\def\models{{ridnet},{dncnn},{autoencoder},{bm3d}}
+
+% -------------------------------------------------------
+% Dataset con un solo livello di rumore
+\foreach \dset in {renoir, sidd}{%
+  \begin{sidewaysfigure}[h!]
+    \centering
+    \foreach \m [count=\i] in \models {%
+      \begin{subfigure}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{img/psnr/\m/\m_\dset.jpg}
+        \caption{\m}
+      \end{subfigure}\hspace{2em} % spazio orizzontale tra due subfigure
+      \ifodd\i\else \par\vspace{2ex}\fi % va a capo con spaziatura verticale maggiore
+    }
+    \caption{Dataset \dset}
+  \end{sidewaysfigure}
+}
+
+\clearpage
+
+% -------------------------------------------------------
+% Dataset con tre livelli di rumore
+\foreach \dset in {bsd,fivek,div2k}{%
+  \foreach \n in {15,25,50}{%
+    \begin{sidewaysfigure}[h!]
+      \centering
+      \foreach \m [count=\i] in \models {%
+        \begin{subfigure}{0.48\textwidth}
+          \centering
+          \includegraphics[width=\linewidth]{img/psnr/\m/\m_\dset_\n.jpg}
+          \caption{\m}
+        \end{subfigure}\hspace{2em} % spazio orizzontale tra subfigure
+        \ifodd\i\else \par\vspace{2ex}\fi % spazio verticale maggiore tra le righe
+      }
+      \caption{Dataset \dset – Livello di rumore $\sigma=\n$.}
+    \end{sidewaysfigure}
+  }
+}
+
+\chapter{Risultati Fine Tuning}
+\label{chap:finetuning_results}
+Qui di seguito sono riportati i risultati visivi pre e post fine tuning sul dataset Kvasir, per i tre modelli addestrati: \textbf{Ridnet}, \textbf{DnCNN} e \textbf{Autoencoder}, e \textbf{BM3D}.
+
+% -------------------------------------------------------
+% Dataset con tre livelli di rumore
+\def\modelss{ridnet, dncnn, autoencoder}
+
+\subsection{Pre Fine Tuning}
+
+\foreach \n in {15,25,50}{%
+\begin{sidewaysfigure}[h!]
+    \centering
+    \foreach \m [count=\i] in \modelss {%
+        \begin{subfigure}{0.45\textwidth}
+            \centering
+            \includegraphics[width=\linewidth]{img/finetune/\m/\m_kvasir_pre_\n.png}
+            \caption{\m}
+        \end{subfigure}%
+        % Vai a capo ogni 2 immagini
+        \ifnum\i=2 \par\vspace{2ex}\fi
+    }
+    \caption{Kvasir – Livello di rumore $\sigma=\n$.}
+\end{sidewaysfigure}
+}
+\clearpage
+
+\subsection{Post Fine Tuning}
+\foreach \n in {15,25,50}{%
+\begin{sidewaysfigure}[h!]
+    \centering
+    \foreach \m [count=\i] in \modelss {%
+    \begin{subfigure}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{img/finetune/\m/\m_kvasir_post_\n.png}
+        \caption{\m}
+    \end{subfigure}\hspace{2em} % spazio orizzontale tra subfigure
+    \ifodd\i\else \par\vspace{2ex}\fi % spazio verticale maggiore tra le righe
+    }
+    \caption{Kvasir – Livello di rumore $\sigma=\n$.}
+\end{sidewaysfigure}
+}
+\clearpage
+\subsection{BM3D}
+
+\begin{sidewaysfigure}[h!]
+    \centering
+    \foreach \n [count=\i] in {15,25,50}{%x
+        \begin{subfigure}{0.48\textwidth}
+            \centering
+            \includegraphics[width=\linewidth]{img/finetune/bm3d/bm3d_\n.png}
+            \caption{BM3D – $\sigma=\n$}
+        \end{subfigure}\hspace{2em}%
+        % Vai a capo dopo ogni 2 immagini
+        \ifnum\i=2 \par\vspace{2ex}\fi
+    }
+    \caption{Kvasir – Confronto BM3D ai diversi livelli di rumore.}
+\end{sidewaysfigure}
+
+
+
+
+
+\chapter{Ringraziamenti} 
+Nessuno perchè sono bellissimo(<- poi metterò)

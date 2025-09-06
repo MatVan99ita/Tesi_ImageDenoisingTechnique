@@ -1,0 +1,776 @@
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (MiKTeX 25.4) (preloaded format=pdflatex.fmt)
+ restricted \write18 enabled.
+entering extended mode
+(main.tex
+LaTeX2e <2025-06-01> patch level 1
+L3 programming layer <2025-07-20>
+(C:\Program Files\MiKTeX\tex/latex/base\book.cls
+Document Class: book 2025/01/22 v1.4n Standard LaTeX document class
+(C:\Program Files\MiKTeX\tex/latex/base\bk12.clo))
+(C:\Program Files\MiKTeX\tex/latex/base\inputenc.sty) (thesis-style.sty
+(C:\Program Files\MiKTeX\tex/latex/algorithms\algorithm.sty
+(C:\Program Files\MiKTeX\tex/latex/float\float.sty)
+(C:\Program Files\MiKTeX\tex/latex/base\ifthen.sty))
+(C:\Program Files\MiKTeX\tex/latex/algorithmicx\algpseudocode.sty
+(C:\Program Files\MiKTeX\tex/latex/algorithmicx\algorithmicx.sty
+Document Style algorithmicx 1.2 - a greatly improved `algorithmic' style
+)
+Document Style - pseudocode environments for use with the `algorithmicx' style
+) (C:\Program Files\MiKTeX\tex/latex/amsmath\amsmath.sty
+For additional information on amsmath, use the `?' option.
+(C:\Program Files\MiKTeX\tex/latex/amsmath\amstext.sty
+(C:\Program Files\MiKTeX\tex/latex/amsmath\amsgen.sty))
+(C:\Program Files\MiKTeX\tex/latex/amsmath\amsbsy.sty)
+(C:\Program Files\MiKTeX\tex/latex/amsmath\amsopn.sty))
+(C:\Program Files\MiKTeX\tex/latex/amscls\amsthm.sty)
+(C:\Program Files\MiKTeX\tex/latex/amsfonts\amssymb.sty
+(C:\Program Files\MiKTeX\tex/latex/amsfonts\amsfonts.sty))
+(C:\Program Files\MiKTeX\tex/latex/tools\bm.sty)
+(C:\Program Files\MiKTeX\tex/latex/booktabs\booktabs.sty)
+(C:\Program Files\MiKTeX\tex/latex/colortbl\colortbl.sty
+(C:\Program Files\MiKTeX\tex/latex/tools\array.sty)
+(C:\Program Files\MiKTeX\tex/latex/graphics\color.sty
+(C:\Program Files\MiKTeX\tex/latex/graphics-cfg\color.cfg)
+(C:\Program Files\MiKTeX\tex/latex/graphics-def\pdftex.def)
+(C:\Program Files\MiKTeX\tex/latex/graphics\mathcolor.ltx)))
+(C:\Program Files\MiKTeX\tex/latex/graphics\graphicx.sty
+(C:\Program Files\MiKTeX\tex/latex/graphics\keyval.sty)
+(C:\Program Files\MiKTeX\tex/latex/graphics\graphics.sty
+(C:\Program Files\MiKTeX\tex/latex/graphics\trig.sty)
+(C:\Program Files\MiKTeX\tex/latex/graphics-cfg\graphics.cfg)))
+(C:\Program Files\MiKTeX\tex/latex/caption\subcaption.sty
+(C:\Program Files\MiKTeX\tex/latex/caption\caption.sty
+(C:\Program Files\MiKTeX\tex/latex/caption\caption3.sty)))
+(C:\Program Files\MiKTeX\tex/latex/adjustbox\adjustbox.sty
+(C:\Program Files\MiKTeX\tex/latex/xkeyval\xkeyval.sty
+(C:\Program Files\MiKTeX\tex/generic/xkeyval\xkeyval.tex
+(C:\Program Files\MiKTeX\tex/generic/xkeyval\xkvutils.tex)))
+(C:\Program Files\MiKTeX\tex/latex/adjustbox\adjcalc.sty)
+(C:\Program Files\MiKTeX\tex/latex/adjustbox\trimclip.sty
+(C:\Program Files\MiKTeX\tex/latex/collectbox\collectbox.sty)
+(C:\Program Files\MiKTeX\tex/latex/adjustbox\tc-pdftex.def))
+(C:\Program Files\MiKTeX\tex/latex/ifoddpage\ifoddpage.sty)
+(C:\Program Files\MiKTeX\tex/latex/varwidth\varwidth.sty)
+==> First Aid for varwidth.sty applied!
+) (C:\Program Files\MiKTeX\tex/latex/geometry\geometry.sty
+(C:\Program Files\MiKTeX\tex/generic/iftex\ifvtex.sty
+(C:\Program Files\MiKTeX\tex/generic/iftex\iftex.sty))
+(C:\Program Files\MiKTeX\tex/latex/geometry\geometry.cfg))
+(C:\Program Files\MiKTeX\tex/latex/base\latexsym.sty)
+(C:\Program Files\MiKTeX\tex/latex/listings\listings.sty
+(C:\Program Files\MiKTeX\tex/latex/listings\lstpatch.sty)
+(C:\Program Files\MiKTeX\tex/latex/listings\lstmisc.sty)
+(C:\Program Files\MiKTeX\tex/latex/listings\listings.cfg))
+(C:\Program Files\MiKTeX\tex/latex/base\makeidx.sty)
+(C:\Program Files\MiKTeX\tex/latex/minted\minted.sty
+(C:\Program Files\MiKTeX\tex/generic/catchfile\catchfile.sty
+(C:\Program Files\MiKTeX\tex/generic/infwarerr\infwarerr.sty)
+(C:\Program Files\MiKTeX\tex/generic/ltxcmds\ltxcmds.sty)
+(C:\Program Files\MiKTeX\tex/generic/etexcmds\etexcmds.sty))
+(C:\Program Files\MiKTeX\tex/latex/etoolbox\etoolbox.sty)
+(C:\Program Files\MiKTeX\tex/latex/fvextra\fvextra.sty
+(C:\Program Files\MiKTeX\tex/latex/fancyvrb\fancyvrb.sty)
+(C:\Program Files\MiKTeX\tex/generic/pdftexcmds\pdftexcmds.sty)
+(C:\Program Files\MiKTeX\tex/latex/upquote\upquote.sty)
+(C:\Program Files\MiKTeX\tex/latex/lineno\lineno.sty
+(C:\Program Files\MiKTeX\tex/latex/kvoptions\kvoptions.sty
+(C:\Program Files\MiKTeX\tex/latex/kvsetkeys\kvsetkeys.sty))))
+(C:\Program Files\MiKTeX\tex/latex/latex2pydata\latex2pydata.sty)
+(C:\Program Files\MiKTeX\tex/latex/pgf/utilities\pgfkeys.sty
+(C:\Program Files\MiKTeX\tex/generic/pgf/utilities\pgfkeys.code.tex
+(C:\Program Files\MiKTeX\tex/generic/pgf/utilities\pgfkeyslibraryfiltered.code.
+tex))) (C:\Program Files\MiKTeX\tex/latex/pgfopts\pgfopts.sty)
+(C:\Program Files\MiKTeX\tex/latex/tools\shellesc.sty))
+(C:\Program Files\MiKTeX\tex/latex/nicematrix\nicematrix.sty
+(C:\Program Files\MiKTeX\tex/latex/pgf/basiclayer\pgfcore.sty
+(C:\Program Files\MiKTeX\tex/latex/pgf/systemlayer\pgfsys.sty
+(C:\Program Files\MiKTeX\tex/latex/pgf/utilities\pgfrcs.sty
+(C:\Program Files\MiKTeX\tex/generic/pgf/utilities\pgfutil-common.tex)
+(C:\Program Files\MiKTeX\tex/generic/pgf/utilities\pgfutil-latex.def)
+(C:\Program Files\MiKTeX\tex/generic/pgf/utilities\pgfrcs.code.tex
+(C:\Program Files\MiKTeX\tex/generic/pgf\pgf.revision.tex)))
+(C:\Program Files\MiKTeX\tex/generic/pgf/systemlayer\pgfsys.code.tex
+(C:\Program Files\MiKTeX\tex/generic/pgf/systemlayer\pgf.cfg)
+(C:\Program Files\MiKTeX\tex/generic/pgf/systemlayer\pgfsys-pdftex.def
+(C:\Program Files\MiKTeX\tex/generic/pgf/systemlayer\pgfsys-common-pdf.def)))
+(C:\Program Files\MiKTeX\tex/generic/pgf/systemlayer\pgfsyssoftpath.code.tex)
+(C:\Program Files\MiKTeX\tex/generic/pgf/systemlayer\pgfsysprotocol.code.tex))
+(C:\Program Files\MiKTeX\tex/latex/xcolor\xcolor.sty
+(C:\Program Files\MiKTeX\tex/latex/graphics-cfg\color.cfg)
+(C:\Program Files\MiKTeX\tex/latex/graphics\mathcolor.ltx))
+(C:\Program Files\MiKTeX\tex/generic/pgf/basiclayer\pgfcore.code.tex
+(C:\Program Files\MiKTeX\tex/generic/pgf/math\pgfmath.code.tex
+(C:\Program Files\MiKTeX\tex/generic/pgf/math\pgfmathutil.code.tex)
+(C:\Program Files\MiKTeX\tex/generic/pgf/math\pgfmathparser.code.tex)
+(C:\Program Files\MiKTeX\tex/generic/pgf/math\pgfmathfunctions.code.tex)
+(C:\Program Files\MiKTeX\tex/generic/pgf/math\pgfmathfunctions.basic.code.tex)
+(C:\Program Files\MiKTeX\tex/generic/pgf/math\pgfmathfunctions.trigonometric.co
+de.tex)
+(C:\Program Files\MiKTeX\tex/generic/pgf/math\pgfmathfunctions.random.code.tex)
+
+(C:\Program Files\MiKTeX\tex/generic/pgf/math\pgfmathfunctions.comparison.code.
+tex)
+(C:\Program Files\MiKTeX\tex/generic/pgf/math\pgfmathfunctions.base.code.tex)
+(C:\Program Files\MiKTeX\tex/generic/pgf/math\pgfmathfunctions.round.code.tex)
+(C:\Program Files\MiKTeX\tex/generic/pgf/math\pgfmathfunctions.misc.code.tex)
+(C:\Program Files\MiKTeX\tex/generic/pgf/math\pgfmathfunctions.integerarithmeti
+cs.code.tex) (C:\Program Files\MiKTeX\tex/generic/pgf/math\pgfmathcalc.code.tex
+) (C:\Program Files\MiKTeX\tex/generic/pgf/math\pgfmathfloat.code.tex))
+(C:\Program Files\MiKTeX\tex/generic/pgf/math\pgfint.code.tex)
+(C:\Program Files\MiKTeX\tex/generic/pgf/basiclayer\pgfcorepoints.code.tex)
+(C:\Program Files\MiKTeX\tex/generic/pgf/basiclayer\pgfcorepathconstruct.code.t
+ex)
+(C:\Program Files\MiKTeX\tex/generic/pgf/basiclayer\pgfcorepathusage.code.tex)
+(C:\Program Files\MiKTeX\tex/generic/pgf/basiclayer\pgfcorescopes.code.tex)
+(C:\Program Files\MiKTeX\tex/generic/pgf/basiclayer\pgfcoregraphicstate.code.te
+x)
+(C:\Program Files\MiKTeX\tex/generic/pgf/basiclayer\pgfcoretransformations.code
+.tex) (C:\Program Files\MiKTeX\tex/generic/pgf/basiclayer\pgfcorequick.code.tex
+) (C:\Program Files\MiKTeX\tex/generic/pgf/basiclayer\pgfcoreobjects.code.tex)
+(C:\Program Files\MiKTeX\tex/generic/pgf/basiclayer\pgfcorepathprocessing.code.
+tex) (C:\Program Files\MiKTeX\tex/generic/pgf/basiclayer\pgfcorearrows.code.tex
+) (C:\Program Files\MiKTeX\tex/generic/pgf/basiclayer\pgfcoreshade.code.tex)
+(C:\Program Files\MiKTeX\tex/generic/pgf/basiclayer\pgfcoreimage.code.tex)
+(C:\Program Files\MiKTeX\tex/generic/pgf/basiclayer\pgfcoreexternal.code.tex)
+(C:\Program Files\MiKTeX\tex/generic/pgf/basiclayer\pgfcorelayers.code.tex)
+(C:\Program Files\MiKTeX\tex/generic/pgf/basiclayer\pgfcoretransparency.code.te
+x) (C:\Program Files\MiKTeX\tex/generic/pgf/basiclayer\pgfcorepatterns.code.tex
+) (C:\Program Files\MiKTeX\tex/generic/pgf/basiclayer\pgfcorerdf.code.tex)))
+(C:\Program Files\MiKTeX\tex/generic/pgf/modules\pgfmoduleshapes.code.tex))
+(C:\Program Files\MiKTeX\tex/latex/pgf/frontendlayer\tikz.sty
+(C:\Program Files\MiKTeX\tex/latex/pgf/basiclayer\pgf.sty
+(C:\Program Files\MiKTeX\tex/generic/pgf/modules\pgfmoduleplot.code.tex)
+(C:\Program Files\MiKTeX\tex/latex/pgf/compatibility\pgfcomp-version-0-65.sty)
+(C:\Program Files\MiKTeX\tex/latex/pgf/compatibility\pgfcomp-version-1-18.sty))
+ (C:\Program Files\MiKTeX\tex/latex/pgf/utilities\pgffor.sty
+(C:\Program Files\MiKTeX\tex/latex/pgf/math\pgfmath.sty
+(C:\Program Files\MiKTeX\tex/generic/pgf/math\pgfmath.code.tex))
+(C:\Program Files\MiKTeX\tex/generic/pgf/utilities\pgffor.code.tex))
+(C:\Program Files\MiKTeX\tex/generic/pgf/frontendlayer/tikz\tikz.code.tex
+(C:\Program Files\MiKTeX\tex/generic/pgf/libraries\pgflibraryplothandlers.code.
+tex) (C:\Program Files\MiKTeX\tex/generic/pgf/modules\pgfmodulematrix.code.tex)
+
+(C:\Program Files\MiKTeX\tex/generic/pgf/frontendlayer/tikz/libraries\tikzlibra
+rytopaths.code.tex))) (C:\Program Files\MiKTeX\tex/latex/titlesec\titlesec.sty)
+ (C:\Program Files\MiKTeX\tex/latex/wrapfig\wrapfig.sty)
+(C:\Program Files\MiKTeX\tex/latex/hyperref\hyperref.sty
+(C:\Program Files\MiKTeX\tex/generic/kvdefinekeys\kvdefinekeys.sty)
+(C:\Program Files\MiKTeX\tex/generic/pdfescape\pdfescape.sty)
+(C:\Program Files\MiKTeX\tex/latex/hycolor\hycolor.sty)
+(C:\Program Files\MiKTeX\tex/latex/hyperref\nameref.sty
+(C:\Program Files\MiKTeX\tex/latex/refcount\refcount.sty)
+(C:\Program Files\MiKTeX\tex/generic/gettitlestring\gettitlestring.sty))
+(C:\Program Files\MiKTeX\tex/generic/stringenc\stringenc.sty)
+(C:\Program Files\MiKTeX\tex/latex/hyperref\pd1enc.def)
+(C:\Program Files\MiKTeX\tex/generic/intcalc\intcalc.sty)
+(C:\Program Files\MiKTeX\tex/latex/hyperref\puenc.def)
+(C:\Program Files\MiKTeX\tex/latex/url\url.sty)
+(C:\Program Files\MiKTeX\tex/generic/bitset\bitset.sty
+(C:\Program Files\MiKTeX\tex/generic/bigintcalc\bigintcalc.sty)))
+(C:\Program Files\MiKTeX\tex/latex/hyperref\hpdftex.def
+(C:\Program Files\MiKTeX\tex/latex/rerunfilecheck\rerunfilecheck.sty
+(C:\Program Files\MiKTeX\tex/generic/uniquecounter\uniquecounter.sty)))
+(C:\Program Files\MiKTeX\tex/latex/cleveref\cleveref.sty)
+==> First Aid for cleveref.sty applied!
+(C:\Program Files\MiKTeX\tex/latex/biblatex\biblatex.sty
+(C:\Program Files\MiKTeX\tex/latex/logreq\logreq.sty
+(C:\Program Files\MiKTeX\tex/latex/logreq\logreq.def))
+(C:\Program Files\MiKTeX\tex/latex/biblatex\blx-dm.def)
+(C:\Program Files\MiKTeX\tex/latex/biblatex\blx-compat.def)
+(C:\Program Files\MiKTeX\tex/latex/biblatex\biblatex.def)
+(C:\Program Files\MiKTeX\tex/latex/biblatex/bbx\numeric.bbx
+(C:\Program Files\MiKTeX\tex/latex/biblatex/bbx\standard.bbx))
+(C:\Program Files\MiKTeX\tex/latex/biblatex/cbx\authoryear.cbx)
+(C:\Program Files\MiKTeX\tex/latex/biblatex\biblatex.cfg)
+(C:\Program Files\MiKTeX\tex/latex/l3kernel\expl3.sty
+(C:\Program Files\MiKTeX\tex/latex/l3backend\l3backend-pdftex.def))
+(C:\Program Files\MiKTeX\tex/latex/biblatex\blx-case-expl3.sty
+(C:\Program Files\MiKTeX\tex/latex/l3packages/xparse\xparse.sty)))
+(C:\Program Files\MiKTeX\tex/latex/listings\lstlang1.sty)) (main.aux
+
+LaTeX Warning: Label `fig:bsd500_examples' multiply defined.
+
+
+LaTeX Warning: Label `fig:bsd500_examples@cref' multiply defined.
+
+
+LaTeX Warning: Label `lst:' multiply defined.
+
+
+LaTeX Warning: Label `lst:@cref' multiply defined.
+
+
+LaTeX Warning: Label `lst:' multiply defined.
+
+
+LaTeX Warning: Label `lst:@cref' multiply defined.
+
+
+LaTeX Warning: Label `fig:tabella_immagini' multiply defined.
+
+
+LaTeX Warning: Label `fig:tabella_immagini@cref' multiply defined.
+
+
+LaTeX Warning: Label `lst:' multiply defined.
+
+
+LaTeX Warning: Label `lst:@cref' multiply defined.
+
+) (C:\Program Files\MiKTeX\tex/context/base/mkii\supp-pdf.mkii
+[Loading MPS to PDF converter (version 2006.09.02).]
+) (C:\Program Files\MiKTeX\tex/latex/epstopdf-pkg\epstopdf-base.sty
+(C:\Program Files\MiKTeX\tex/latex/00miktex\epstopdf-sys.cfg))
+*geometry* driver: auto-detecting
+*geometry* detected driver: pdftex
+(C:\Program Files\MiKTeX\tex/latex/base\textcomp.sty) (main.out) (main.out)
+(C:\Program Files\MiKTeX\tex/latex/biblatex/lbx\english.lbx)
+No file main.bbl.
+(front.tex
+[1{C:/Users/vanni/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}])
+[2] (main.toc (C:\Program Files\MiKTeX\tex/latex/amsfonts\umsa.fd)
+(C:\Program Files\MiKTeX\tex/latex/amsfonts\umsb.fd)
+(C:\Program Files\MiKTeX\tex/latex/base\ulasy.fd)
+[3])
+[4] (main.lof)
+[5]
+[6] (main.lol
+[7])
+[8]
+[1]
+[2]
+Chapter 1.
+
+LaTeX Warning: Citation 'janesick2007' on page 1 undefined on input line 41.
+
+
+LaTeX Warning: Citation 'foi2008' on page 1 undefined on input line 41.
+
+
+LaTeX Warning: Citation 'makitalo2013' on page 1 undefined on input line 42.
+
+
+LaTeX Warning: Citation 'foi2008' on page 1 undefined on input line 42.
+
+
+LaTeX Warning: Citation 'gomez2014' on page 1 undefined on input line 43.
+
+
+LaTeX Warning: Citation 'goodman1976' on page 1 undefined on input line 44.
+
+
+LaTeX Warning: Citation 'despeckle_survey' on page 1 undefined on input line 44
+.
+
+
+LaTeX Warning: Citation 'wallace1991' on page 1 undefined on input line 45.
+
+
+LaTeX Warning: Citation 'eschbach1997' on page 1 undefined on input line 45.
+
+
+
+pdfTeX warning (ext4): destination with the same identifier (name{page.1}) has 
+been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.46 \end{itemize}
+                   [1]
+
+LaTeX Warning: Citation 'foi2008' on page 2 undefined on input line 52.
+
+
+LaTeX Warning: Citation 'janesick2007' on page 2 undefined on input line 52.
+
+
+LaTeX Warning: Citation 'janesick2007' on page 2 undefined on input line 53.
+
+
+LaTeX Warning: Citation 'foi2008' on page 2 undefined on input line 53.
+
+
+LaTeX Warning: Citation 'gomez2014' on page 2 undefined on input line 54.
+
+
+LaTeX Warning: Citation 'janesick2007' on page 2 undefined on input line 55.
+
+
+LaTeX Warning: Citation 'wallace1991' on page 2 undefined on input line 56.
+
+
+LaTeX Warning: Citation 'eschbach1997' on page 2 undefined on input line 56.
+
+
+LaTeX Warning: Citation 'median_filter_overview' on page 2 undefined on input l
+ine 64.
+
+
+LaTeX Warning: Citation 'tomasi1998' on page 2 undefined on input line 65.
+
+
+LaTeX Warning: Citation 'paris2008' on page 2 undefined on input line 65.
+
+
+Overfull \hbox (61.6994pt too wide) in paragraph at lines 63--66
+\OT1/cmr/m/n/12 mostrato che mantiene i bordi meglio dei fil-tri lin-eari per r
+u-more mod-er-ato ([])
+
+LaTeX Warning: Citation 'donoho1995' on page 2 undefined on input line 67.
+
+
+LaTeX Warning: Citation 'springer2003' on page 2 undefined on input line 67.
+
+
+LaTeX Warning: Citation 'eurasip2020' on page 2 undefined on input line 67.
+
+
+LaTeX Warning: Citation 'buades2005nonlocal' on page 2 undefined on input line 
+74.
+
+
+
+pdfTeX warning (ext4): destination with the same identifier (name{page.2}) has 
+been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.75     \item \textbf
+                      {BM3D (Block Matching 3D)} \parencite{dabov2007bm3d}: ...
+[2]
+
+LaTeX Warning: Citation 'dabov2007bm3d' on page 3 undefined on input line 75.
+
+
+LaTeX Warning: Citation 'FanLinwei2019Broi' on page 3 undefined on input line 9
+2.
+
+
+LaTeX Warning: Citation 'wang2020_review' on page 3 undefined on input line 92.
+
+
+
+Overfull \hbox (46.66647pt too wide) in paragraph at lines 92--93
+[]\OT1/cmr/m/n/12 dove $\OML/cmm/m/it/12 D$ \OT1/cmr/m/n/12 ^^Re il dizionario 
+e $\OML/cmm/m/it/12 $ \OT1/cmr/m/n/12 il vet-tore dei co-ef-fi-ci-enti sparsi 
+([]; []). 
+
+LaTeX Warning: Citation 'lebrun2012_ksvd' on page 3 undefined on input line 95.
+
+
+
+LaTeX Warning: Citation 'wikipedia_ksvd' on page 3 undefined on input line 95.
+
+
+LaTeX Warning: Citation 'xiaok_svdp' on page 3 undefined on input line 96.
+
+
+LaTeX Warning: Citation 'sheng2022srnet' on page 3 undefined on input line 97.
+
+
+LaTeX Warning: Citation 'garcia2018convdict' on page 3 undefined on input line 
+98.
+
+
+LaTeX Warning: Citation '2022_accv_cscnet' on page 3 undefined on input line 98
+.
+
+
+LaTeX Warning: Citation 'cloud_ksvd2023' on page 3 undefined on input line 99.
+
+
+Overfull \hbox (44.2021pt too wide) in paragraph at lines 99--100
+[]\OT1/cmr/bx/n/12 Denoising co-op-er-a-tivo dis-tribuito: \OT1/cmr/m/n/12 pro-
+poste come \OT1/cmr/m/it/12 Cloud K-SVD \OT1/cmr/m/n/12 per-me-t-tono l`apprend
+imento
+
+LaTeX Warning: Citation 'zhang2017dncnn' on page 3 undefined on input line 106.
+
+
+
+LaTeX Warning: Citation 'zhang2018ffdnet' on page 3 undefined on input line 106
+.
+
+
+
+pdfTeX warning (ext4): destination with the same identifier (name{page.3}) has 
+been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.107     \item \textbf
+                       {Metodi auto-supervisionati:} Noise2Noise \parencite{...
+[3]
+
+LaTeX Warning: Citation 'lehtinen2018noise2noise' on page 4 undefined on input 
+line 107.
+
+
+LaTeX Warning: Citation '9010324' on page 4 undefined on input line 108.
+
+
+LaTeX Warning: Citation 'hore2010psnr' on page 4 undefined on input line 114.
+
+
+LaTeX Warning: Citation 'wang2004ssim' on page 4 undefined on input line 115.
+
+
+LaTeX Warning: Citation 'buades2005nonlocal' on page 4 undefined on input line 
+117.
+
+
+LaTeX Warning: Citation 'dabov2007bm3d' on page 4 undefined on input line 117.
+
+
+LaTeX Warning: Citation 'gonzalez2018digital' on page 4 undefined on input line
+ 121.
+
+
+LaTeX Warning: Citation 'gonzalez2018digital' on page 4 undefined on input line
+ 125.
+
+
+LaTeX Warning: Citation 'gonzalez2018digital' on page 4 undefined on input line
+ 126.
+
+
+LaTeX Warning: Citation 'huang1979median' on page 4 undefined on input line 127
+.
+
+
+LaTeX Warning: Citation 'oppenheim1999discrete' on page 4 undefined on input li
+ne 131.
+
+
+Overfull \hbox (28.28593pt too wide) in paragraph at lines 131--133
+\OT1/cmr/m/n/12 as-so-ciate al ru-more) da quelle a bassa fre-quenza (con-tenut
+o strut-turale) ([]).
+
+
+pdfTeX warning (ext4): destination with the same identifier (name{page.4}) has 
+been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.138   \item P
+               restazioni limitate su rumore non uniforme o strutturato.
+[4]
+
+LaTeX Warning: Citation 'MartinFTM01' on page 5 undefined on input line 145.
+
+
+LaTeX Warning: Citation '5995413' on page 5 undefined on input line 145.
+
+
+LaTeX Warning: Citation 'Abdelhamed_2019_CVPR_Workshops' on page 5 undefined on
+ input line 145.
+
+
+LaTeX Warning: Citation 'Ignatov_2018_ECCV_Workshops' on page 5 undefined on in
+put line 145.
+
+
+LaTeX Warning: Citation 'anaya2014renoir' on page 5 undefined on input line 145
+.
+
+
+Overfull \hbox (23.74384pt too wide) in paragraph at lines 144--146
+\OT1/cmr/m/n/12 Negli ul-timi anni, l`intelligenza ar-ti-fi-ciale ha rivoluzion
+-ato il de-nois-ing delle im-mag-ini. L`integrazione
+
+Overfull \hbox (13.55783pt too wide) in paragraph at lines 144--146
+\OT1/cmr/m/n/12 tradizion-ali, ot-te-nendo prestazioni su-pe-ri-ori su dataset 
+stan-dard come BSD500 ([]),
+
+Overfull \hbox (175.65611pt too wide) in paragraph at lines 144--146
+\OT1/cmr/m/n/12 MIT-Adobe FiveK ([]), SIDD ([]), DIV2K ([])
+
+LaTeX Warning: Citation 'zhang2017dncnn' on page 5 undefined on input line 149.
+
+
+
+LaTeX Warning: Citation 'zhang2018ffdnet' on page 5 undefined on input line 153
+.
+
+
+LaTeX Warning: Citation 'lehtinen2018noise2noise' on page 5 undefined on input 
+line 157.
+
+
+LaTeX Warning: Citation 'buades2005nonlocal' on page 5 undefined on input line 
+174.
+
+
+LaTeX Warning: Citation 'dabov2007bm3d' on page 5 undefined on input line 174.
+
+
+Overfull \hbox (12.24557pt too wide) in paragraph at lines 174--175
+\OT1/cmr/m/n/12 Metodi come \OT1/cmr/bx/n/12 Non-Local Means \OT1/cmr/m/n/12 (N
+LM) ([]) e \OT1/cmr/bx/n/12 BM3D \OT1/cmr/m/n/12 ([])
+
+
+pdfTeX warning (ext4): destination with the same identifier (name{page.5}) has 
+been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.175 
+       [5]
+
+LaTeX Warning: Citation 'aharon2006ksvd' on page 6 undefined on input line 178.
+
+
+
+LaTeX Warning: Citation 'wang2020_review' on page 6 undefined on input line 178
+.
+
+
+LaTeX Warning: Citation 'cloud_ksvd2023' on page 6 undefined on input line 178.
+
+
+
+Overfull \hbox (6.2667pt too wide) in paragraph at lines 178--179
+\OT1/cmr/m/n/12 Questi ap-procci model-lano ogni patch come una com-bi-nazione 
+sparsa di el-e-menti di un dizionario.
+
+LaTeX Warning: Citation 'zhang2017dncnn' on page 6 undefined on input line 184.
+
+
+
+LaTeX Warning: Citation 'zhang2018ffdnet' on page 6 undefined on input line 184
+.
+
+
+LaTeX Warning: Citation 'lehtinen2018noise2noise' on page 6 undefined on input 
+line 184.
+
+
+LaTeX Warning: Citation '9010324' on page 6 undefined on input line 186.
+
+
+Overfull \hbox (8.99538pt too wide) in paragraph at lines 186--188
+\OT1/cmr/m/n/12 miglio-rato la ca-pacit^^Ra di gen-er-al-iz-zazione a di-versi 
+tipi di ru-more e sce-nari com-p-lessi. L`evoluzione
+
+LaTeX Warning: Citation 'wang2020_review' on page 6 undefined on input line 193
+.
+
+
+LaTeX Warning: Citation 'wang2020_review' on page 6 undefined on input line 193
+.
+
+
+
+pdfTeX warning (ext4): destination with the same identifier (name{page.6}) has 
+been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.201 \chapter
+              {Reti neurali analizzate} [6]
+Chapter 2.
+
+LaTeX Warning: Citation 'buades2005nonlocal' on page 7 undefined on input line 
+205.
+
+
+LaTeX Warning: Citation 'buades2005nlmeans' on page 7 undefined on input line 2
+05.
+
+
+LaTeX Warning: Citation 'dabov2007bm3d' on page 7 undefined on input line 205.
+
+
+LaTeX Warning: Citation 'zhang2017dncnn' on page 7 undefined on input line 206.
+
+
+
+LaTeX Warning: Citation 'zhang2018ffdnet' on page 7 undefined on input line 206
+.
+
+
+LaTeX Warning: Citation 'lehtinen2018noise2noise' on page 7 undefined on input 
+line 206.
+
+
+LaTeX Warning: Citation 'batson2019noise2self' on page 7 undefined on input lin
+e 206.
+
+
+LaTeX Warning: Citation 'Abdelhamed_2019_CVPR_Workshops' on page 7 undefined on
+ input line 216.
+
+
+LaTeX Warning: Citation 'janesick2007' on page 7 undefined on input line 217.
+
+
+LaTeX Warning: Citation 'foi2008' on page 7 undefined on input line 217.
+
+
+LaTeX Warning: Citation 'makitalo2013' on page 7 undefined on input line 217.
+
+
+Overfull \hbox (36.64227pt too wide) in paragraph at lines 216--220
+\OT1/cmr/m/n/12 e ro-busti per la riduzione del ru-more in im-mag-ini nat-u-ral
+i ([]). 
+
+Underfull \hbox (badness 10000) in paragraph at lines 216--220
+
+
+LaTeX Warning: Citation 'he2016deep' on page 7 undefined on input line 221.
+
+
+LaTeX Warning: Citation 'hu2018squeeze' on page 7 undefined on input line 222.
+
+
+
+pdfTeX warning (ext4): destination with the same identifier (name{page.7}) has 
+been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.224 \end{itemize}
+                    [7]
+
+LaTeX Warning: Citation 'dabov2007bm3d' on page 8 undefined on input line 226.
+
+
+LaTeX Warning: Citation 'buades2005nonlocal' on page 8 undefined on input line 
+226.
+
+
+LaTeX Warning: Citation 'zhang2017dncnn' on page 8 undefined on input line 229.
+
+
+
+Overfull \hbox (32.20758pt too wide) in paragraph at lines 229--231
+\OT1/cmr/m/n/12 La \OT1/cmr/bx/n/12 De-nois-ing Con-vo-lu-tional Neu-ral Net-wo
+rk \OT1/cmr/m/n/12 (DnCNN) ^^Re stata in-trodotta da []
+
+LaTeX Warning: Citation 'zhang2018ffdnet' on page 8 undefined on input line 242
+.
+
+
+LaTeX Warning: Citation 'lehtinen2018noise2noise' on page 8 undefined on input 
+line 242.
+
+
+LaTeX Warning: Citation 'batson2019noise2self' on page 8 undefined on input lin
+e 242.
+
+
+Overfull \hbox (15.68095pt too wide) in paragraph at lines 242--243
+\OT1/cmr/m/n/12 merosi studi suc-ces-sivi ([]; []; []),
+
+LaTeX Warning: Citation 'goodfellow2016deep' on page 8 undefined on input line 
+245.
+
+
+LaTeX Warning: Citation 'vincent2008dae' on page 8 undefined on input line 252.
+
+
+
+LaTeX Warning: Citation 'vincent2008dae' on page 8 undefined on input line 256.
+
+
+
+LaTeX Warning: Citation 'kingma2013vae' on page 8 undefined on input line 257.
+
+
+LaTeX Warning: Citation 'goodfellow2014gan' on page 8 undefined on input line 2
+60.
+
+
+LaTeX Warning: Citation 'dosovitskiy2020vit' on page 8 undefined on input line 
+260.
+
+
+
+pdfTeX warning (ext4): destination with the same identifier (name{page.8}) has 
+been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.261 
+       [8]
+[9]
+[10]
+Chapter 3.
+
+LaTeX Warning: Citation 'MartinFTM01' on page 11 undefined on input line 264.
+
+
+LaTeX Warning: Citation 'Ignatov_2018_ECCV_Workshops' on page 11 undefined on i
+nput line 264.
+
+
+LaTeX Warning: Citation '5995413' on page 11 undefined on input line 264.
+
+
+LaTeX Warning: Citation 'Abdelhamed_2019_CVPR_Workshops' on page 11 undefined o
+n input line 264.
+
+
+LaTeX Warning: Citation 'anaya2014renoir' on page 11 undefined on input line 26
+4.
+
+
+[11]
+
+LaTeX Warning: Citation 'MartinFTM01' on page 12 undefined on input line 279.
+
+
+LaTeX Warning: Citation 'Zhang_2017_CVPR' on page 12 undefined on input line 28
+1.
+
+
+Overfull \hbox (1.1274pt too wide) in paragraph at lines 281--282
+\OT1/cmr/m/n/12 utenti, per-me-t-tendo di con-frontare seg-men-tazioni au-to-ma
+tiche con la percezione umana. Nonos-
+
+Overfull \hbox (8.21681pt too wide) in paragraph at lines 293--298
+ [][] 
+
+[12 <./img/img_dataset/bsd/bimba.jpg> <./img/img_dataset/bsd/gattp.jpg> <./img/
+img_dataset/bsd/paesaggio_completo.jpg>]
+
+LaTeX Warning: Citation 'Ignatov_2018_ECCV_Workshops' on page 13 undefined on i
+nput line 305.
+
+
+LaTeX Warning: Citation 'Timofte2017NTIRE' on page 13 undefined on input line 3
+18.
+
+
+Overfull \hbox (8.21681pt too wide) in paragraph at lines 324--329
+ [][] 
+
+[13 <./img/img_dataset/div2k/mongolfiere.png (PNG copy)> <./img/img_dataset/div
+2k/pandar.png (PNG copy)> <./img/img_dataset/div2k/oktoberfest.png (PNG copy)>]
+
+LaTeX Warning: Citation '5995413' on page 14 undefined on input line 336.
+
+
+[14 <./img/img_dataset/fivek/hq1.jpg> <./img/img_dataset/fivek/hq2.jpg> <./img/
+img_dataset/fivek/hq6.jpg>]
+
+LaTeX Warning: Citation 'Abdelhamed_2019_CVPR_Workshops' on page 15 undefined o
+n input line 361.
+
+
+Overfull \hbox (79.5946pt too wide) in paragraph at lines 361--362
+\OT1/cmr/m/n/12 tra de-nois-ing su im-mag-ini sin-tetiche e de-nois-ing in con-
+dizioni re-ali ([]).
+
+Overfull \hbox (8.05667pt too wide) in paragraph at lines 375--380
+ [][] 
+
+Overfull \hbox (8.09735pt too wide) in paragraph at lines 385--390
+ [][] 
+
+[15 <./img/img_dataset/ssid/camion.PNG (PNG copy)> <./img/img_dataset/ssid/pepe
+roni.PNG (PNG copy)> <./img/img_dataset/ssid/colori.PNG (PNG copy)> <./img/img_
+dataset/ssid/peperoni_2.PNG (PNG copy)> <./img/img_dataset/ssid/peperoni_3.PNG 
+(PNG copy)> <./img/img_dataset/ssid/scacchi_gt.PNG (PNG copy)> <./img/img_datas
+et/ssid/scacchi_noise_zoom.PNG>]libpng error: Not a PNG file
+
+
+LaTeX Warning: Citation 'anaya2014renoir' on page 16 undefined on input line 40
+7.
+
+
+!pdfTeX error: pdflatex (file ./img/img_dataset/renoir/mi3_dadi.png): libpng: i
+nternal error
+ ==> Fatal error occurred, no output PDF file produced!

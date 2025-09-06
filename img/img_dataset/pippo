@@ -1,0 +1,7 @@
+for f in *.{jpg,png,PNG}; do
+    if [ -f "$f" ]; then
+        size=$(stat -c%s "$f")                    # dimensione in byte
+        dims=$(identify -format "%wx%h" "$f")    # larghezza x altezza
+        echo "$f - $dims - $size bytes"
+    fi
+done
