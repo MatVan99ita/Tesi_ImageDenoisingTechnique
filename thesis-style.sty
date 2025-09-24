@@ -1,43 +1,54 @@
 
 
-\usepackage{algorithm}
-\usepackage{algpseudocode}
+\usepackage[italian]{babel}
+% Pacchetto per modificare lo stile dei titoli
+\usepackage{titlesec}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+
+% Pacchetti matematici e tecnici
 \usepackage{amsmath}
 \usepackage{amsthm}
 \usepackage{amssymb}
 \usepackage{bm}
-\usepackage{booktabs}
-\usepackage{pgffor}
-\usepackage{rotating}
+\usepackage{latexsym}
 
+% Pacchetti per tabelle e grafica
+\usepackage{booktabs}
+\usepackage{multirow}
 \usepackage{colortbl}
+\usepackage[table]{xcolor}
 \usepackage{graphicx}
 \usepackage{subcaption}
 \usepackage{adjustbox}
-\usepackage{geometry}
-\usepackage{ifthen}
-\usepackage{latexsym}
-\usepackage{listings}
-\usepackage{makeidx}
-\usepackage{minted}
-\usepackage{nicematrix}
 \usepackage{tikz}
-\usepackage{titlesec}
-\usepackage{wrapfig}
-\usepackage{xcolor}
+\usepackage{rotating}
+\usepackage{pgffor}
+\usepackage{ifthen}
+\usepackage{nicematrix}
 
+% Pacchetti per codice e algoritmi
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{listings}
+\usepackage{minted}
+
+
+% Altri pacchetti
+\usepackage{wrapfig}
+\usepackage{makeidx}
+\usepackage{geometry}
+\usepackage{siunitx}
+
+% hyperref deve essere uno degli ultimi
 \usepackage{hyperref}
 \usepackage{cleveref}
+\usepackage{etoolbox}
+\usepackage{ragged2e}
 
-\usepackage{nicematrix} % nell'intestazione del documento
-\usepackage{booktabs} % per linee più belle
-\usepackage{multirow} % per celle che occupano più righe
-\usepackage{siunitx}  % per numeri allineati bene
-\usepackage[table]{xcolor}
 
-%\usepackage[round]{natbib}
-%\bibliographystyle{plainnat}
-%\bibliographystyle{unsrtnat}  % bibliografia numerata
+\addto\captionsitalian{\renewcommand{\chaptername}{Capitolo}}
+
 \usepackage[
   backend=biber,
   citestyle=authoryear,
@@ -57,14 +68,15 @@
 \newcommand{\TODOComment}[1]{}
 
 
+
 \crefname{lstlisting}{listato}{listati}
 \Crefname{lstlisting}{Listato}{Listati}
 
-\newenvironment{abstract}{\chapter*{\centering\abstractname}\addcontentsline{toc}{chapter}{\abstractname}}{} 
+%\newenvironment{abstract}{\chapter*{\centering\abstractname}\addcontentsline{toc}{chapter}{\abstractname}}{} 
 
-\newenvironment{acknowledgements}{\chapter*{\acknowledgementsname}}{} 
+%\newenvironment{acknowledgements}{\chapter*{\acknowledgementsname}}{} 
 
-\newenvironment{dedication}{\chapter*{}\begin{flushright}\itshape}{\normalfont\end{flushright}}
+%\newenvironment{dedication}{\chapter*{}\begin{flushright}\itshape}{\normalfont\end{flushright}}
 
 \newcommand{\chapterWithoutNumber}[1]{\chapter*{#1}\addcontentsline{toc}{chapter}{#1}}
 
@@ -101,3 +113,57 @@
 \node[below=4pt] at (a.south) {#2};
 }%
 }
+
+\newcommand{\whiteline}{\\ \\}
+
+\newcommand{\sector}[1]{%
+  \bigskip\noindent{\large\bfseries #1}\medskip\noindent\\%
+}
+
+\newcommand{\subsector}[1]{%
+  \medskip\noindent{\normalsize\bfseries #1}\medskip\noindent\\%
+}
+
+% Formato semplice per i capitoli
+% \titleformat{\chapter}[display]
+%   {\normalfont\huge\bfseries\centering}
+%   {Capitolo \thechapter}
+%   {20pt}
+%   {\Huge}
+%   []
+
+% \titleformat{name=\chapter,numberless}[display]
+%   {\normalfont\huge\bfseries}
+%   {} % Aggiungi questa riga
+%   {0pt}
+%   {\Huge}
+%   []
+
+
+% Per controllare lo spazio prima/dopo
+% \titlespacing*{\chapter}{0pt}{-20pt}{40pt}
+
+% \AtBeginDocument{%
+% 
+%   \titleformat{\chapter}[display]
+%     {\normalfont\huge\bfseries\centering}
+%     {Capitolo \thechapter}
+%     {20pt}
+%     {\Huge}
+%     []
+% 
+%   \titleformat{name=\chapter,numberless}[display]
+%     {\normalfont\huge\bfseries}
+%     {}
+%     {0pt}
+%     {\Huge}
+%     []
+% 
+%   \titlespacing*{\chapter}{0pt}{-20pt}{40pt}
+% }
+
+\newenvironment{dedication}{\chapter*{}\begin{flushright}\itshape}{\normalfont\end{flushright}}
+
+\renewcommand{\listfigurename}{Elenco delle figure}
+
+\AfterEndPreamble{\raggedright} % Forza allineamento a sinistra dopo preambolo

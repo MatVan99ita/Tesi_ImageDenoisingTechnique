@@ -1,0 +1,55 @@
+% present-style.sty
+\ProvidesPackage{present-style}[2024/06/10 Presentation Style]
+
+% Font and color settings
+\RequirePackage{xcolor}
+\definecolor{maincolor}{RGB}{34,139,230}
+\definecolor{accentcolor}{RGB}{255,140,0}
+
+\RequirePackage{titlesec}
+\titleformat{\section}
+  {\color{maincolor}\Large\bfseries}
+  {\thesection}{1em}{}
+
+\titleformat{\subsection}
+  {\color{accentcolor}\large\bfseries}
+  {\thesubsection}{1em}{}
+
+% Frame and box for highlights
+\RequirePackage{tcolorbox}
+\tcbset{
+  highlightbox/.style={
+    colback=maincolor!10,
+    colframe=maincolor,
+    boxrule=1pt,
+    arc=4pt,
+    left=2mm,
+    right=2mm,
+    top=1mm,
+    bottom=1mm,
+    fontupper=\color{maincolor}\bfseries
+  }
+}
+
+% Shortcut for highlight box
+\newenvironment{highlight}{\begin{tcolorbox}[highlightbox]}{\end{tcolorbox}}
+
+% Itemize style
+\RequirePackage{enumitem}
+\setlist[itemize]{label=\textcolor{maincolor}{$\bullet$}, leftmargin=2em}
+
+% Slide title command
+\newcommand{\slidetitle}[1]{%
+  \begin{center}
+    \color{maincolor}\Huge\bfseries #1
+  \end{center}
+  \vspace{1em}
+}
+
+% Footer
+\RequirePackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot[C]{\color{accentcolor}\thepage}
+
+% End of present-style.sty

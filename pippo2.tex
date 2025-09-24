@@ -1,0 +1,87 @@
+\documentclass[12pt,a4paper,openright,twoside]{book}
+
+\usepackage{thesis-style}
+
+\begin{document}
+
+\tableofcontents
+
+\chapter{Capitolo numerato}
+Testo.
+
+\chapter*{Capitolo senza numero}
+Testo.
+
+
+\subsection*{Denoising nel dominio della frequenza}
+Mediante la trasformata di Fourier è possibile separare le componenti ad alta frequenza (spesso associate al rumore) da quelle a bassa frequenza (contenuto strutturale) \parencite{oppenheim1999discrete}. 
+Questo approccio è utile in presenza di rumore periodico, ma tende a sacrificare dettagli fini.\\
+Tra i suoi principali limiti vi sono la limitata adattabilità al contenuto specifico dell'immagine, il compromesso necessario tra la riduzione del rumore e la conservazione dei dettagli, e la ridotta efficacia nel trattamento di rumori non uniformi o strutturati.
+
+\subsection*{Approcci basati su patch}
+Metodi come \textbf{Non-Local Means} (NLM) \parencite{buades2005nonlocal} e \textbf{BM3D} \parencite{dabov2007bm3d} si basano sul concetto di similitudine tra porzioni (patch) di immagine. Questi algoritmi ricercano blocchi simili all'interno dell'immagine per effettuare una media ponderata più efficace. BM3D, in particolare, è considerato uno dei migliori metodi non-apprendenti ed è tuttora in uso.
+
+\subsection*{Metodi basati su sparse coding}
+Questi approcci modellano ogni patch come una combinazione sparsa di elementi di un dizionario. Algoritmi come K-SVD \parencite{aharon2006ksvd, wang2020_review, cloud_ksvd2023} apprendono un dizionario adattivo dai dati per una rappresentazione più efficiente. Sebbene più costosi computazionalmente, offrono buoni risultati su immagini naturali e sono particolarmente efficaci nel preservare dettagli locali rispetto ai filtri classici.
+\whiteline
+La rappresentazione sparsa ha rappresentato un passo fondamentale nell'evoluzione dei metodi di denoising, introducendo concetti di apprendimento adattivo e modellazione statistica dei dati, aprendo la strada ai successivi approcci basati su reti neurali.
+
+
+
+
+
+
+
+
+\label{sec:innovazione_denoising}
+Dalla metà degli anni 2010, l'adozione di modelli convoluzionali ha permesso un salto di qualità significativo. Reti come DnCNN \parencite{zhang2017dncnn} e FFDNet \parencite{zhang2018ffdnet} hanno dimostrato come reti profonde possano apprendere direttamente la mappatura da immagini rumorose a pulite. Approcci auto-supervisionati come Noise2Noise \parencite{lehtinen2018noise2noise} hanno reso possibile l'addestramento senza immagini pulite di riferimento. \\
+Modelli più recenti basati su U-Net, GAN e transformer \parencite{9010324} hanno ulteriormente migliorato la capacità di generalizzazione a diversi tipi di rumore e scenari complessi. L'evoluzione dal denoising classico a modelli di deep learning mostra come l'integrazione di apprendimento adattivo e capacità di modellare relazioni non locali abbia trasformato il campo.
+%Negli ultimi anni, l'intelligenza artificiale ha rivoluzionato il denoising delle immagini. 
+%L'integrazione di reti profonde e metodi auto-supervisionati ha permesso di superare le limitazioni dei metodi tradizionali, ottenendo prestazioni  superiori su dataset standard come BSD500 \parencite{MartinFTM01}, MIT-Adobe FiveK \parencite{5995413}, SIDD \parencite{Abdelhamed_2019_CVPR_Workshops}, DIV2K \parencite{Ignatov_2018_ECCV_Workshops} e RENOIR \parencite{anaya2014renoir}.
+
+\subsection*{Reti Convoluzionali (CNN)}
+Le CNN sono state tra le prime architetture a essere impiegate per il denoising. DnCNN \parencite{zhang2017dncnn} è un esempio di successo, che ha introdotto il concetto di residual learning, permettendo alla rete di concentrare l'attenzione sulle componenti rumorose.
+
+\subsection*{Reti flessibili e adattive}
+Modelli come FFDNet \parencite{zhang2018ffdnet} hanno introdotto la possibilità di gestire livelli variabili di rumore in input, migliorando l'efficienza e la generalizzazione. Altri modelli hanno iniziato a incorporare meccanismi di attenzione per focalizzarsi selettivamente sulle aree più degradate.
+
+\subsection*{Apprendimento auto-supervisionato}
+L'approccio \textit{Noise2Noise} \parencite{lehtinen2018noise2noise} ha dimostrato che è possibile allenare un modello a ripulire immagini anche senza avere accesso all'immagine pulita di riferimento, ma solo a immagini rumorose multiple della stessa scena.
+
+\subsection*{Prospettive future}
+L'introduzione di modelli basati su Transformer e reti neurali generative (GAN) promette di migliorare ulteriormente la qualità del denoising, specialmente in scenari complessi, come immagini mediche, notturne o compresse.
+
+%\section{Metodi esistenti}
+%La letteratura sul denoising delle immagini è estremamente ricca e articolata. Possiamo suddividere i metodi esistenti in tre macro-categorie: approcci tradizionali, metodi basati su patch, e tecniche di deep learning.
+
+
+
+
+Dalla metà degli anni 2010, l’adozione di modelli convoluzionali ha portato a un significativo salto di qualità nel campo del denoising delle immagini. Le reti neurali convoluzionali (CNN) sono state tra le prime architetture profonde ad essere utilizzate con successo in questo ambito, grazie alla loro capacità di apprendere direttamente la mappatura da immagini rumorose a immagini pulite. Un esempio è DnCNN (Zhang, Zuo, Chen et al., 2017), che ha introdotto il concetto di residual learning, permettendo alla rete di concentrarsi specificamente sulla componente di rumore da rimuovere.
+
+Successivamente, modelli più flessibili come FFDNet (Zhang, Zuo e Zhang, 2018) hanno esteso queste capacità introducendo la possibilità di gestire livelli variabili di rumore in ingresso, migliorando così l’efficienza e la generalizzazione del modello. Contestualmente, sono cominciati a emergere approcci che integravano meccanismi di attenzione per focalizzarsi in modo selettivo sulle aree più degradate dell’immagine.
+
+Parallelamente, l’approccio auto-supervisionato ha rivoluzionato il settore con modelli come Noise2Noise (Lehtinen et al., 2018), che hanno dimostrato come fosse possibile addestrare reti capaci di ripulire immagini senza la necessità di avere immagini pulite di riferimento, affidandosi invece a molteplici immagini rumorose della stessa scena.
+
+Più recentemente, architetture basate su U-Net, reti generative avversarie (GAN) e transformer hanno ulteriormente migliorato le prestazioni, anche in presenza di rumori più complessi e in scenari diversi (Anwar e Barnes, 2019). Questi modelli riescono a generalizzare meglio e ad apprendere relazioni non locali grazie alla loro struttura e ai meccanismi di attenzione incorporati.
+
+ 
+
+
+\titleformat{\chapter}[display]
+  {\normalfont\huge\bfseries\centering} % titolo centrato
+  {Capitolo \thechapter}
+  {20pt}
+  {\Huge\justifying}
+  []
+
+
+
+
+
+
+
+
+
+
+\end{document}
