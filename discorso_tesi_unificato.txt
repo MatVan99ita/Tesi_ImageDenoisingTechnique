@@ -3,10 +3,12 @@ Discorso di presentazione tesi
 Buongiorno a tutti,
 mi chiamo Matteo Vanni e oggi vi presento il lavoro svolto per la mia tesi, dal titolo “Analisi comparativa di modelli di Deep Learning per la riduzione del rumore in immagini digitali”.
 
-L’obiettivo principale è stato affrontare il problema del denoising, cioè la rimozione del rumore dalle immagini, e capire quali modelli siano più efficaci in diversi contesti. Ho voluto confrontare sia approcci classici che reti neurali moderne, valutandone le prestazioni su vari dataset, sia sintetici che reali, per individuarne punti di forza e limiti.
+L’obiettivo principale è stato affrontare il problema del denoising, cioè la rimozione del rumore dalle immagini, e capire quali modelli siano più efficaci in diversi contesti. Ho voluto confrontare tre reti neurali moderne e un metodo classico, valutandone le prestazioni su vari dataset, sia sintetici che reali, per individuandone punti di forza e limiti.
 
 ### Cos’è il denoising
-Il denoising è un processo fondamentale nell’elaborazione delle immagini, perché il rumore può compromettere la qualità visiva e rendere più difficile l’analisi automatica. Il rumore può essere introdotto dai sensori delle fotocamere, da condizioni di acquisizione non ottimali, dalla compressione o dalla trasmissione delle immagini. Esistono diversi tipi di rumore:
+Il denoising è un processo fondamentale nell’elaborazione delle immagini, perché il rumore può compromettere la qualità visiva e rendere più difficile l’analisi automatica. Il rumore può essere introdotto dai sensori delle fotocamere, da condizioni di acquisizione non ottimali, dalla compressione o dalla trasmissione delle immagini. 
+
+Ne esistono diversi tipi di rumore:
 - Gaussiano, tipico dei disturbi elettronici;
 - Poissoniano, legato alla statistica dei fotoni;
 - Salt-and-Pepper, causato da errori di trasmissione;
