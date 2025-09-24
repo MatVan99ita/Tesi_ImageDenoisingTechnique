@@ -1,0 +1,64 @@
+Discorso di presentazione tesi
+
+1.  Introduzione
+    Mi chiamo Matteo Vanni e oggi presento la mia tesi: Analisi
+    comparativa di modelli di Deep Learning per la riduzione del rumore
+    in immagini digitali. Gli obiettivi sono: comprendere il problema
+    del rumore, analizzare modelli deep learning, confrontarli su
+    dataset reali e sintetici, evidenziandone punti di forza e limiti.
+
+2.  Cos’è il denoising
+    È il processo di rimozione del rumore per migliorare la qualità
+    visiva e supportare analisi automatiche. Esistono vari tipi di
+    rumore: Gaussiano, Poissoniano, Salt-and-Pepper, Speckle, rumore
+    reale da sensori.
+
+3.  Metodi tradizionali
+    - Filtri mediani e gaussiani.
+    - Non-Local Means e BM3D come riferimenti classici.
+    Limiti: perdita di dettagli, poca flessibilità.
+
+4.  Metodi deep learning
+    - Reti neurali convoluzionali (DnCNN, RIDNet).
+    - Approcci auto-supervisionati come Noise2Noise.
+    - GAN e modelli più recenti.
+
+5.  Architetture considerate
+    - RIDNet: rete modulare con attenzione sui canali e apprendimento
+    residuo.
+    - DnCNN: rete profonda di 20 strati, apprende direttamente il
+    rumore.
+    - Autoencoder: compressione + ricostruzione, meno performante.
+
+6.  Dataset utilizzati
+    - SIDD, Renoir: rumore reale.
+    - BSD500, DIV2K, FiveK: rumore sintetico a vari livelli.
+    - Kvasir: dataset medico per valutare la generalizzazione.
+
+7.  Preprocessing
+    Operazioni di padding e patching a risoluzione 512x512. Aggiunta di
+    rumore artificiale (σ=15,25,50). Divisione dataset in training e
+    validation.
+
+8.  Sperimentazione
+    Training con ottimizzatore Adam e loss MSE. Confronto con BM3D come
+    baseline classica.
+
+9.  Risultati principali
+    - RIDNet: migliore su quasi tutti i dataset, robusto anche con
+    rumore elevato.
+    - DnCNN: prestazioni intermedie, degrada con alto rumore.
+    - Autoencoder: il meno performante.
+    - BM3D: valido solo a basso rumore.
+    Caso particolare: su dataset Scacchi, RidNet e BM3D equivalenti.
+
+10. Fine tuning su Kvasir
+    Necessario per specializzare i modelli a immagini mediche.
+    Miglioramento visibile per RidNet e DnCNN, più limitato per
+    l’Autoencoder.
+
+11. Conclusioni
+    RidNet risulta il modello più versatile e robusto. Il fine tuning è
+    fondamentale per domini specifici. Possibili sviluppi futuri:
+    modelli transformer, approcci auto-supervised e applicazioni
+    cliniche.
