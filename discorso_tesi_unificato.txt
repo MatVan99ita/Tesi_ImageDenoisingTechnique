@@ -1,0 +1,54 @@
+Discorso di presentazione tesi
+
+Buongiorno a tutti,
+mi chiamo Matteo Vanni e oggi vi presento il lavoro svolto per la mia tesi, dal titolo “Analisi comparativa di modelli di Deep Learning per la riduzione del rumore in immagini digitali”.
+
+L’obiettivo principale è stato affrontare il problema del denoising, cioè la rimozione del rumore dalle immagini, e capire quali modelli siano più efficaci in diversi contesti. Ho voluto confrontare sia approcci classici che reti neurali moderne, valutandone le prestazioni su vari dataset, sia sintetici che reali, per individuarne punti di forza e limiti.
+
+### Cos’è il denoising
+Il denoising è un processo fondamentale nell’elaborazione delle immagini, perché il rumore può compromettere la qualità visiva e rendere più difficile l’analisi automatica. Il rumore può essere introdotto dai sensori delle fotocamere, da condizioni di acquisizione non ottimali, dalla compressione o dalla trasmissione delle immagini. Esistono diversi tipi di rumore:
+- Gaussiano, tipico dei disturbi elettronici;
+- Poissoniano, legato alla statistica dei fotoni;
+- Salt-and-Pepper, causato da errori di trasmissione;
+- Speckle, frequente nelle immagini mediche;
+- e infine il rumore reale, come quello acquisito con smartphone e fotocamere digitali.
+
+### Metodi tradizionali
+I primi approcci al denoising si basano su filtri spaziali, come filtri medi, gaussiani e mediani, che però tendono a sfocare i dettagli. Successivamente sono stati introdotti metodi più avanzati come Non-Local Means e BM3D, che sfruttano la similarità tra diverse parti dell’immagine e per anni hanno rappresentato lo stato dell’arte. Tuttavia, questi metodi hanno limiti in termini di flessibilità e capacità di preservare i dettagli più fini.
+
+### Metodi basati su Deep Learning
+Negli ultimi anni il campo è stato rivoluzionato dal deep learning. Le reti neurali convoluzionali (CNN), come DnCNN e RIDNet, hanno introdotto strategie innovative come residual learning e meccanismi di attenzione, che permettono di rimuovere il rumore in modo più efficace, preservando i dettagli. Esistono anche approcci auto-supervisionati, come Noise2Noise, e metodi basati su GAN.
+
+### Architetture considerate
+Nel mio lavoro mi sono concentrato su tre modelli principali:
+- RIDNet, una rete modulare progettata specificamente per il denoising di immagini reali, con attenzione ai canali e apprendimento residuo.
+- DnCNN, una rete profonda che apprende direttamente il residuo del rumore ed è molto utilizzata come baseline.
+- Autoencoder, un’architettura più generica basata su compressione e ricostruzione, utile come termine di confronto ma meno performante.
+
+### Dataset e preprocessing
+Per la valutazione ho utilizzato diversi dataset:
+- SIDD e Renoir, composti da immagini reali acquisite in condizioni autentiche di rumore.
+- BSD500, FiveK e DIV2K, contenenti immagini naturali con rumore sintetico a vari livelli.
+- Kvasir, un dataset medico endoscopico, usato per testare la capacità di adattamento dei modelli tramite fine tuning.
+
+Le immagini sono state preprocessate con operazioni di padding e patching a risoluzione 512×512, aggiungendo rumore artificiale (σ=15, 25, 50) e dividendo i dataset in training e validation.
+
+### Sperimentazione
+Il training è stato effettuato con ottimizzatore Adam e funzione di perdita MSE, confrontando i risultati con BM3D come baseline classica. La valutazione è stata sia quantitativa, tramite metriche come PSNR e SSIM, sia qualitativa, osservando direttamente le immagini denoised.
+Un aspetto rilevante è stata l’ottimizzazione degli iperparametri tramite la libreria Optuna, per ottenere configurazioni più performanti e modelli più leggeri.
+
+### Risultati principali
+- RIDNet ha raggiunto i valori medi e massimi di PSNR più elevati su quasi tutti i dataset, dimostrando robustezza anche in presenza di rumore elevato.
+- DnCNN si è confermato competitivo, con prestazioni intermedie ma più sensibile a rumore elevato.
+- Autoencoder ha mostrato le performance più basse, utile principalmente come riferimento.
+- BM3D rimane un buon metodo classico, efficace solo in condizioni di basso rumore.
+
+### Fine tuning su Kvasir
+Il fine tuning sui dati medici ha permesso di specializzare i modelli, portando a un miglioramento significativo sia nella qualità visiva che nei valori di PSNR, in particolare per RIDNet e DnCNN.
+
+### Conclusioni
+Il denoising è un tema centrale nell’elaborazione delle immagini digitali. I modelli basati su deep learning offrono prestazioni superiori ai metodi classici, ma la scelta del modello e la sua ottimizzazione dipendono dal contesto e dal tipo di rumore.
+RIDNet è risultato il modello più versatile e robusto. Il fine tuning e l’ottimizzazione degli iperparametri sono fondamentali per adattare i modelli a domini specifici, come le immagini mediche.
+Sviluppi futuri potrebbero includere l’uso di modelli transformer, approcci auto-supervised più avanzati e applicazioni in ambito clinico.
+
+Vi ringrazio per l’attenzione e resto a disposizione per eventuali domande.
