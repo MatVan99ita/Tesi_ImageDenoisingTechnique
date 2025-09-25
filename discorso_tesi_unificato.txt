@@ -45,8 +45,23 @@ Un aspetto rilevante è stata l’ottimizzazione degli iperparametri tramite la 
 - Autoencoder ha mostrato le performance più basse, utile principalmente come riferimento.
 - BM3D rimane un buon metodo classico, efficace solo in condizioni di basso rumore.
 
+\begin{frame}
+  \frametitle{Risultati training modelli}
+  \begin{itemize}
+    \item Si è notato come Ridnet abbia valori e risultati migliori rispetto agli altri 2 modelli
+    \item BM3D risulta meno efficace in caso di elevato rumore a differenza di Ridnet e DnCNN
+  \end{itemize}
+  
+
+
+
 ### Fine tuning su Kvasir
 Il fine tuning sui dati medici ha permesso di specializzare i modelli, portando a un miglioramento significativo sia nella qualità visiva che nei valori di PSNR, in particolare per RIDNet e DnCNN.
+
+### Optuna
+% optuna: strumento che serve a trovare iperparametri ottimali per il training con funzione obiettivo che minimizza la loss e massimizzare l'accuracy
+
+
 
 ### Conclusioni
 Il denoising è un tema centrale nell’elaborazione delle immagini digitali. I modelli basati su deep learning offrono prestazioni superiori ai metodi classici, ma la scelta del modello e la sua ottimizzazione dipendono dal contesto e dal tipo di rumore.
